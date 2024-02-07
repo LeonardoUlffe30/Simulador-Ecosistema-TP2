@@ -23,12 +23,10 @@ public abstract class Animal implements Entity, AnimalInfo {
 	private AnimalMapView _region_mngr;
 	private SelectionStrategy _mate_strategy;
 	
-	private enum State{NORMAL, MATE, HUNGER, DANGER, DEAD};
-	
 	protected Animal(String genetic_code, Diet diet, double sight_range,
 			double init_speed, SelectionStrategy mate_strategy, Vector2D pos) {
 		if (genetic_code == null) throw new IllegalArgumentException("Genetic Code es null"); 
-		else if (sight_range <= 0 && init_speed <= 0) throw new IllegalArgumentException("sight range o init speed no es un valor positivo"); 
+		else if (sight_range <= 0 && init_speed <= 0) throw new IllegalArgumentException("Sight range y/o Init speed no es un valor positivo"); 
 		if(mate_strategy == null) throw new IllegalArgumentException("Mate estrategy es null"); 
 		
 		_genetic_code = genetic_code;
@@ -37,7 +35,8 @@ public abstract class Animal implements Entity, AnimalInfo {
 		_speed = Utils.get_randomized_parameter(init_speed, 0.1);
 		_mate_strategy = mate_strategy;
 		_pos = pos;
-		//init(_reg_mngr); DIAPO 6
+		// si pos = NULL, utiliza init() pero no en constructora
+		//init(_reg_mngr); DIAPO 6 
 		_state = State.NORMAL;
 		_energy = 100.0;
 		_desire = 0.0;
@@ -116,11 +115,12 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 	}
 	
+	//el gestor de regiones(RegionManager) invocará a este método al añadir el
+	//animal a la simulación
 	public void init(AnimalMapView reg_mngr) {
 		_region_mngr = reg_mngr;
 		if (_pos == null) {
 			_pos = new Vector2D(Utils.get_randomized_parameter(0, reg_mngr.get_width()-1), Utils.get_randomized_parameter(0, reg_mngr.get_height()-1));
-			
 		}else {
 			ajustar();
 		}
@@ -177,12 +177,12 @@ public abstract class Animal implements Entity, AnimalInfo {
 		this._desire = _desire;
 	}
 
-	public Animal get_mate_range() {
-		return _mate_range;
+	public Animal get_mate_target() {
+		return _mate_target;
 	}
 
-	public void set_mate_range(Animal _mate_range) {
-		this._mate_range = _mate_range;
+	public void set_mate_target(Animal _mate_target) {
+		this._mate_target = _mate_target;
 	}
 
 	public Animal get_baby() {
