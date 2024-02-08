@@ -1,5 +1,9 @@
 package simulator.model;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -61,6 +65,26 @@ public abstract class Animal implements Entity, AnimalInfo {
 		_speed = Utils.get_randomized_parameter((p1.get_speed()+p2.get_speed())/2, 0.2);
 		}
 	
+	
+	//PREDICATES
+	Predicate<Animal> predicate_sheep = new Predicate<Animal>(){
+		@Override
+		public boolean test(Animal a) {
+			return false;
+			//return a.get_diet().equals(this.get_diet());
+		}
+	};
+	
+	Predicate<Animal> predicate_wolf = new Predicate<Animal>(){
+		@Override
+		public boolean test(Animal a) {
+			return a.get_diet().equals(Diet.HERBIVORE);
+		}
+	};
+	
+	
+	
+	
 	@Override
 	public Vector2D get_position() {
 		// TODO Auto-generated method stub
@@ -112,7 +136,9 @@ public abstract class Animal implements Entity, AnimalInfo {
 	@Override
 	public void update(double dt) {
 		// TODO Auto-generated method stub
-
+		
+		if (this.get_energy() <= 0.0 || (this.get_age() > 8.0)) this.set_state(State.DEAD);
+		this.get_region_mngr().get_food(this, dt);
 	}
 	
 	//el gestor de regiones(RegionManager) invocará a este método al añadir el
@@ -126,7 +152,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 		}
 	}
 
-	private void ajustar() {
+	public void ajustar() {
 		double x = getPosX();
 		double y = getPosY();
 		// TODO Auto-generated method stub
@@ -248,6 +274,43 @@ public abstract class Animal implements Entity, AnimalInfo {
 		_pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
 	}
 	
+	private void update_state() {
+		
+		this.set_mate_target(find_animal_killer());
+		switch (this.get_state()) {
+		case NORMAL:
+			
+		break;
+		case HUNGER:
+
+			break;
+		case  MATE:
+
+			break;
+		case DANGER:
+
+			break;
+		case DEAD:
+			break;
+		
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + this.get_state());
+		}
+	}
+	
+	private Animal find_animal_killer() {
+		// TODO Auto-generated method stub
+		List<Animal> lista;
+		if (this._diet == Diet.CARNIVORE) lista = _region_mngr.get_animals_in_range(this, predicate_sheep);
+		else lista = _region_mngr.get_animals_in_range(this, predicate_sheep);
+		Animal killer = null;
+		for (int i = 0; i < lista.size(); i++) {
+			
+		}
+		return killer;
+		
+	}
+
 	public JSONObject as_JSON() {
 		JSONArray ja = get_pos().asJSONArray();
 		JSONObject jo = new JSONObject();
@@ -255,6 +318,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 		jo.put("gcode", get_genetic_code());
 		jo.put("diet", get_diet());
 		jo.put("state", get_state());
+		return jo;
 		
 	}
 

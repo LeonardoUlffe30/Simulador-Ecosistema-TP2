@@ -1,6 +1,9 @@
 package simulator.model;
 
+import java.util.function.Predicate;
+
 import simulator.misc.Vector2D;
+import simulator.model.RegionManager;
 
 public class Sheep extends Animal {
 	private SelectionStrategy _danger_strategy;
@@ -17,6 +20,13 @@ public class Sheep extends Animal {
 		this._danger_strategy = p1.get_danger_strategy();
 		this._danger_source = null;
 	}
+	
+	Predicate<Animal> predicate_sheep = new Predicate<Animal>(){
+		@Override
+		public boolean test(Animal a) {
+			return a.get_diet().equals(Diet.CARNIVORE);
+		}
+	};
 
 	public SelectionStrategy get_danger_strategy() {
 		return _danger_strategy;
@@ -33,5 +43,8 @@ public class Sheep extends Animal {
 	public void set_danger_source(Animal _danger_source) {
 		this._danger_source = _danger_source;
 	}
+	
 
 }
+
+
