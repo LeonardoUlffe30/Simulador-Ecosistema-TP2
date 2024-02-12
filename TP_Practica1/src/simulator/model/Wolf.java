@@ -1,5 +1,7 @@
 package simulator.model;
 
+import java.util.List;
+
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
@@ -20,11 +22,11 @@ public class Wolf extends Animal {
 	@Override
 	public void update(double dt) {
 //		1.Si el estado es DEAD no hacer nada (volver inmediatamente).
-		if (get_state() != State.DEAD) {
+		if (this.get_state() != State.DEAD) {
 //		2. Actualizar el objeto según el estado del animal (ver la descripción abajo)
-			update_state(dt);
+			this.update_state(dt);
 //		3. Si la posición está fuera del mapa, la ajusta y cambia su estado a NORMAL.
-			adjust();
+			this.adjust();
 //		4. Si _energy es 0.0 o _age es mayor de 14.0, cambia su estado a DEAD.
 			if (this.get_energy() <= 0.0 || (this.get_age() > 14.0))
 				this.set_state(State.DEAD); //Comprobamos que no este muerto de nuevo
@@ -45,9 +47,16 @@ public class Wolf extends Animal {
 //				1.3. Añadir dt a la edad.
 //				1.4. Quitar 18.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 //				1.5. Añadir 30.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
+			this.move_as_normal(dt);
 //			2. Cambio de estado
 //				2.1. Si su energía es menor que 50.0 cambia de estado a HUNGER, y si no lo es y su deseo es mayor 
 //				que 65.0 cambia de estado a MATE. En otro caso no hace nada.
+			if(this.get_energy() < 50.0)
+				this.set_state(State.HUNGER);
+			else {
+				if(this.get_desire()>65.0)
+					this.set_state(State.MATE);
+			}
 			break;
 		case HUNGER:
 //			1. Si _hunt_target es null, o no es null pero su estado es DEAD o está fuera del campo visual, buscar
@@ -65,11 +74,38 @@ public class Wolf extends Animal {
 //						2.6.1. Poner el estado _hunt_target a DEAD.
 //						2.6.2. Poner _hunt_target a null.
 //						2.6.3. Sumar 50.0 a la energía (manteniéndola siempre entre 0.0 y 100.0).
+			if(this.get_hunt_target()==null) {
+				this.move_as_normal(dt);
+				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
+				SelectionStrategy aux = this.get_hunting_strategy();
+				this.set_hunt_target(aux.select(this, animals_filtered));
+				this.move_as_normal(dt);
+			} else {
+				if(this.get_state() == State.DEAD || this.get_position().distanceTo(this.get_hunt_target().get_position()) > this.get_sight_range()) {
+					List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
+					SelectionStrategy aux = this.get_hunting_strategy();
+					this.set_hunt_target(aux.select(this, animals_filtered));
+				}
+				this.set_destination(this.get_hunt_target().get_position());
+				this.move(3.0*this.get_speed()*dt*Math.exp((this.get_energy()-100.0)*0.007));
+				this.set_age(this.get_age()+dt);
+				if (this.get_energy() - (18.0*1.2*dt) >= 0)
+					this.set_energy(this.get_energy() - (18.0*1.2*dt));
+				if (this.get_desire() + (30.0*dt) <= 100.0)
+					this.set_desire(this.get_desire() + (30.0*dt));
+			}
 //			3. Cambiar de estado
 //				3.1. Si su energía es mayor que 50.0
 //					3.1.1. Si el deseo es menor que 65.0 cambia el estado a NORMAL.
 //					3.1.2. En otro caso cámbialo a MATE.
 //				3.2. Si su energía es menor, no hacer nada.
+			if(this.get_energy()>50.0) {
+				if(this.get_desire()<65.0)
+					this.set_state(State.NORMAL);
+				else
+					this.set_state(State.MATE);
+					
+			}
 			break;
 		case MATE:
 //			1. Si _mate_target no es null y su estado es DEAD o está fuera del campo visual, poner _mate_target a
@@ -89,7 +125,43 @@ public class Wolf extends Animal {
 //					usando new Wolf(this, _mate_target).
 //					2.6.3. Quitar 10.0 de la energía (manteniéndola siempre entre 0.0 y 100.0).
 //					2.6.4. Poner _mate_target a null.
-//			3. Si su energía es menor que 50.0 cambia
+			if(this.get_mate_target() != null) {
+				if(this.get_state() == State.DEAD || this.get_position().distanceTo(this.get_mate_target().get_position())> this.get_sight_range())
+					this.set_mate_target(null);
+				this.set_destination(this.get_mate_target().get_position());
+				this.move(3.0*this.get_speed()*dt*Math.exp((this.get_energy()-100.0)*0.007));
+				this.set_age(this.get_age()+dt);
+				if (this.get_energy() - (18.0*1.2*dt) >= 0)
+					this.set_energy(this.get_energy() - (18.0*1.2*dt));
+				if (this.get_desire() + (30.0*dt) <= 100.0)
+					this.set_desire(this.get_desire() + (30.0*dt));
+				if(this.get_position().distanceTo(this.get_mate_target().get_position())<8.0) {
+					this.set_desire(0.0);
+					this.get_mate_target().set_desire(0.0);
+//					Si el animal no lleva un bebe ya, con probabilidad de 0.9 va a llevar a un nuevo bebe
+////					usando new Wolf(this, _mate_target).
+					if (this.get_energy() - (10.0) >= 0)
+						this.set_energy(this.get_energy() - (10.0));
+					this.set_mate_target(null);
+				}
+			}
+			else {
+				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
+				SelectionStrategy aux = this.get_hunting_strategy();
+				if(aux == null)
+					this.move_as_normal(dt);
+				else
+					this.set_hunt_target(aux.select(this, animals_filtered));
+					
+			}
+//			3. Si su energía es menor que 50.0 cambia de estado a HUNGER, y si no lo es y el deseo es menor que
+//			65.0 cambia de estado a NORMAL.
+			if(this.get_energy()<50.0)
+				this.set_state(State.HUNGER);
+			else {
+				if(this.get_desire()<65.0)
+					this.set_state(State.NORMAL);
+			}
 			break;
 		case DANGER:
 //			Un objeto de tipo Wolf nunca puede estar en estado DANGER.
