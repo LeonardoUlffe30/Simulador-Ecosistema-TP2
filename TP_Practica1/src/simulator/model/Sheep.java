@@ -33,11 +33,13 @@ public class Sheep extends Animal {
 	@Override
 	public void update(double dt) {
 		// DEAD -> NO HACE NADA
-		// ACTUALIZAR OBJETO SEGUN ESTADO
-		// SI POSICION FUERA DE MAPA, AJUSTAR
-		if (this.get_energy() <= 0.0 || (this.get_age() > 8.0))
-			this.set_state(State.DEAD);
-		this.get_region_mngr().get_food(this, dt);
+		if (this.get_state() != State.DEAD) {
+			update_state(dt);//ACTUALIZAR OBJETO SEGUN ESTADO
+			adjust();//AJUSTAR EN CASO DE SER NECESARIO
+			if (this.get_energy() <= 0.0 || (this.get_age() > 8.0))
+				this.set_state(State.DEAD); //Comprobamos que no este muerto de nuevo
+			if (this.get_state() != State.DEAD) this.get_region_mngr().get_food(this, dt);
+		}
 
 	}
 

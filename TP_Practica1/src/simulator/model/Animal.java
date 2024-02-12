@@ -100,16 +100,26 @@ public abstract class Animal implements Entity, AnimalInfo {
 	public void adjust() {
 		double x = this.get_position().getX();
 		double y = this.get_position().getY();
+		boolean change = false;
 		// TODO Auto-generated method stub
-		while (x >= get_region_mngr().get_width())
+		while (x >= get_region_mngr().get_width()) {
 			x = (x - get_region_mngr().get_width());
-		while (x < 0)
+			change = true;
+		}
+		while (x < 0) {
 			x = (x + get_region_mngr().get_width());
-		while (y >= get_region_mngr().get_height())
+			change = true;
+		}
+		while (y >= get_region_mngr().get_height()) {
 			y = (y - get_region_mngr().get_height());
-		while (y < 0)
+			change = true;
+		}
+		while (y < 0) {
 			y = (y + get_region_mngr().get_height());
 		this.set_position(new Vector2D(x, y));
+		}
+		
+		if (change) this.set_state(State.NORMAL);
 	}
 
 	protected void move(double speed) {

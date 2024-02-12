@@ -20,12 +20,19 @@ public class Wolf extends Animal {
 	@Override
 	public void update(double dt) {
 //		1.Si el estado es DEAD no hacer nada (volver inmediatamente).
+		if (get_state() != State.DEAD) {
 //		2. Actualizar el objeto según el estado del animal (ver la descripción abajo)
+			update_state(dt);
 //		3. Si la posición está fuera del mapa, la ajusta y cambia su estado a NORMAL.
+			adjust();
 //		4. Si _energy es 0.0 o _age es mayor de 14.0, cambia su estado a DEAD.
-//		5. Si su estado no es DEAD, pide comida al gestor de regiones usando get_food(this, dt) y la añade a
-//		su _energy (manteniéndolo siempre entre 0.0 y 100.0)
-		
+			if (this.get_energy() <= 0.0 || (this.get_age() > 14.0))
+				this.set_state(State.DEAD); //Comprobamos que no este muerto de nuevo
+//			5. Si su estado no es DEAD, pide comida al gestor de regiones usando get_food(this, dt) y la añade a
+//			su _energy (manteniéndolo siempre entre 0.0 y 100.0)
+			
+			if (this.get_state() != State.DEAD) this.get_region_mngr().get_food(this, dt);
+		}
 	}
 	
 	private void update_state(double dt) {
