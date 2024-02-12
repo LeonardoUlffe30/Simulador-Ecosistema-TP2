@@ -46,23 +46,12 @@ public class Sheep extends Animal {
 	private void update_state(double dt) {
 		switch (this.get_state()) {
 		case NORMAL:
-			if (this.get_position().distanceTo(this.get_destination()) < 8.0) {
-				this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
-						Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
-			}
-			this.move(this.get_speed() * dt * Math.exp((this.get_energy() - 100.0) * 0.007));
-			this.set_age(this.get_age() + dt);
-			// Quitar 20.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
-			if (this.get_energy() - (20.0 * dt) >= 0)
-				this.set_energy(this.get_energy() - (20.0 * dt));
-			// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-			if (this.get_desire() + (40.0 * dt) <= 100.0)
-				this.set_desire(this.get_desire() + (40.0 * dt));
+			this.move_as_normal(dt);
 			// Si _danger_source es null, buscar un nuevo animal que se considere peligroso.
 			if (this.get_danger_source() == null) {
 				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.CARNIVORE);
 				SelectionStrategy aux = this.get_danger_strategy();
-				aux.select(this, animals_filtered);
+				this.set_danger_source(aux.select(this, animals_filtered));
 				if(this.get_desire() > 65.0) //Si _danger_source es null y el deseo mayor de 65.0 cambiar estado a MATE
 					this.set_state(State.MATE);
 			} else { // Si _danger_source null, cambiar el estado a DANGER
@@ -77,10 +66,42 @@ public class Sheep extends Animal {
 				if(this.get_mate_target().get_state() == State.DEAD || 
 						this.get_position().distanceTo(this.get_mate_target().get_position())>this.get_sight_range())
 					this.set_mate_target(null);
-				else { 
+				this.set_destination(this.get_mate_target().get_position());
+				this.move(2.0*this.get_speed()*dt*Math.exp((this.get_energy()-100.0)*0.007));
+				this.set_age(this.get_age()+dt);
+				// Quitar 20.0*1.2*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
+				if (this.get_energy() >= 0)
+					this.set_energy(this.get_energy() - 20.0 * 1.2 * dt);
+				// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
+				if (this.get_desire() <= 100)
+					this.set_desire(this.get_desire() + 40.0 * dt);
+				if(this.get_position().distanceTo(this.get_mate_target().get_position()) < 8.0) {
+					this.set_desire(0.0);
+					this.get_mate_target().set_desire(0.0);
+//					Si el animal no lleva un bebé ya, con probabilidad de 0.9 va a llevar a un nuevo bebé
+//					usando new Sheep(this, _mate_target).
+					this.set_mate_target(null);
 				}
-			} else { 
 				
+			} else { 
+				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
+				SelectionStrategy aux = this.get_danger_strategy();
+				if(aux.select(this, animals_filtered) != null) {
+					this.set_danger_source(aux.select(this, animals_filtered));
+				} else {
+					this.move_as_normal(dt);
+				}
+			}
+			if(this.get_danger_source() == null) {
+				if(this.get_desire() < 65.0) {
+					this.set_state(State.NORMAL);
+				} else {
+					List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
+					SelectionStrategy aux = this.get_danger_strategy();
+					this.set_danger_source(aux.select(this, animals_filtered));					
+				}
+			} else {
+				this.set_state(State.DANGER);
 			}
 			break;
 		case DANGER:
@@ -98,28 +119,48 @@ public class Sheep extends Animal {
 					if (this.get_desire() <= 100)
 						this.set_desire(this.get_desire() + 40.0 * dt);
 				}
-			} else { // si danger source es nulo, repite los mismos pasos como si estuviera en estado NORMAL
-				if (this.get_position().distanceTo(this.get_destination()) < 8.0) {
-					this.set_destination(
-							new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
-									Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
+				//Si _danger_source no es nulo y _danger_source no está en el campo visual del animal
+				if(this.get_position().distanceTo(this.get_danger_source().get_position()) > this.get_sight_range()) {
+					List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.CARNIVORE);
+					SelectionStrategy aux = this.get_danger_strategy();
+					this.set_danger_source(aux.select(this, animals_filtered));
 				}
-				this.move(this.get_speed() * dt * Math.exp((this.get_energy() - 100.0) * 0.007));
-				this.set_age(this.get_age() + dt);
-				// Quitar 20.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
-				if (this.get_energy() - (20.0 * dt) >= 0)
-					this.set_energy(this.get_energy() - (20.0 * dt));
-				// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-				if (this.get_desire() + (40.0 * dt) <= 100.0)
-					this.set_desire(this.get_desire() + (40.0 * dt));
+					
+			} else { // si danger source es nulo, repite los mismos pasos como si estuviera en estado NORMAL
+				this.move_as_normal(dt);
+				//Si _danger_source es null
+				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.CARNIVORE);
+				SelectionStrategy aux = this.get_danger_strategy();
+				this.set_danger_source(aux.select(this, animals_filtered));
+				if(this.get_desire() < 65.0) //Si _danger_source es null y el deseo mayor de 65.0 cambiar estado a MATE
+					this.set_state(State.NORMAL);
+				else {
+					this.set_state(State.MATE);
+				}
 			}
 			break;
 		case DEAD:
+//			Si el estado es DEAD no hacer nada (volver inmediatamente).
 			break;
 
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + this.get_state());
 		}
+	}
+	
+	public void move_as_normal(double dt) {
+		if (this.get_position().distanceTo(this.get_destination()) < 8.0) {
+			this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
+					Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
+		}
+		this.move(this.get_speed() * dt * Math.exp((this.get_energy() - 100.0) * 0.007));
+		this.set_age(this.get_age() + dt);
+		// Quitar 20.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
+		if (this.get_energy() - (20.0 * dt) >= 0)
+			this.set_energy(this.get_energy() - (20.0 * dt));
+		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
+		if (this.get_desire() + (40.0 * dt) <= 100.0)
+			this.set_desire(this.get_desire() + (40.0 * dt));
 	}
 	
 	public SelectionStrategy get_danger_strategy() {

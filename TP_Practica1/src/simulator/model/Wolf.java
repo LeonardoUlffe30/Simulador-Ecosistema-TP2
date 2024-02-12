@@ -94,7 +94,21 @@ public class Wolf extends Animal {
 			throw new IllegalArgumentException("Unexpected value: " + this.get_state());
 		}
 	}
-
+	
+	public void move_as_normal(double dt) {
+		if(this.get_position().distanceTo(this.get_destination()) < 8.0) {
+			this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
+					Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
+		}
+		this.move(this.get_speed()*dt*Math.exp((this.get_energy()-100.0)*0.007));
+		this.set_age(this.get_age() + dt);
+		// Quitar 18.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
+		if (this.get_energy() - (18.0*dt) >= 0)
+			this.set_energy(this.get_energy() - (18.0*dt));
+		// Añadir 30.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
+		if (this.get_desire() + (30.0*dt) <= 100.0)
+			this.set_desire(this.get_desire() + (30.0*dt));
+	}
 	public Animal get_hunt_target() {
 		return _hunt_target;
 	}
