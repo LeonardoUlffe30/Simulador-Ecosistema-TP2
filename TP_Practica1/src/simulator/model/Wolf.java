@@ -44,10 +44,10 @@ public class Wolf extends Animal {
 //				1.1. Si la distancia del animal al destino (_dest) es menor que 8.0, elegir otro destino de manera
 //				aleatoria (dentro de las dimensiones de mapa).
 //				1.2. Avanza (llamando a move) con velocidad _speed*dt*Math.exp((_energy-100.0)*0.007).
+			this.move_as_normal(dt);
 //				1.3. Añadir dt a la edad.
 //				1.4. Quitar 18.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 //				1.5. Añadir 30.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-			this.move_as_normal(dt);
 //			2. Cambio de estado
 //				2.1. Si su energía es menor que 50.0 cambia de estado a HUNGER, y si no lo es y su deseo es mayor 
 //				que 65.0 cambia de estado a MATE. En otro caso no hace nada.
@@ -75,7 +75,7 @@ public class Wolf extends Animal {
 //						2.6.2. Poner _hunt_target a null.
 //						2.6.3. Sumar 50.0 a la energía (manteniéndola siempre entre 0.0 y 100.0).
 			if(this.get_hunt_target()==null) {
-				this.move_as_normal(dt);
+				//this.move_as_normal(dt);
 				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
 				SelectionStrategy aux = this.get_hunting_strategy();
 				this.set_hunt_target(aux.select(this, animals_filtered));
@@ -176,17 +176,26 @@ public class Wolf extends Animal {
 	
 	public void move_as_normal(double dt) {
 		if(this.get_position().distanceTo(this.get_destination()) < 8.0) {
-			this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
-					Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
+			/*this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
+					Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));*/
+			this.random_dest();
 		}
 		this.move(this.get_speed()*dt*Math.exp((this.get_energy()-100.0)*0.007));
 		this.set_age(this.get_age() + dt);
 		// Quitar 18.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
-		if (this.get_energy() - (18.0*dt) >= 0)
-			this.set_energy(this.get_energy() - (18.0*dt));
+		/*if (this.get_energy() - (18.0*dt) >= 0)
+			this.set_energy(this.get_energy() - (18.0*dt));*/
+		this.set_energy(this.get_energy() - (18.0*dt));
+		if (this.get_energy() < 0.0) this.set_energy(0.0);
+		else if (this.get_energy() > 100.0) this.set_energy(100.0);
+		
 		// Añadir 30.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-		if (this.get_desire() + (30.0*dt) <= 100.0)
-			this.set_desire(this.get_desire() + (30.0*dt));
+		/*if (this.get_desire() + (30.0*dt) <= 100.0)
+			this.set_desire(this.get_desire() + (30.0*dt));*/
+		
+		this.set_desire(this.get_desire() + (30.0*dt));
+		if (get_desire() < 0) set_desire(0.0);
+		else if (get_desire() > 100.0) set_desire(100.0);
 	}
 	public Animal get_hunt_target() {
 		return _hunt_target;

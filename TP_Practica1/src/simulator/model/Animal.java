@@ -286,4 +286,12 @@ public abstract class Animal implements Entity, AnimalInfo {
 	public void set_sight_range(double _sight_range) {
 		this._sight_range = _sight_range;
 	}
+	
+	public void random_dest() {
+		double x = Utils._rand.nextDouble(800);
+		double y = Utils._rand.nextDouble(600);
+
+		set_destination(new Vector2D(x, y));
+		
+	}
 }
