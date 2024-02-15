@@ -81,7 +81,7 @@ public class Wolf extends Animal {
 				this.set_hunt_target(aux.select(this, animals_filtered));
 				this.move_as_normal(dt);
 			} else {
-				if(this.get_state() == State.DEAD || this.get_position().distanceTo(this.get_hunt_target().get_position()) > this.get_sight_range()) {
+				if(this.get_hunt_target().get_state() == State.DEAD || this.get_position().distanceTo(this.get_hunt_target().get_position()) > this.get_sight_range()) {
 					List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
 					SelectionStrategy aux = this.get_hunting_strategy();
 					this.set_hunt_target(aux.select(this, animals_filtered));
@@ -140,13 +140,17 @@ public class Wolf extends Animal {
 					this.get_mate_target().set_desire(0.0);
 //					Si el animal no lleva un bebe ya, con probabilidad de 0.9 va a llevar a un nuevo bebe
 ////					usando new Wolf(this, _mate_target).
+					double x = Utils._rand.nextDouble(0, 1);
+					System.out.println(x);
+					if(x < 0.9)
+						this.set_baby(new Wolf(this, this.get_mate_target()));
 					if (this.get_energy() - (10.0) >= 0)
 						this.set_energy(this.get_energy() - (10.0));
 					this.set_mate_target(null);
 				}
 			}
 			else {
-				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_diet()==Diet.HERBIVORE);
+				List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this, (Animal a)->a.get_genetic_code() == "Wolf");
 				SelectionStrategy aux = this.get_hunting_strategy();
 				if(aux == null)
 					this.move_as_normal(dt);

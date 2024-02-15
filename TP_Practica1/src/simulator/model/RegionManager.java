@@ -5,68 +5,64 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class RegionManager implements AnimalMapView {
-	private int cols;
-	private int rows;
-	private int width;
-	private int height;
-	private int [][]_region;
+	private int _cols;
+	private int _rows;
+	private int _width;
+	private int _height;
+	private int _width_region;
+	private int _height_region;
+	private DefaultRegion [][]_regions;
 	//un mapa (_animal_region) de tipo Map<Animal, Region> que
 	//asigna a cada animal su región actual.
 	private Map<Animal,Region> _animal_region;
 	
 	public RegionManager(int cols, int rows, int width, int height) {
-		//this._region = new int[rows][cols];
-		//this.cols = cols;
-		//this.rows = rows;
-		//this.width = this.get
+		
+		this._cols = cols;
+		this._rows = rows;
+		this._width = width;
+		this._height = height;
+		this._width_region = width/cols;
+		this._height_region = height/rows;	
+		this._regions = new DefaultRegion[rows][cols];
+		//_animal_region = new Map<Animal, Region>();
 		
 	}
 	
-	public void get_Food() {
-		
-	}
-
 	@Override
 	public int get_cols() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _cols;
 	}
 
 	@Override
 	public int get_rows() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _rows;
 	}
 	
 	//Ancho/Alto del Mapa
 	@Override
 	public int get_width() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _width;
 	}
 
 	@Override
 	public int get_height() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _height;
 	}
 	
 	//Ancho/Alto de la region
 	@Override
 	public int get_region_width() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _width_region;
 	}
 
 	@Override
 	public int get_region_height() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _height_region;
 	}
 
 	@Override
 	public double get_food(Animal a, double dt) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

@@ -3,6 +3,7 @@ package simulator.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Region implements Entity, FoodSupplier, RegionInfo {
@@ -35,7 +36,13 @@ public class Region implements Entity, FoodSupplier, RegionInfo {
 //		"animals":[A1,A2,...],
 //	}
 	public JSONObject as_JSON() {
-		return null;
+		JSONArray ja = new JSONArray();
+	    for(Animal a: this.getAnimals()) {
+	    	ja.put(a.as_JSON());
+	    }
+		JSONObject jo = new JSONObject();
+		jo.put("animals", ja);
+		return jo;
 		
 	}
 

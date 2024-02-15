@@ -1,5 +1,7 @@
 package simulator.model;
 
+import java.util.List;
+
 public class DynamicSupplyRegion {
 
 //	La clase DynamicSupplyRegion representa una región que da comida sólo a animales herbívoros, pero la
@@ -21,12 +23,37 @@ public class DynamicSupplyRegion {
 		this._growth_factor = growth_factor;
 	}
 	
+	public void update() {
+		
+	}
+	
 	public double get_food(Animal a, double dt) {
+//		Su método get_food(a,dt) devuelve 0.0 si el animal que pide comida es carnívoro, y lo siguiente si es
+//		herbívoro donde n es el número de animales herbívoros en la región y _food es la cantidad actual de
+//		comida:
 		if(a.get_diet()==Diet.CARNIVORE)
 			return 0.0;
 		else {
-			return 0; //En realidad debe retornar lo que dice en el enunciado
+			List<Animal> animals_filtered = a.get_region_mngr().get_animals_in_range(a,(Animal b)->b.get_diet() == Diet.HERBIVORE);
+			int n = animals_filtered.size();
+			return Math.min(this.get_food_quantity(),60.0*Math.exp(-Math.max(0,n-5.0)*2.0)*dt); 
 		}
+	}
+
+	public double get_food_quantity() {
+		return _food_quantity;
+	}
+
+	public double get_growth_factor() {
+		return _growth_factor;
+	}
+
+	public void set_food_quantity(double _food_quantity) {
+		this._food_quantity = _food_quantity;
+	}
+
+	public void set_growth_factor(double _growth_factor) {
+		this._growth_factor = _growth_factor;
 	}
 
 }
