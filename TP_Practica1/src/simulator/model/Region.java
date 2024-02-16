@@ -9,6 +9,10 @@ import org.json.JSONObject;
 public class Region implements Entity, FoodSupplier, RegionInfo {
 	protected List<Animal> animals_in_list;
 	
+	protected Region(){
+		this.animals_in_list = new ArrayList<Animal>();	
+		}
+	
 	@Override
 	public double get_food(Animal a, double dt) {
 		return 0;
