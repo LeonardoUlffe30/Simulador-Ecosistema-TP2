@@ -28,6 +28,7 @@ public class Simulator implements JSONable {
 	}
 	
 	private void set_region(int row, int col, JSONObject r_json) {
+		//llamar a las factorias
 		JSONArray animales = r_json.getJSONArray("animals");
 		Region r = new Region();
 		for(Animal a : animales.keySet()) {

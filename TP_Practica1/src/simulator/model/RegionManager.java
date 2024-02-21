@@ -1,5 +1,6 @@
 package simulator.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -63,27 +64,29 @@ public class RegionManager implements AnimalMapView {
 	
 	@Override
 	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
-		/*
-		List<Animal> lista;
+		List<Animal> _animals_in_range = new ArrayList<Animal>();
+		//Obtengo posicion inicial con respecto a X,Y
+		int posComienzoX = (int)Math.abs(e.get_position().getX()-e.get_sight_range()); 
+		int posComienzoY = (int)Math.abs(e.get_position().getY()-e.get_sight_range());
+		//A partir de la pos(X,Y), obtengo la posicion con respecto a la fila, columna
+		int iniFila = posComienzoX / this.get_region_height();
+		int iniCol = posComienzoY / this.get_region_width();
+		//Obtengo el recorrido (diametro = 2*sr) para saber hasta que columna y fila 
+		//como MAXIMO va a recorrer
+		int recorrido = 2*(int)e.get_sight_range();
 		
-		int x = (int) a.get_position().getX();
-		int y = (int) a.get_position().getY();
-		Region  r = _animal_region.get(a);
-		
-		int col = this.get_width()/x;
-		int row = (this.get_height()/y);
-		e.get_sight_range();
-		
-		for (int i = col-1; i < col+2; i++) {
-			for (int j = row-1; j < row+2; j++) {
-				
+		for(int i = iniFila; i < iniFila + recorrido;++i) {
+			for(int j = iniCol; j < iniCol + recorrido;++j) {
+				List<Animal> aux = this.get_regions()[i][j].getAnimals();
+				for(Animal a: aux) {
+					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
+							&& filter.test(a)) {
+						_animals_in_range.add(a);
+					}
+				}
 			}
 		}
-		
-		if(a.getPosition().distanceTo(e.getPosition()) <= e.get_sight_range()  && filter.test(a)) {
-			this.get
-		}*/
-		return null;
+		return _animals_in_range;
 	}
 	
 	@Override
@@ -139,14 +142,33 @@ public class RegionManager implements AnimalMapView {
 			}
 		}
 	 }
-	 /*
+	 
 	 public JSONObject as_JSON() {
-		 JSONArray ja = new JSONArray();
-		 for(Animal a: this.get) {
-		    ja.put(a.as_JSON());
-		 }
-		 JSONObject jo = new JSONObject();
-		 jo.put("animals", ja);
-		return jo;
-	 }*/
+		 JSONArray regionesArray = new JSONArray(); // Creamos el arreglo para las regiones
+		 
+		 for(int i = 0; i < this.get_rows(); ++i) {
+			 for(int j = 0; j < this.get_cols(); ++j) {
+				 Region r = this.get_regions()[i][j];
+		         JSONObject regionJSON = new JSONObject(); // Creamos un objeto JSON para la región
+		         regionJSON.put("row", i); // Agregamos la fila
+		         regionJSON.put("col", j); // Agregamos la columna
+		         regionJSON.put("data", r.as_JSON()); // Agregamos los datos de la región
+		            
+		         regionesArray.put(regionJSON); // Agregamos el objeto de la región al arreglo
+		        }
+		    }
+		    
+		    JSONObject resultJSON = new JSONObject();
+		    resultJSON.put("regiones", regionesArray); // Agregamos el arreglo de regiones al objeto final
+		    
+		    return resultJSON;
+	 }
+
+	public Region[][] get_regions() {
+		return _regions;
+	}
+
+	public void set_regions(Region[][] _regions) {
+		this._regions = _regions;
+	}
 }
