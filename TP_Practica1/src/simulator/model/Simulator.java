@@ -29,7 +29,7 @@ public class Simulator implements JSONable {
 		_region_mngr.set_region(row, col, r);
 	}
 	
-	private void set_region(int row, int col, JSONObject r_json) {
+	public void set_region(int row, int col, JSONObject r_json) {
 		//llamar a las factorias
 		//TODO
 		/*JSONArray animales = r_json.getJSONArray("animals");
