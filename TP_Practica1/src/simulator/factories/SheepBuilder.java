@@ -69,6 +69,10 @@ public class SheepBuilder extends Builder<Sheep> {
 	@Override
 	protected void fill_in_data(JSONObject o) {
 //		o.put("", );
+		o.put("mate_strategy",  new JSONObject());
+		o.put("danger_strategy",  new JSONObject());
+		JSONArray ja = new JSONArray();
+		o.put("pos", ja);
 	}
 
 

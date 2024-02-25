@@ -71,5 +71,9 @@ public class WolfBuilder extends Builder<Wolf> {
 	@Override
 	protected void fill_in_data(JSONObject o) {
 //		o.put("", );
+		o.put("mate_strategy",  new JSONObject());
+		o.put("hunt_strategy",  new JSONObject());
+		JSONArray ja = new JSONArray();
+		o.put("pos", ja);
 	}
 }

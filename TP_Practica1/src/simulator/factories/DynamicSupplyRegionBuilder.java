@@ -39,5 +39,7 @@ public class DynamicSupplyRegionBuilder extends Builder<DynamicSupplyRegion> {
 	@Override
 	protected void fill_in_data(JSONObject o) {
 //		o.put("", );
+		o.put("factor",  2.5);
+		o.put("food", 1250.0);
 	}
 }

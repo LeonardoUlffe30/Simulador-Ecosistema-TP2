@@ -26,5 +26,6 @@ public class DefaultRegionBuilder extends Builder<DefaultRegion> {
 	@Override
 	protected void fill_in_data(JSONObject o) {
 //		o.put("", );
+		//VACIO
 	}
 }
