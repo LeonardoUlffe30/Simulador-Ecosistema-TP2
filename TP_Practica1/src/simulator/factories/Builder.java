@@ -13,7 +13,7 @@ public abstract class Builder<T> {
 		_desc = desc;
 	}
 
-	public String get_type_tag() {
+	public String getTag() {
 		return _type_tag;
 	}
 

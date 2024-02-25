@@ -18,4 +18,9 @@ public class SelectClosestBuilder extends Builder<SelectClosest> {
 		}
 	}
 
+	@Override
+	protected void fill_in_data(JSONObject o) {
+//		o.put("", );
+	}
+
 }

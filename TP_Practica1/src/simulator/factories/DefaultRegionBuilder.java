@@ -6,12 +6,25 @@ import simulator.model.DefaultRegion;
 
 public class DefaultRegionBuilder extends Builder<DefaultRegion> {
 	public DefaultRegionBuilder() {
-		super("Hola","Hola");
+		super("default","Constructor de objetos DefaultRegion");
+	}
+
+//	{
+//		"type" : "default",
+//		"data" : { }
+//	}
+	
+	@Override
+	protected DefaultRegion create_instance(JSONObject data) {
+		try {
+			return new DefaultRegion();
+		} catch(Exception e) {
+			throw new IllegalArgumentException("Datos invalidos para la creacion del objeto DefaultRegion: " + e.getMessage());
+		}
 	}
 
 	@Override
-	protected DefaultRegion create_instance(JSONObject data) {
-		// TODO Auto-generated method stub
-		return null;
+	protected void fill_in_data(JSONObject o) {
+//		o.put("", );
 	}
 }

@@ -17,4 +17,9 @@ public class SelectYoungestBuilder extends Builder<SelectYoungest>{
 			throw new IllegalArgumentException("Datos invalidos para la creacion del objeto SelectYoungest: " + e.getMessage());
 		}
 	}
+
+	@Override
+	protected void fill_in_data(JSONObject o) {
+//		o.put("", );
+	}
 }

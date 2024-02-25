@@ -17,4 +17,9 @@ public class SelectFirstBuilder extends Builder<SelectFirst> {
 			throw new IllegalArgumentException("Datos invalidos para la creacion del objeto SelectFirst: " + e.getMessage());
 		}
 	}
+
+	@Override
+	protected void fill_in_data(JSONObject o) {
+//		o.put(" ", );
+	}
 }
