@@ -11,11 +11,11 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 public abstract class Animal implements Entity, AnimalInfo {
-	private final static double DEFAULT_CREATION_SPEED = 0.1;
-	private final static double DEFAULT_ENERGY = 100.0;
-	private final static double DEFAULT_POS = 60.0;
-	private final static double DEFAULT_SIGHT_RANGE = 0.2;
-	private final static double DEFAULT_MUTATION_SPEED = 0.2;
+	private final static double ANIMAL_INITIAL_SPEED = 0.1;
+	private final static double ANIMAL_INITIAL_ENERGY = 100.0;
+	private final static double MUTATION_POS = 60.0;
+	private final static double MUTATION_SIGHT_RANGE = 0.2;
+	private final static double MUTATION_SPEED = 0.2;
 
 	private String _genetic_code;
 	private Diet _diet;
@@ -46,9 +46,9 @@ public abstract class Animal implements Entity, AnimalInfo {
 		this._sight_range = sight_range;
 		this._pos = pos;
 		this._mate_strategy = mate_strategy;
-		this._speed = Utils.get_randomized_parameter(init_speed, DEFAULT_CREATION_SPEED);
+		this._speed = Utils.get_randomized_parameter(init_speed, ANIMAL_INITIAL_SPEED);
 		this._state = State.NORMAL;
-		this._energy = DEFAULT_ENERGY;
+		this._energy = ANIMAL_INITIAL_ENERGY;
 		this._desire = 0.0;
 		this._dest = null;
 		this._mate_target = null;
@@ -68,11 +68,11 @@ public abstract class Animal implements Entity, AnimalInfo {
 		this._mate_strategy = p2.get_mate_strategy();
 		this._energy = (p1.get_energy() + p2.get_energy()) / 2;
 		this._pos = p1.get_position()
-				.plus(Vector2D.get_random_vector(-1, 1).scale(DEFAULT_POS * (Utils._rand.nextGaussian() + 1)));
+				.plus(Vector2D.get_random_vector(-1, 1).scale(MUTATION_POS * (Utils._rand.nextGaussian() + 1)));
 		this._sight_range = Utils.get_randomized_parameter((p1.get_sight_range() + p2.get_sight_range()) / 2,
-				DEFAULT_SIGHT_RANGE);
+				MUTATION_SIGHT_RANGE);
 		this._speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed()) / 2,
-				DEFAULT_MUTATION_SPEED);
+				MUTATION_SPEED);
 	}
 
 	// El gestor de regiones(RegionManager) invocará a este método al añadir el
@@ -113,7 +113,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 		if (change) {
 			this.set_position(new Vector2D(x, y));
-//			this.set_state(State.NORMAL); // Si se ha ajustado, se cambia de Estado a Normal
+			this.set_state(State.NORMAL); // Si se ha ajustado, se cambia de Estado a Normal
 		}
 	}
 
@@ -130,6 +130,22 @@ public abstract class Animal implements Entity, AnimalInfo {
 		animal_object.put("diet", get_diet());
 		animal_object.put("state", get_state());
 		return animal_object;
+	}
+	
+	public void move_as_normal(double dt, double DISTANCE_COMPARISON_DEST, double MOVE_SECOND_FACTOR, double MOVE_THIRD_FACTOR, 
+			double REMOVE_ENERGY_FIRST_FACTOR, double ADD_DESIRE, double MIN_RANGE, double MAX_RANGE) {
+		if (this.get_position().distanceTo(this.get_destination()) < DISTANCE_COMPARISON_DEST) {
+			this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
+					Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
+		}
+		this.move(this.get_speed() * dt * Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
+		this.set_age(this.get_age() + dt);
+		// Quitar 20.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
+		if (this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * dt) >= 0)
+			this.set_energy(this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * dt));
+		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
+		if (this.get_desire() + (ADD_DESIRE * dt) <= MAX_RANGE)
+			this.set_desire(this.get_desire() + (ADD_DESIRE * dt));
 	}
 
 	@Override
@@ -273,4 +289,5 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 		set_destination(new Vector2D(x, y));
 	}
+	
 }
