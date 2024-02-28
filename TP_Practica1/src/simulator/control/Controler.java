@@ -1,6 +1,7 @@
 package simulator.control;
 
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,8 +78,16 @@ public class Controler {
 		result.put("init_state", init_state);
 		result.put("final_state", final_state);
 		
-//		Además si el valor de sv es true, hay que mostrar la simulación usando el visor de 
-//		objetos (ver el apartado “El Visor de Objetos”).
+		PrintStream p = new PrintStream(out);
+        p.println(result.toString());; //result.toString para convertir el objeto en string
+        p.flush();
+        
+//      Además si el valor de sv es true, hay que mostrar la simulación usando el visor de objetos (ver el
+//      apartado “El Visor de Objetos”).
+        if(sv) {
+        	
+        }
+
 	}
 
 	public Simulator get_sim() {

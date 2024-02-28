@@ -1,15 +1,16 @@
 package simulator.model;
 
-import java.util.List;
-
 public class DefaultRegion extends Region{
 	public double get_food(Animal a, double dt) {
 		if(a.get_diet()==Diet.CARNIVORE)
 			return 0.0;
-		else { // n es el número de animales herbívoros en la región:
-			List<Animal> animals_filtered = a.get_region_mngr().get_animals_in_range(a,(Animal b)->b.get_diet() == Diet.HERBIVORE);
-			int n = animals_filtered.size();
-			return 60.0*Math.exp(-Math.max(0,n-5.0)*2.0)*dt;
+		else { 
+			int n = 0;
+			for(Animal i : this.animals_in_list) {
+				if(i.get_diet() == Diet.HERBIVORE)
+					++n;
+			}
+			return FOOD_FIRST_FACTOR *Math.exp(-Math.max(0,n-FOOD_SECOND_FACTOR)*FOOD_THIRD_FACTOR)*dt;
 		}
 	}
 

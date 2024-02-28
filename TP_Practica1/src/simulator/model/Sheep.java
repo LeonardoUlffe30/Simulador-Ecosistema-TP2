@@ -8,7 +8,7 @@ import simulator.misc.Vector2D;
 public class Sheep extends Animal {
 	private final static double SHEEP_INITIAL_SIGHT_RANGE = 40.0;
 	private final static double SHEEP_INITIAL_SPEED = 35.0;
-	
+
 	private final static double DISTANCE_COMPARISON_DEST = 8.0;
 	private final static double MOVE_FIRST_FACTOR = 2.0;
 	private final static double MOVE_SECOND_FACTOR = 100.0;
@@ -45,7 +45,7 @@ public class Sheep extends Animal {
 			if (this.get_energy() <= 0.0 || (this.get_age() > COMPARISON_AGE))
 				this.set_state(State.DEAD); // Comprobamos que no este muerto de nuevo
 			if (this.get_state() != State.DEAD) {
-				if(this.get_energy() + this.get_region_mngr().get_food(this, dt) <= MAX_RANGE)
+				if (this.get_energy() + this.get_region_mngr().get_food(this, dt) <= MAX_RANGE)
 					this.set_energy(this.get_energy() + this.get_region_mngr().get_food(this, dt));
 			}
 		}
@@ -55,32 +55,33 @@ public class Sheep extends Animal {
 	private void update_state(double dt) {
 		switch (this.get_state()) {
 		case NORMAL:
-			this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR, 
+			this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 					REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-			
-			if(this.get_danger_source() == null)
+
+			if (this.get_danger_source() == null)
 				this.search_dangerous_animal();
-			
-			if(this.get_danger_source() != null) {
+
+			if (this.get_danger_source() != null) {
 				this.set_state(State.DANGER);
 			} else {
-				if(this.get_desire() > COMPARISON_DESIRE)
+				if (this.get_desire() > COMPARISON_DESIRE)
 					this.set_state(State.MATE);
 			}
 			break;
 		case DANGER:
-			if(this.get_danger_source() != null && this.get_danger_source().get_state() == State.DEAD) {
-				this.set_danger_source(null);				
+			if (this.get_danger_source() != null && this.get_danger_source().get_state() == State.DEAD) {
+				this.set_danger_source(null);
 			}
-			if(this.get_danger_source() == null) {
-				this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR, 
+			if (this.get_danger_source() == null) {
+				this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 						REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
 			} else {
 				this.move_against_danger(dt);
 			}
-			if(this.get_danger_source() == null || this.get_position().distanceTo(this.get_danger_source().get_position()) > this.get_sight_range()) {
+			if (this.get_danger_source() == null || this.get_position()
+					.distanceTo(this.get_danger_source().get_position()) > this.get_sight_range()) {
 				this.search_dangerous_animal();
-				if(this.get_danger_source() == null) {
+				if (this.get_danger_source() == null) {
 					if (this.get_desire() < COMPARISON_DESIRE)
 						this.set_state(State.NORMAL);
 					else
@@ -89,25 +90,26 @@ public class Sheep extends Animal {
 			}
 			break;
 		case MATE:
-			if(this.get_mate_target() != null && (this.get_mate_target().get_state() == State.DEAD || this.get_position().distanceTo(this.get_mate_target().get_position()) > this.get_sight_range())) {
+			if (this.get_mate_target() != null && (this.get_mate_target().get_state() == State.DEAD || this
+					.get_position().distanceTo(this.get_mate_target().get_position()) > this.get_sight_range())) {
 				this.set_mate_target(null);
 			}
-			if(this.get_mate_target()==null) {
+			if (this.get_mate_target() == null) {
 				this.search_mate_animal();
-				if(this.get_mate_target() == null)
-					this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR, 
+				if (this.get_mate_target() == null)
+					this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 							REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
 				else {
-					this.chase_mate_target_create_baby(dt);					
+					this.chase_mate_target_create_baby(dt);
 				}
 			}
-			if(this.get_danger_source() == null)
+			if (this.get_danger_source() == null)
 				this.search_dangerous_animal();
-			
-			if(this.get_danger_source() != null)
+
+			if (this.get_danger_source() != null)
 				this.set_state(State.DANGER);
 			else {
-				if (this.get_desire() < COMPARISON_DESIRE) 
+				if (this.get_desire() < COMPARISON_DESIRE)
 					this.set_state(State.NORMAL);
 			}
 			break;
@@ -118,10 +120,12 @@ public class Sheep extends Animal {
 			throw new IllegalArgumentException("Unexpected value: " + this.get_state());
 		}
 	}
-	
+
 	public void move_against_danger(double dt) {
-		this.set_destination(this.get_position().plus(this.get_position().minus(this.get_danger_source().get_position()).direction()));
-		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt * Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
+		this.set_destination(this.get_position()
+				.plus(this.get_position().minus(this.get_danger_source().get_position()).direction()));
+		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt
+				* Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
 		this.set_age(this.get_age() + dt);
 		// Quitar 20.0*1.2*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 		if (this.get_energy() >= MIN_RANGE)
@@ -130,10 +134,11 @@ public class Sheep extends Animal {
 		if (this.get_desire() <= MAX_RANGE)
 			this.set_desire(this.get_desire() + ADD_DESIRE * dt);
 	}
-	
+
 	public void chase_mate_target_create_baby(double dt) {
 		this.set_destination(this.get_mate_target().get_position());
-		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt * Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
+		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt
+				* Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
 		this.set_age(this.get_age() + dt);
 		// Quitar 20.0*1.2*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 		if (this.get_energy() >= MIN_RANGE)
@@ -141,28 +146,28 @@ public class Sheep extends Animal {
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
 		if (this.get_desire() <= MAX_RANGE)
 			this.set_desire(this.get_desire() + ADD_DESIRE * dt);
-		
+
 		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {
 			this.set_desire(0.0);
 			this.get_mate_target().set_desire(0.0);
 //
-			if(!this.is_pregnant()) {
+			if (!this.is_pregnant()) {
 				double x = Utils._rand.nextDouble(0, 1);
 				System.out.println(x);
-				if(x < PROBABILITY_BABY)
+				if (x < PROBABILITY_BABY)
 					this.set_baby(new Sheep(this, this.get_mate_target()));
 			}
 			this.set_mate_target(null);
 		}
 	}
-	
+
 	public void search_mate_animal() {
 		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
 				(Animal a) -> a.get_diet() == Diet.HERBIVORE);
 		SelectionStrategy aux = this.get_danger_strategy();
 		this.set_mate_target(aux.select(this, animals_filtered));
 	}
-	
+
 	public void search_dangerous_animal() {
 		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
 				(Animal a) -> a.get_diet() == Diet.CARNIVORE);

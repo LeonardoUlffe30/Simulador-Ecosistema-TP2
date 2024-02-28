@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.function.Predicate;
 
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public class RegionManager implements AnimalMapView {
 		this._width_region = width/cols;
 		this._height_region = height/rows;	
 		this._regions = new DefaultRegion[rows][cols];
-		//_animal_region = new Map<Animal, Region>();
+		_animal_region = new HashMap<Animal, Region>();
 		
 	}
 	
@@ -38,8 +39,8 @@ public class RegionManager implements AnimalMapView {
 		int x = (int) a.get_position().getX();
 		int y = (int) a.get_position().getY();
 		
-		_regions[this.get_width()/x][(this.get_height()/y)].add_animal(a);
-		_animal_region.put(a, _regions[this.get_width()/x][(this.get_height()/y)]);
+		this.get_regions()[this.get_width()/x][(this.get_height()/y)].add_animal(a);
+		this.get_animal_region().put(a, this.get_regions()[this.get_width()/x][(this.get_height()/y)]);
 		a.init(this);
 	}
 	
@@ -47,18 +48,18 @@ public class RegionManager implements AnimalMapView {
 		int x = (int) a.get_position().getX();
 		int y = (int) a.get_position().getY();
 		
-		_regions[this.get_width()/x][(this.get_height()/y)].remove_animal(a);
-		_animal_region.remove(a, _regions[this.get_width()/x][(this.get_height()/y)]);
+		this.get_regions()[this.get_width()/x][(this.get_height()/y)].remove_animal(a);
+		this.get_animal_region().remove(a, this.get_regions()[this.get_width()/x][(this.get_height()/y)]);
 	}
 	
 	void update_animal_region(Animal a) {
 		int x = (int) a.get_position().getX();
 		int y = (int) a.get_position().getY();
-		Region  r = _animal_region.get(a);
+		Region  r = this.get_animal_region().get(a);
 		
-		if(r != _regions[this.get_width()/x][(this.get_height()/y)]) {
-			_regions[this.get_width()/x][(this.get_height()/y)] = r;
-			_animal_region.replace(a, r);
+		if(r != this.get_regions()[this.get_width()/x][(this.get_height()/y)]) {
+			this.get_regions()[this.get_width()/x][(this.get_height()/y)] = r;
+			this.get_animal_region().replace(a, r);
 		}
 	}
 	
@@ -77,8 +78,7 @@ public class RegionManager implements AnimalMapView {
 		
 		for(int i = iniFila; i < iniFila + recorrido;++i) {
 			for(int j = iniCol; j < iniCol + recorrido;++j) {
-				List<Animal> aux = this.get_regions()[i][j].getAnimals();
-				for(Animal a: aux) {
+				for(Animal a: this.get_regions()[i][j].getAnimals()) {
 					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
 							&& filter.test(a)) {
 						_animals_in_range.add(a);
@@ -127,18 +127,17 @@ public class RegionManager implements AnimalMapView {
 	}
 
 	void set_region(int row, int col, Region r) {
-		
-		for(Animal a: _regions[col][row].animals_in_list) {
+		for(Animal a: this.get_regions()[col][row].animals_in_list) {
 			r.add_animal(a);
-			_animal_region.replace(a, r);
+			this.get_animal_region().replace(a, r);
 		}
-		_regions[col][row] = r;
+		this.get_regions()[col][row] = r;
 	}
 	
 	 void update_all_regions(double dt) {
 		 for (int i = 0; i < this.get_cols(); i++) {
 			for (int j = 0; j < this.get_height(); j++) {
-				_regions[i][j].update(dt);
+				this.get_regions()[i][j].update(dt);
 			}
 		}
 	 }
@@ -170,5 +169,9 @@ public class RegionManager implements AnimalMapView {
 
 	public void set_regions(Region[][] _regions) {
 		this._regions = _regions;
+	}
+
+	public Map<Animal, Region> get_animal_region() {
+		return _animal_region;
 	}
 }

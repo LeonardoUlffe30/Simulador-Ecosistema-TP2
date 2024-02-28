@@ -5,11 +5,12 @@ import org.json.JSONObject;
 
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
+import simulator.model.Animal;
 import simulator.model.SelectFirst;
 import simulator.model.SelectionStrategy;
 import simulator.model.Wolf;
 
-public class WolfBuilder extends Builder<Wolf> {
+public class WolfBuilder extends Builder<Animal> {
 	Factory<SelectionStrategy> _factory_selection_strategy;
 	
 	public WolfBuilder(Factory<SelectionStrategy> factory_selection_strategy) {
@@ -53,10 +54,10 @@ public class WolfBuilder extends Builder<Wolf> {
 				JSONArray yRange = posJSON.getJSONArray("y_range");
 				double minX = xRange.getDouble(0);
 				double maxX = xRange.getDouble(1);
-				double minY = xRange.getDouble(0);
-				double maxY = xRange.getDouble(1);
-				double x = Utils.get_randomized_parameter(minX, minX);
-				double y = Utils.get_randomized_parameter(minY, minY);
+				double minY = yRange.getDouble(0);
+				double maxY = yRange.getDouble(1);
+				double x = Utils.get_randomized_parameter(minX, maxX);
+				double y = Utils.get_randomized_parameter(minY, maxY);
 				_pos = new Vector2D(x,y);
 			} else {
 				_pos = null;
