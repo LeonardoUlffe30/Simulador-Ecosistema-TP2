@@ -2,11 +2,17 @@ package simulator.control;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import simulator.model.AnimalInfo;
+import simulator.model.MapInfo;
 import simulator.model.Simulator;
+import simulator.view.SimpleObjectViewer;
+import simulator.view.SimpleObjectViewer.ObjInfo;
 
 public class Controler {
 //	Tiene que tener un atributo (_sim) para la instancia de Simulator.
@@ -60,6 +66,12 @@ public class Controler {
 //	Método para ejecutar el simulador por un tiempo determinado y escribir los estados inicial 
 //	y final en un OutputStream
 	public void run(double t, double dt, boolean sv, OutputStream out) {
+		SimpleObjectViewer view = null;
+		if (sv) {
+			MapInfo m = this.get_sim().get_map_info();
+			view = new SimpleObjectViewer("[ECOSYSTEM]", m.get_width(), m.get_height(),	m.get_cols(), m.get_rows());
+			view.update(to_animals_info(this.get_sim().get_animals()), this.get_sim().get_time(), dt);
+		}
 //		Además, tiene que escribir en out una estructura JSON de la siguiente forma:
 //		{
 //		"in": init_state,
@@ -71,6 +83,8 @@ public class Controler {
 		
 		while(this.get_sim().get_time()<=t) {
 			this.get_sim().advance(dt);
+			if (sv) 
+				view.update(to_animals_info(this.get_sim().get_animals()), this.get_sim().get_time(), dt);
 		}
 		
 		JSONObject final_state = this.get_sim().as_JSON();
@@ -82,12 +96,18 @@ public class Controler {
         p.println(result.toString());; //result.toString para convertir el objeto en string
         p.flush();
         
-//      Además si el valor de sv es true, hay que mostrar la simulación usando el visor de objetos (ver el
-//      apartado “El Visor de Objetos”).
-        if(sv) {
-        	
-        }
-
+        if(sv)
+        	view.close();
+	}
+	
+	private List<ObjInfo> to_animals_info(List<? extends AnimalInfo> animals) {
+		List<ObjInfo> ol = new ArrayList<>(animals.size());
+		for (AnimalInfo a : animals)
+			ol.add(new ObjInfo(a.get_genetic_code(), 
+					(int) a.get_position().getX(),	
+					(int) a.get_position().getY(),
+					(int)Math.round(a.get_age())+2));
+		return ol;
 	}
 
 	public Simulator get_sim() {
