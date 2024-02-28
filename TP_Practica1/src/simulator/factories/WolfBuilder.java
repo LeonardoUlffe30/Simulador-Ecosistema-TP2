@@ -33,6 +33,9 @@ public class WolfBuilder extends Builder<Animal> {
 	@Override
 	protected Wolf create_instance(JSONObject data) {
 		try {
+			if(data.length() == 0)
+				this.fill_in_data(data);
+			
 			SelectionStrategy _mate_strategy;
 			JSONObject mateStrategyJSON = data.optJSONObject("mate_strategy");
 			if(mateStrategyJSON != null)

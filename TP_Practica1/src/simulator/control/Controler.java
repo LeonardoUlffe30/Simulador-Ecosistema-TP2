@@ -50,7 +50,7 @@ public class Controler {
 			}
 		}
 		//Ya no verificamos si tiene la clave animals puesto que siempre va a existir segun el enunciado
-		JSONArray animals = data.getJSONArray("animales");
+		JSONArray animals = data.getJSONArray("animals");
 //		Iterar sobre cada especificacion del animal
 		for(int i = 0; i < animals.length();++i) { 
 //			{“amount: N, “spec”: O}

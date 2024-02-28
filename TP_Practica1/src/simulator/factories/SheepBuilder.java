@@ -31,6 +31,9 @@ public class SheepBuilder extends Builder<Animal> {
 	@Override
 	protected Sheep create_instance(JSONObject data) {
 		try {
+			if(data.length() == 0)
+				this.fill_in_data(data);
+			
 			SelectionStrategy _mate_strategy;
 			JSONObject mateStrategyJSON = data.optJSONObject("mate_strategy");
 			if(mateStrategyJSON != null)
@@ -40,7 +43,7 @@ public class SheepBuilder extends Builder<Animal> {
 			
 			SelectionStrategy _danger_strategy;
 			JSONObject dangerStrategyJSON = data.optJSONObject("danger_strategy");
-			if(mateStrategyJSON != null)
+			if(dangerStrategyJSON != null)
 				_danger_strategy = _factory_selection_strategy.create_instance(dangerStrategyJSON);
 			else
 				_danger_strategy = new SelectFirst();

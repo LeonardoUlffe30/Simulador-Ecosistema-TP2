@@ -21,6 +21,9 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 	@Override
 	protected DynamicSupplyRegion create_instance(JSONObject data) {
 		try {
+			if(data.length() == 0)
+				this.fill_in_data(data);
+			
 			double factor, food;
 			if(data.has("factor"))
 				factor = data.getDouble("factor");
