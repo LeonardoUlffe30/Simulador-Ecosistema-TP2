@@ -73,11 +73,15 @@ public class Simulator implements JSONable {
 			a.update(dt);
 		}		
 		this.get_region_mngr().update_all_regions(dt);
+		List<Animal> babies = new ArrayList<>();
 		for (Animal a : this.get_animals_in_list()) {
+			
 			if (a.is_pregnant()) {
-				this.add_animal(a.deliver_baby());
+				babies.add(a.deliver_baby());
 			}	
 		}
+		// Agregar los bebés a la lista original después de la iteración
+		this.get_animals_in_list().addAll(babies);
 		
 	}
 	

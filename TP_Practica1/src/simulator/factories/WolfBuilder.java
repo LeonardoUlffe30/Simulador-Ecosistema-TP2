@@ -38,14 +38,14 @@ public class WolfBuilder extends Builder<Animal> {
 			
 			SelectionStrategy _mate_strategy;
 			JSONObject mateStrategyJSON = data.optJSONObject("mate_strategy");
-			if(mateStrategyJSON != null)
+			if(mateStrategyJSON.length() > 0)
 				_mate_strategy = _factory_selection_strategy.create_instance(mateStrategyJSON);
 			else
 				_mate_strategy = new SelectFirst();
 			
 			SelectionStrategy _hunt_strategy;
 			JSONObject dangerStrategyJSON = data.optJSONObject("hunt_strategy");
-			if(mateStrategyJSON != null)
+			if(mateStrategyJSON.length() > 0)
 				_hunt_strategy = _factory_selection_strategy.create_instance(dangerStrategyJSON);
 			else
 				_hunt_strategy = new SelectFirst();
