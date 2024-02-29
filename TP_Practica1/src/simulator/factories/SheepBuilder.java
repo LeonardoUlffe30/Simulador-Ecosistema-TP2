@@ -36,14 +36,14 @@ public class SheepBuilder extends Builder<Animal> {
 			
 			SelectionStrategy _mate_strategy;
 			JSONObject mateStrategyJSON = data.optJSONObject("mate_strategy");
-			if(mateStrategyJSON != null)
+			if(mateStrategyJSON.length() > 0)
 				_mate_strategy = _factory_selection_strategy.create_instance(mateStrategyJSON);
 			else
 				_mate_strategy = new SelectFirst();
 			
 			SelectionStrategy _danger_strategy;
 			JSONObject dangerStrategyJSON = data.optJSONObject("danger_strategy");
-			if(dangerStrategyJSON != null)
+			if(dangerStrategyJSON.length() > 0)
 				_danger_strategy = _factory_selection_strategy.create_instance(dangerStrategyJSON);
 			else
 				_danger_strategy = new SelectFirst();
@@ -57,8 +57,8 @@ public class SheepBuilder extends Builder<Animal> {
 				double maxX = xRange.getDouble(1);
 				double minY = xRange.getDouble(0);
 				double maxY = xRange.getDouble(1);
-				double x = Utils.get_randomized_parameter(minX, minX);
-				double y = Utils.get_randomized_parameter(minY, minY);
+				double x = Utils.get_randomized_parameter(minX, maxX);
+				double y = Utils.get_randomized_parameter(minY, maxY);
 				_pos = new Vector2D(x,y);
 			} else {
 				_pos = null;

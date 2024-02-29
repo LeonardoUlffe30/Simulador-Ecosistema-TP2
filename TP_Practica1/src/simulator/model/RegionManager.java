@@ -28,20 +28,32 @@ public class RegionManager implements AnimalMapView {
 		this._rows = rows;
 		this._width = width;
 		this._height = height;
-		this._width_region = width/cols;
-		this._height_region = height/rows;	
+		this._width_region = width/rows;
+		this._height_region = height/cols;	
 		this._regions = new DefaultRegion[rows][cols];
+		for (int i = 0; i < rows; i++) {
+		    for (int j = 0; j < cols; j++) {
+		        _regions[i][j] = new DefaultRegion();
+		    }
+		}
 		_animal_region = new HashMap<Animal, Region>();
 		
 	}
 	
 	void register_animal(Animal a) {
-		int x = (int) a.get_position().getX();
-		int y = (int) a.get_position().getY();
-		
-		this.get_regions()[this.get_width()/x][(this.get_height()/y)].add_animal(a);
-		this.get_animal_region().put(a, this.get_regions()[this.get_width()/x][(this.get_height()/y)]);
 		a.init(this);
+		double x = a.get_position().getX();
+		double y = a.get_position().getY();
+		
+		int aux1 = (int) (x/this.get_region_width());
+		int aux2 = (int) y/this.get_region_height();
+		
+		try{this.get_regions()[aux1][aux2].add_animal(a);
+		}
+		catch (Exception e) { throw new IllegalArgumentException("Error con el animal" +this._cols + " " + this._height + " " + aux1 + " " + aux2);}
+		
+		this.get_animal_region().put(a, this.get_regions()[aux1][aux2]);
+
 	}
 	
 	void unregister_animal(Animal a) {

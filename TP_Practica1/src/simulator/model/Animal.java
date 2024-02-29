@@ -80,13 +80,16 @@ public abstract class Animal implements Entity, AnimalInfo {
 	public void init(AnimalMapView reg_mngr) {
 		this.set_region_mngr(reg_mngr);
 		if (this.get_position() == null) {
-			this.set_position(new Vector2D(Utils.get_randomized_parameter(0, reg_mngr.get_width() - 1),
-					Utils.get_randomized_parameter(0, reg_mngr.get_height() - 1)));
+			this.set_position(new Vector2D(Utils._rand.nextDouble(0 , reg_mngr.get_width() - 1), Utils._rand.nextDouble(0, reg_mngr.get_height() - 1)));
+			/*this.set_position(new Vector2D(Utils.get_randomized_parameter(1, reg_mngr.get_width() - 1),
+					Utils.get_randomized_parameter(1, reg_mngr.get_height() - 1)));*/
 		} else {
 			adjust();
 		}
-		this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, reg_mngr.get_width() - 1),
-				Utils.get_randomized_parameter(0, reg_mngr.get_height() - 1)));
+		this.set_destination(new Vector2D(Utils._rand.nextDouble(0 , reg_mngr.get_width() - 1), Utils._rand.nextDouble(0, reg_mngr.get_height() - 1)));
+		
+		/*this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, reg_mngr.get_width() - 1),
+				Utils.get_randomized_parameter(0, reg_mngr.get_height() - 1)));*/
 	}
 
 	public void adjust() {
