@@ -132,10 +132,15 @@ public class RegionManager implements AnimalMapView {
 		for (int i = auxX; i < regionX_range+iniCol && i < this.get_cols(); i++) {
 			for (int j = auxY; j < regionY_range+iniFila && i < this.get_rows(); j++) {
 				for(Animal a: this.get_regions()[i][j].getAnimals()) {
-					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
-							&& filter.test(a)) {
+					/*if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
+							&& filter.test(a)) */{
+								System.out.println(a.get_position().distanceTo(e.get_position()));
+					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()){
+						if (filter.test(a)) {
 						_animals_in_range.add(a);
+						}
 					}
+				}
 			}
 		}
 	}

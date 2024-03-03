@@ -71,7 +71,7 @@ public class Simulator implements JSONable {
 		
 		int count = 0; //Para probar errores
 		for (Animal a : this.get_animals_in_list()) {
-			System.out.println(++count); //Para probar errores
+			//System.out.println(++count); //Para probar errores
 			a.update(dt);
 			this.get_region_mngr().update_animal_region(a);
 		}

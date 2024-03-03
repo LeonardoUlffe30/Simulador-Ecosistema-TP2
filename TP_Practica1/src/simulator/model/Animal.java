@@ -140,11 +140,12 @@ public abstract class Animal implements Entity, AnimalInfo {
 		this.move(this.get_speed() * dt * Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
 		this.set_age(this.get_age() + dt);
 		// Quitar 20.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
-		if (this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * dt) >= 0)
-			this.set_energy(this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * dt));
-		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
+		this.set_energy(this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * dt));
+		if (this.get_energy() < 0) this.set_energy(MIN_RANGE);
+					// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
 		if (this.get_desire() + (ADD_DESIRE * dt) <= MAX_RANGE)
 			this.set_desire(this.get_desire() + (ADD_DESIRE * dt));
+		else this.set_desire(MAX_RANGE);
 	}
 
 	@Override

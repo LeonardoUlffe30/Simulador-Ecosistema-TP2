@@ -30,7 +30,6 @@ public class Region implements Entity, FoodSupplier, RegionInfo {
 	
 	final void add_animal(Animal a) {
 		this.animals_in_list.add(a);
-		System.out.println("Entra en add animal");
 	} 
 	
 	final void remove_animal(Animal a) {

@@ -90,18 +90,20 @@ public class Sheep extends Animal {
 			}
 			break;
 		case MATE:
+			//CASO 1 
 			if (this.get_mate_target() != null && (this.get_mate_target().get_state() == State.DEAD || this
 					.get_position().distanceTo(this.get_mate_target().get_position()) > this.get_sight_range())) {
 				this.set_mate_target(null);
 			}
+			//CASO 2
 			if (this.get_mate_target() == null) {
 				this.search_mate_animal();
 				if (this.get_mate_target() == null)
 					this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 							REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-				else {
-					this.chase_mate_target_create_baby(dt);
-				}
+			}
+			else {
+				this.chase_mate_target_create_baby(dt);
 			}
 			if (this.get_danger_source() == null)
 				this.search_dangerous_animal();
@@ -143,9 +145,11 @@ public class Sheep extends Animal {
 		// Quitar 20.0*1.2*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 		if (this.get_energy() >= MIN_RANGE)
 			this.set_energy(this.get_energy() - REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt);
+		if (this.get_energy() < 0)this.set_energy(0.0);
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
 		if (this.get_desire() <= MAX_RANGE)
 			this.set_desire(this.get_desire() + ADD_DESIRE * dt);
+		if (this.get_energy() > 100)this.set_energy(100.0);
 
 		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {
 			this.set_desire(0.0);
@@ -154,7 +158,7 @@ public class Sheep extends Animal {
 			if (!this.is_pregnant()) {
 				double x = Utils._rand.nextDouble(0, 1);
 				System.out.println(x);
-				if (x < PROBABILITY_BABY)
+				if (x > 0.1)
 					this.set_baby(new Sheep(this, this.get_mate_target()));
 			}
 			this.set_mate_target(null);
