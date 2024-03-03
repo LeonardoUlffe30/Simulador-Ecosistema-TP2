@@ -9,11 +9,6 @@ public class DefaultRegionBuilder extends Builder<Region> {
 	public DefaultRegionBuilder() {
 		super("default","Constructor de objetos DefaultRegion");
 	}
-
-//	{
-//		"type" : "default",
-//		"data" : { }
-//	}
 	
 	@Override
 	protected DefaultRegion create_instance(JSONObject data) {
@@ -26,7 +21,6 @@ public class DefaultRegionBuilder extends Builder<Region> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-//		o.put("", );
-		//VACIO
+		//Vacio, la clase DefaultRegion tiene constructor por defecto (sin parametros)
 	}
 }

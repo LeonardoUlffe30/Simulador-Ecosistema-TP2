@@ -18,16 +18,6 @@ public class SheepBuilder extends Builder<Animal> {
 		this._factory_selection_strategy = factory_selection_strategy;
 	}
 	
-//	{
-//		"type": "sheep"
-//		"data": {
-//			"mate_strategy" : { … }
-//			"danger_strategy" : { … }
-//			"pos" : {
-//				"x_range" : [ 100.0, 200.0 ],
-//				"y_range" : [ 100.0, 200.0 ]
-//			}
-//	}
 	@Override
 	protected Sheep create_instance(JSONObject data) {
 		try {
@@ -72,13 +62,9 @@ public class SheepBuilder extends Builder<Animal> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-//		o.put("", );
 		o.put("mate_strategy",  new JSONObject());
 		o.put("danger_strategy",  new JSONObject());
 		JSONArray ja = new JSONArray();
 		o.put("pos", ja);
 	}
-
-
-
 }

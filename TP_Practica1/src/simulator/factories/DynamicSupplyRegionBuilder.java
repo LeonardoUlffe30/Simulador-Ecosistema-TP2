@@ -10,14 +10,6 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 		super("dynamic","Constructor de objetos DynamicSupplyRegion");
 	}
 
-//	{
-//		"type" : "default",
-//		"data" : {
-//			"factor" : 2.5,
-//			"food" : 1250.0
-//		}
-//	}
-
 	@Override
 	protected DynamicSupplyRegion create_instance(JSONObject data) {
 		try {
@@ -42,8 +34,7 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-//		o.put("", );
-		o.put("factor",  2.5);
-		o.put("food", 1250.0);
+		o.put("factor", new JSONObject());
+		o.put("food", new JSONObject());
 	}
 }

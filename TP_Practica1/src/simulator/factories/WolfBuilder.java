@@ -18,18 +18,6 @@ public class WolfBuilder extends Builder<Animal> {
 		this._factory_selection_strategy = factory_selection_strategy;
 	}
 
-//	{
-//		"type": "wolf"
-//		"data": {
-//			"mate_strategy" : { … }
-//			"hunt_strategy" : { … }
-//			"pos" : {
-//				"x_range" : [ 100.0, 200.0 ],
-//				"y_range" : [ 100.0, 200.0 ]
-//			}
-//		}
-//	}
-
 	@Override
 	protected Wolf create_instance(JSONObject data) {
 		try {
@@ -45,7 +33,7 @@ public class WolfBuilder extends Builder<Animal> {
 			
 			SelectionStrategy _hunt_strategy;
 			JSONObject dangerStrategyJSON = data.optJSONObject("hunt_strategy");
-			if(mateStrategyJSON.length() > 0)
+			if(dangerStrategyJSON.length() > 0)
 				_hunt_strategy = _factory_selection_strategy.create_instance(dangerStrategyJSON);
 			else
 				_hunt_strategy = new SelectFirst();
@@ -74,7 +62,6 @@ public class WolfBuilder extends Builder<Animal> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-//		o.put("", );
 		o.put("mate_strategy",  new JSONObject());
 		o.put("hunt_strategy",  new JSONObject());
 		JSONArray ja = new JSONArray();

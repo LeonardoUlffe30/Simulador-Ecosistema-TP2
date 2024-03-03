@@ -31,9 +31,9 @@ public class RegionManager implements AnimalMapView {
 		this._height = height;
 		this._width_region = width/cols + (width%cols != 0? 1:0);
 		this._height_region = height/rows + (height%rows!= 0?1:0);	
-		this._regions = new DefaultRegion[cols][rows];
-		for (int i = 0; i < cols; i++) {
-		    for (int j = 0; j < rows; j++) {
+		this._regions = new DefaultRegion[rows][cols];
+		for (int i = 0; i < rows; i++) {
+		    for (int j = 0; j < cols; j++) {
 		        _regions[i][j] = new DefaultRegion();
 		    }
 		}
@@ -43,16 +43,27 @@ public class RegionManager implements AnimalMapView {
 	
 	void register_animal(Animal a) {
 		a.init(this);
+		
 		double x = a.get_position().getX();
 		double y = a.get_position().getY();
 
 		cont++;
-		int aux1 = (int) (x/this.get_region_width());
-		int aux2 = (int) y/this.get_region_height();
+		int aux1 = (int) (y/this.get_region_height()); //fila
+		int aux2 = (int) (x/this.get_region_width()); //columna
 		
 		try{this.get_regions()[aux1][aux2].add_animal(a);
 		}
-		catch (Exception e) { throw new IllegalArgumentException("Error con el animal:  " +this._cols + " Rows: " + this._rows + " Col animal: " + aux1 + " Row: animal " + aux2  + " x animal " + x + "      " + cont+ " " + e.getMessage());}
+		catch (Exception e) {
+			System.out.println("Ancho mapa: " + this.get_width());
+			System.out.println("Alto mapa: " + this.get_height());
+			System.out.println("rows: " + this.get_rows());
+			System.out.println("cols: " + this.get_cols());
+			System.out.println("Ancho region: " + this.get_region_width());
+			System.out.println("Alto region: " + this.get_region_height());
+			System.out.println();
+			System.out.println("pos x: " + x + " pos y: " + y);
+			throw new IllegalArgumentException("Error con el animal:  " +this._cols + " Rows: " + this._rows + " Col animal: " + aux1 + " Row: animal " + aux2  + " x animal " + x + "      " + cont+ " " + e.getMessage());
+			}
 		
 		this.get_animal_region().put(a, this.get_regions()[aux1][aux2]);
 
@@ -62,18 +73,35 @@ public class RegionManager implements AnimalMapView {
 		int x = (int) a.get_position().getX();
 		int y = (int) a.get_position().getY();
 		
-		this.get_regions()[this.get_width()/x][(this.get_height()/y)].remove_animal(a);
-		this.get_animal_region().remove(a, this.get_regions()[this.get_width()/x][(this.get_height()/y)]);
+		this.get_regions()[y/this.get_region_height()][x/this.get_region_width()].remove_animal(a);
+		this.get_animal_region().remove(a, this.get_regions()[y/this.get_region_height()][x/this.get_region_width()]);
 	}
 	
+	/*
+	void update_animal_region(Animal a): encuentra la región a la que tiene que pertenecer el
+	animal (a partir de su posición actual), y si es distinta de su región actual lo añade a la nueva región, lo
+	quita de la anterior, y actualiza _animal_region.
+	*/
 	void update_animal_region(Animal a) {
 		int x = (int) a.get_position().getX();
 		int y = (int) a.get_position().getY();
-		Region  r = this.get_animal_region().get(a);
+		Region  r = this.get_animal_region().get(a); //region actual del animal
 		
-		if(r != this.get_regions()[this.get_width()/x][(this.get_height()/y)]) {
-			this.get_regions()[this.get_width()/x][(this.get_height()/y)] = r;
-			this.get_animal_region().replace(a, r);
+		int width_ = this.get_width();
+		int height_ = this.get_height();
+		int rows_ = this.get_rows();
+		int cols_ = this.get_cols();
+		int col_matrix = x/this.get_width();
+		int row_matrix = y/this.get_height();
+		//cambio
+		if(r != this.get_regions()[y/this.get_region_height()][x/this.get_region_width()]) { //si region actual es diferente a region correcta
+			r.remove_animal(a);
+			this.get_regions()[y/this.get_region_height()][x/this.get_region_width()].add_animal(a);
+			//this.get_regions()[this.get_width()/x][(this.get_height()/y)].remove_animal(a);
+			//actualizamos en _amimal_region la region que realmente debería pertenecer la clave a
+			this.get_animal_region().replace(a, this.get_regions()[y/this.get_region_height()][x/this.get_region_width()]);
+			//r = this.get_regions()[this.get_width()/x][(this.get_height()/y)]; 
+			//this.get_animal_region().replace(a, r);
 		}
 	}
 	
@@ -165,16 +193,16 @@ public class RegionManager implements AnimalMapView {
 	}
 
 	void set_region(int row, int col, Region r) {
-		for(Animal a: this.get_regions()[col][row].animals_in_list) {
+		for(Animal a: this.get_regions()[row][col].animals_in_list) {
 			r.add_animal(a);
 			this.get_animal_region().replace(a, r);
 		}
-		this.get_regions()[col][row] = r;
+		this.get_regions()[row][col] = r;
 	}
 	
 	 void update_all_regions(double dt) {
-		 for (int i = 0; i < this.get_cols(); i++) {
-			for (int j = 0; j < this.get_rows(); j++) {
+		 for (int i = 0; i < this.get_rows(); i++) {
+			for (int j = 0; j < this.get_cols(); j++) {
 				this.get_regions()[i][j].update(dt);
 			}
 		}
@@ -183,8 +211,8 @@ public class RegionManager implements AnimalMapView {
 	 public JSONObject as_JSON() {
 		 JSONArray regionesArray = new JSONArray(); // Creamos el arreglo para las regiones
 		 
-		 for(int i = 0; i < this.get_cols(); ++i) {
-			 for(int j = 0; j < this.get_rows(); ++j) {
+		 for(int i = 0; i < this.get_rows(); ++i) {
+			 for(int j = 0; j < this.get_cols(); ++j) {
 				 Region r = this.get_regions()[i][j];
 		         JSONObject regionJSON = new JSONObject(); // Creamos un objeto JSON para la región
 		         regionJSON.put("row", i); // Agregamos la fila

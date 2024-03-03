@@ -21,7 +21,6 @@ public class SelectYoungestBuilder extends Builder<SelectionStrategy>{
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-//		o.put("", );
-		//VACIO
+		//Vacio, la clase SelectYoungest tiene constructor por defecto (sin parametros)
 	}
 }

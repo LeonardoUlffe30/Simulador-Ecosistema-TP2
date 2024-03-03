@@ -69,20 +69,25 @@ public class Simulator implements JSONable {
 			}
 		}
 		
+		int count = 0; //Para probar errores
 		for (Animal a : this.get_animals_in_list()) {
+			System.out.println(++count); //Para probar errores
 			a.update(dt);
-		}		
+			this.get_region_mngr().update_animal_region(a);
+		}
 		this.get_region_mngr().update_all_regions(dt);
-		List<Animal> babies = new ArrayList<>();
+		
+		List<Animal> babies = new ArrayList<Animal>();
 		for (Animal a : this.get_animals_in_list()) {
-			
 			if (a.is_pregnant()) {
 				babies.add(a.deliver_baby());
 			}	
 		}
 		// Agregar los bebés a la lista original después de la iteración
-		this.get_animals_in_list().addAll(babies);
-		
+		for(Animal a : babies)
+			this.add_animal(a);
+		//este metodo de abajo no puede ser porque addAll no contiene init, en cambio add_animal sí
+		//this.get_animals_in_list().addAll(babies);	
 	}
 	
 	public JSONObject as_JSON() {

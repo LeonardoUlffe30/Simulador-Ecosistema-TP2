@@ -66,7 +66,7 @@ public class Controler {
 //	Método para ejecutar el simulador por un tiempo determinado y escribir los estados inicial 
 //	y final en un OutputStream
 	public void run(double t, double dt, boolean sv, OutputStream out) {
-		SimpleObjectViewer view = null;
+		SimpleObjectViewer view = null;  
 		if (sv) {
 			MapInfo m = this.get_sim().get_map_info();
 			view = new SimpleObjectViewer("[ECOSYSTEM]", m.get_width(), m.get_height(),	m.get_cols(), m.get_rows());

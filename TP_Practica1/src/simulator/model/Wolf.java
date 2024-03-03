@@ -32,6 +32,7 @@ public class Wolf extends Animal {
 
 	public Wolf(SelectionStrategy mate_strategy, SelectionStrategy hunting_strategy, Vector2D pos) {
 		super("Wolf", Diet.CARNIVORE, WOLF_INITIAL_SIGHT_RANGE, WOLF_INITIAL_SPEED, mate_strategy, pos);
+		this._hunting_strategy = hunting_strategy;
 	}
 
 	protected Wolf(Wolf p1, Animal p2) {

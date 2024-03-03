@@ -81,15 +81,10 @@ public abstract class Animal implements Entity, AnimalInfo {
 		this.set_region_mngr(reg_mngr);
 		if (this.get_position() == null) {
 			this.set_position(new Vector2D(Utils._rand.nextDouble(0 , reg_mngr.get_width() - 1), Utils._rand.nextDouble(0, reg_mngr.get_height() - 1)));
-			/*this.set_position(new Vector2D(Utils.get_randomized_parameter(1, reg_mngr.get_width() - 1),
-					Utils.get_randomized_parameter(1, reg_mngr.get_height() - 1)));*/
 		} else {
 			adjust();
 		}
 		this.set_destination(new Vector2D(Utils._rand.nextDouble(0 , reg_mngr.get_width() - 1), Utils._rand.nextDouble(0, reg_mngr.get_height() - 1)));
-		
-		/*this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, reg_mngr.get_width() - 1),
-				Utils.get_randomized_parameter(0, reg_mngr.get_height() - 1)));*/
 	}
 
 	public void adjust() {
@@ -137,6 +132,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 	
 	public void move_as_normal(double dt, double DISTANCE_COMPARISON_DEST, double MOVE_SECOND_FACTOR, double MOVE_THIRD_FACTOR, 
 			double REMOVE_ENERGY_FIRST_FACTOR, double ADD_DESIRE, double MIN_RANGE, double MAX_RANGE) {
+		System.out.println("position: " + this.get_position() + " destination: " + this.get_destination()); //Para probar errores
 		if (this.get_position().distanceTo(this.get_destination()) < DISTANCE_COMPARISON_DEST) {
 			this.set_destination(new Vector2D(Utils.get_randomized_parameter(0, this.get_region_mngr().get_width() - 1),
 					Utils.get_randomized_parameter(0, this.get_region_mngr().get_height() - 1)));
