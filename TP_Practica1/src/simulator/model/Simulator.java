@@ -41,8 +41,8 @@ public class Simulator implements JSONable {
 	}
 	
 	public void add_animal(JSONObject a_json) {
-		Animal a = this.get_animal_factory().create_instance(a_json);
-		this.add_animal(a);
+		Animal A = this.get_animal_factory().create_instance(a_json);
+		this.add_animal(A);
 	}
 	
 	public MapInfo get_map_info() {
@@ -60,14 +60,25 @@ public class Simulator implements JSONable {
 	public void advance(double dt) {
 		//Puede petar al recorrer la lista
 		this.dt += dt;
-		Iterator<Animal> it = this.get_animals_in_list().iterator();
-		while (it.hasNext()) {
-			Animal a = it.next();
-			if (a.get_state() == State.DEAD) {
-				_region_mngr.unregister_animal(a); //Eliminamos el animal del region manager
-				it.remove(); //Lo eliminamos de la lista de animales
+		List<Animal> dead_animals = new ArrayList<Animal>();
+		for(Animal a : this.get_animals_in_list()) {
+			if(a.get_state() == State.DEAD) {
+				this.get_region_mngr().unregister_animal(a);
+				dead_animals.add(a);
 			}
 		}
+		for(Animal a: dead_animals) {
+			this.get_animals_in_list().remove(a);
+		}
+		
+//		Iterator<Animal> it = this.get_animals_in_list().iterator();
+//		while (it.hasNext()) {
+//			Animal a = it.next();
+//			if (a.get_state() == State.DEAD) {
+//				_region_mngr.unregister_animal(a); //Eliminamos el animal del region manager
+//				it.remove(); //Lo eliminamos de la lista de animales
+//			}
+//		}
 		
 		int count = 0; //Para probar errores
 		for (Animal a : this.get_animals_in_list()) {
@@ -111,7 +122,7 @@ public class Simulator implements JSONable {
 	}
 
 	public List<Animal> get_animals_in_list() {
-		return _animals_in_list;
+		return this._animals_in_list;
 	}
 
 	public double getDt() {

@@ -18,7 +18,7 @@ public class RegionManager implements AnimalMapView {
 	private int _width_region;
 	private int _height_region;
 	private Region [][]_regions;
-	private 		int cont = 0;
+	private int cont = 0;
 	//un mapa (_animal_region) de tipo Map<Animal, Region> que
 	//asigna a cada animal su región actual.
 	private Map<Animal,Region> _animal_region;
@@ -31,7 +31,7 @@ public class RegionManager implements AnimalMapView {
 		this._height = height;
 		this._width_region = width/cols + (width%cols != 0? 1:0);
 		this._height_region = height/rows + (height%rows!= 0?1:0);	
-		this._regions = new DefaultRegion[rows][cols];
+		this._regions = new Region[rows][cols];
 		for (int i = 0; i < rows; i++) {
 		    for (int j = 0; j < cols; j++) {
 		        _regions[i][j] = new DefaultRegion();
@@ -48,10 +48,12 @@ public class RegionManager implements AnimalMapView {
 		double y = a.get_position().getY();
 
 		cont++;
-		int aux1 = (int) (y/this.get_region_height()); //fila
-		int aux2 = (int) (x/this.get_region_width()); //columna
+		int row_animal = (int) (y/this.get_region_height()); //fila
+		int col_animal = (int) (x/this.get_region_width()); //columna
 		
-		try{this.get_regions()[aux1][aux2].add_animal(a);
+		try{
+			this.get_regions()[row_animal][col_animal].add_animal(a);
+			this.get_animal_region().put(a, this.get_regions()[row_animal][col_animal]);
 		}
 		catch (Exception e) {
 			System.out.println("Ancho mapa: " + this.get_width());
@@ -60,21 +62,20 @@ public class RegionManager implements AnimalMapView {
 			System.out.println("cols: " + this.get_cols());
 			System.out.println("Ancho region: " + this.get_region_width());
 			System.out.println("Alto region: " + this.get_region_height());
-			System.out.println();
 			System.out.println("pos x: " + x + " pos y: " + y);
-			throw new IllegalArgumentException("Error con el animal:  " +this._cols + " Rows: " + this._rows + " Col animal: " + aux1 + " Row: animal " + aux2  + " x animal " + x + "      " + cont+ " " + e.getMessage());
+			throw new IllegalArgumentException("Error con el animal:  " +this._cols + " Rows: " + this._rows + " row animal: " + row_animal + " col: animal " + col_animal  + " x animal " + x + "      " + cont+ " " + e.getMessage());
 			}
-		
-		this.get_animal_region().put(a, this.get_regions()[aux1][aux2]);
-
 	}
 	
 	void unregister_animal(Animal a) {
-		int x = (int) a.get_position().getX();
-		int y = (int) a.get_position().getY();
+		double x = a.get_position().getX();
+		double y = a.get_position().getY();
 		
-		this.get_regions()[y/this.get_region_height()][x/this.get_region_width()].remove_animal(a);
-		this.get_animal_region().remove(a, this.get_regions()[y/this.get_region_height()][x/this.get_region_width()]);
+		int row_animal = (int) y/this.get_region_height(); //fila
+		int col_animal = (int) x/this.get_region_width(); //columna
+		
+		this.get_regions()[row_animal][col_animal].remove_animal(a);
+		this.get_animal_region().remove(a, this.get_regions()[row_animal][col_animal]);
 	}
 	
 	/*
@@ -83,23 +84,21 @@ public class RegionManager implements AnimalMapView {
 	quita de la anterior, y actualiza _animal_region.
 	*/
 	void update_animal_region(Animal a) {
-		int x = (int) a.get_position().getX();
-		int y = (int) a.get_position().getY();
-		Region  r = this.get_animal_region().get(a); //region actual del animal
+		double x = a.get_position().getX();
+		double y = a.get_position().getY();
 		
-		int width_ = this.get_width();
-		int height_ = this.get_height();
-		int rows_ = this.get_rows();
-		int cols_ = this.get_cols();
-		int col_matrix = x/this.get_width();
-		int row_matrix = y/this.get_height();
+		int row_animal = (int) y/this.get_region_height(); //fila
+		int col_animal = (int) x/this.get_region_width(); //columna
+		
+		Region  r = this.get_animal_region().get(a); //region actual del animal
+
 		//cambio
-		if(r != this.get_regions()[y/this.get_region_height()][x/this.get_region_width()]) { //si region actual es diferente a region correcta
+		if(r != this.get_regions()[row_animal][col_animal]) { //si region actual es diferente a region correcta
 			r.remove_animal(a);
-			this.get_regions()[y/this.get_region_height()][x/this.get_region_width()].add_animal(a);
+			this.get_regions()[row_animal][col_animal].add_animal(a);
 			//this.get_regions()[this.get_width()/x][(this.get_height()/y)].remove_animal(a);
 			//actualizamos en _amimal_region la region que realmente debería pertenecer la clave a
-			this.get_animal_region().replace(a, this.get_regions()[y/this.get_region_height()][x/this.get_region_width()]);
+			this.get_animal_region().replace(a, this.get_regions()[row_animal][col_animal]);
 			//r = this.get_regions()[this.get_width()/x][(this.get_height()/y)]; 
 			//this.get_animal_region().replace(a, r);
 		}
@@ -108,10 +107,41 @@ public class RegionManager implements AnimalMapView {
 	@Override
 	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
 		List<Animal> _animals_in_range = new ArrayList<Animal>();
+		
+		//Obtengo posicion en la esquina superior izquierda con respecto a X,Y
+		double posComienzoX = e.get_position().getX() - e.get_sight_range();
+		double posComienzoY = e.get_position().getY() - e.get_sight_range();
+		
+		//Obtengo la maxima posicion de X,Y
+		double recorridoFila = (posComienzoY + 2*e.get_sight_range()-1);
+		double recorridoCol = (posComienzoX + 2*e.get_sight_range()-1);
+		
+		//Obtengo la fila y columna inicial. Antes de obtener la fila y columna, verifico si las posiciones son menores que 0
+		int iniFila = (posComienzoY < 0.0)? 0: (int)posComienzoY/this.get_region_height(); //verifico si 
+		int iniCol = (posComienzoX < 0.0)? 0: (int)posComienzoX/this.get_region_width();
+		
+		//Obtengo la fila y columna final. Antes de obtener la fila y columna, verifico si las posiciones son mayores que que
+		//el numero de filas total y columnas total
+		int finFila = (recorridoFila > this.get_height())?this.get_rows()-1:(int)recorridoFila/this.get_region_height();
+		int finCol = (recorridoCol > this.get_width())?this.get_cols()-1:(int)recorridoCol/this.get_region_width();
+		
+		for (int i = iniFila; i <=finFila; i++) {
+			for (int j = iniCol; j <= finCol; j++) {
+				for(Animal a: this.get_regions()[i][j].getAnimals()) {
+					if(e.get_position().distanceTo(a.get_position()) <= e.get_sight_range()
+							&& filter.test(a)) {
+						_animals_in_range.add(a);
+					}
+				}
+			}
+		}
+		
+		/*
 		//Obtengo posicion inicial con respecto a X,Y
 		int posComienzoX = (int)Math.abs(e.get_position().getX()-e.get_sight_range()); 
 		int posComienzoY = (int)Math.abs(e.get_position().getY()-e.get_sight_range());
-		//A partir de la pos(X,Y), obtengo la posicion con respecto a la fila, columna
+		
+		//A partir de la poho(X,Y), obtengo la posicion con respecto a la fila, columna
 		int iniCol = posComienzoX / this.get_region_width();
 		int iniFila = posComienzoY / this.get_region_height();
 		//Obtengo el recorrido (diametro = 2*sr) para saber hasta que columna y fila 
@@ -132,18 +162,17 @@ public class RegionManager implements AnimalMapView {
 		for (int i = auxX; i < regionX_range+iniCol && i < this.get_cols(); i++) {
 			for (int j = auxY; j < regionY_range+iniFila && i < this.get_rows(); j++) {
 				for(Animal a: this.get_regions()[i][j].getAnimals()) {
-					/*if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
-							&& filter.test(a)) */{
-								System.out.println(a.get_position().distanceTo(e.get_position()));
-					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()){
-						if (filter.test(a)) {
+					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
+							&& filter.test(a)) {
 						_animals_in_range.add(a);
-						}
 					}
 				}
 			}
 		}
+		*/
+		return _animals_in_range;
 	}
+	
 		
 		/*for(int i = iniCol; i < iniCol + recorrido;++i) {
 			for(int j = iniFila; j < iniFila + recorrido;++j) {
@@ -155,8 +184,6 @@ public class RegionManager implements AnimalMapView {
 				}
 			}
 		}*/
-		return _animals_in_range;
-	}
 	
 	@Override
 	public int get_cols() {
@@ -192,13 +219,11 @@ public class RegionManager implements AnimalMapView {
 
 	@Override
 	public double get_food(Animal a, double dt) {
-		return _animal_region.get(a).get_food(a, dt);
-		//return a.get_region_mngr().get_food(a, dt);
-		
+		return this.get_animal_region().get(a).get_food(a, dt);		
 	}
 
 	void set_region(int row, int col, Region r) {
-		for(Animal a: this.get_regions()[row][col].animals_in_list) {
+		for(Animal a: this.get_regions()[row][col].getAnimals()) {
 			r.add_animal(a);
 			this.get_animal_region().replace(a, r);
 		}

@@ -182,7 +182,7 @@ public class Main {
 		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>(); 
 		selection_strategy_builders.add(new SelectFirstBuilder());
 		selection_strategy_builders.add(new SelectClosestBuilder());
-		selection_strategy_builders.add(new SelectYoungestBuilder());
+		//selection_strategy_builders.add(new SelectYoungestBuilder());
 		selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 		
 		//Inicializacion de factorias de animales

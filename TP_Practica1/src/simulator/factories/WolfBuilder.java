@@ -47,8 +47,8 @@ public class WolfBuilder extends Builder<Animal> {
 				double maxX = xRange.getDouble(1);
 				double minY = yRange.getDouble(0);
 				double maxY = yRange.getDouble(1);
-				double x = Utils.get_randomized_parameter(minX, maxX);
-				double y = Utils.get_randomized_parameter(minY, maxY);
+				double x = Utils._rand.nextDouble(minX, maxX);
+				double y = Utils._rand.nextDouble(minY, maxY);
 				_pos = new Vector2D(x,y);
 			} else {
 				_pos = null;

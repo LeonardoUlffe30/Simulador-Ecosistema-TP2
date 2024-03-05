@@ -42,8 +42,8 @@ public class Controler {
 				JSONObject spec = region.getJSONObject("spec");
 //				Hay que llamar a _sim.set_region(R,C,O) para cada rf≤R≤rt y
 //				cf≤C≤ct (es decir usando un bucle anidado para modificar varias regiones).
-				for(int r = row.getInt(0); r < row.getInt(1);++r) {
-					for(int c = col.getInt(0); c < col.getInt(1);++c) {
+				for(int r = row.getInt(0); r <= row.getInt(1);++r) {
+					for(int c = col.getInt(0); c <= col.getInt(1);++c) {
 						this.get_sim().set_region(r, c, spec);
 					}
 				}
