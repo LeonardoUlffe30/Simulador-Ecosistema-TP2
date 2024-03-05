@@ -1,11 +1,13 @@
 package simulator.control;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import simulator.model.AnimalInfo;
@@ -93,7 +95,12 @@ public class Controler {
 		result.put("final_state", final_state);
 		
 		PrintStream p = new PrintStream(out);
-        p.println(result.toString());; //result.toString para convertir el objeto en string
+		try {
+			p.write(result.toString(2).getBytes());
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+        p.println(); //result.toString para convertir el objeto en string
         p.flush();
         
         if(sv)

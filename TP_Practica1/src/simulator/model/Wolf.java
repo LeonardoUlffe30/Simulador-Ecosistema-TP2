@@ -188,14 +188,14 @@ public class Wolf extends Animal {
 
 	public void search_mate_target() {
 		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
-				(Animal a) -> a.get_diet() == Diet.CARNIVORE);
+				(Animal a) -> a.get_genetic_code().equalsIgnoreCase("wolf"));
 		SelectionStrategy aux = this.get_mate_strategy();
-		this.set_hunt_target(aux.select(this, animals_filtered));
+		this.set_mate_target(aux.select(this, animals_filtered));
 	}
 
 	public void search_hunt_target() {
 		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
-				(Animal a) -> a.get_genetic_code().equalsIgnoreCase("wolf"));
+				(Animal a) -> a.get_diet() == Diet.HERBIVORE);
 		SelectionStrategy aux = this.get_hunting_strategy();
 		this.set_hunt_target(aux.select(this, animals_filtered));
 	}

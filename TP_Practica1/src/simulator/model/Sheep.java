@@ -110,9 +110,9 @@ public class Sheep extends Animal {
 				if (this.get_mate_target() == null)
 					this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 							REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-				else {
-					this.chase_mate_target_create_baby(dt);
-				}
+			}
+			else {
+				this.chase_mate_target_create_baby(dt);
 			}
 			if (this.get_danger_source() == null)
 				this.search_dangerous_animal();
