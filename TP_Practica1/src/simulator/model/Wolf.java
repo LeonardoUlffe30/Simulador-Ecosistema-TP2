@@ -63,13 +63,11 @@ public class Wolf extends Animal {
 					REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
 
 			if (this.get_energy() < COMPARISON_ENERGY) {
-				this.set_state(State.HUNGER);
-				this.set_mate_target(null);
+				this.change_to_hunger();
 			}
 			else {
 				if (this.get_desire() > COMPARISON_DESIRE) {
-					this.set_state(State.MATE);
-					this.set_hunt_target(null);
+					this.change_to_mate();
 				}
 			}
 			break;
@@ -89,13 +87,10 @@ public class Wolf extends Animal {
 
 			if (this.get_energy() > COMPARISON_ENERGY) {
 				if (this.get_desire() < COMPARISON_DESIRE) {
-					this.set_state(State.NORMAL);
-					this.set_hunt_target(null);
-					this.set_mate_target(null);
+					this.change_to_normal();
 				}
 				else {
-					this.set_state(State.MATE);
-					this.set_hunt_target(null);
+					this.change_to_mate();
 				}
 			}
 			break;
@@ -116,14 +111,11 @@ public class Wolf extends Animal {
 			}
 
 			if (this.get_energy() < COMPARISON_ENERGY) {
-				this.set_state(State.HUNGER);
-				this.set_mate_target(null);
+				this.change_to_hunger();
 			}
 			else {
 				if (this.get_desire() < COMPARISON_DESIRE) {
-					this.set_state(State.NORMAL);
-					this.set_hunt_target(null);
-					this.set_mate_target(null);
+					this.change_to_normal();
 				}
 			}
 			break;
@@ -214,6 +206,26 @@ public class Wolf extends Animal {
 
 	public void set_hunting_strategy(SelectionStrategy _hunting_strategy) {
 		this._hunting_strategy = _hunting_strategy;
+	}
+
+	@Override
+	protected void change_to_normal() {
+		// TODO Auto-generated method stub
+		this.set_state(State.NORMAL);
+		this.set_hunt_target(null);
+		this.set_mate_target(null);
+	}
+
+	@Override
+	protected void change_to_mate() {
+		// TODO Auto-generated method stub
+		this.set_state(State.MATE);
+		this.set_hunt_target(null);
+	}
+	
+	public void change_to_hunger() {
+		this.set_state(State.HUNGER);
+		this.set_mate_target(null);
 	}
 
 }

@@ -111,9 +111,13 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 		if (change) {
 			this.set_position(new Vector2D(x, y));
-			this.set_state(State.NORMAL); // Si se ha ajustado, se cambia de Estado a Normal
+			//this.set_state(State.NORMAL); // Si se ha ajustado, se cambia de Estado a Normal
+			this.change_to_normal();
 		}
 	}
+	
+	protected abstract void change_to_normal();
+	protected abstract void change_to_mate();
 
 	protected void move(double speed) {
 		this.set_position(

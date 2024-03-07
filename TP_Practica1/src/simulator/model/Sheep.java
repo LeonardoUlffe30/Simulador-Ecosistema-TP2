@@ -63,12 +63,10 @@ public class Sheep extends Animal {
 				this.search_dangerous_animal();
 
 			if (this.get_danger_source() != null) {
-				this.set_state(State.DANGER);
-				this.set_mate_target(null);
+				this.change_to_danger();
 			} else {
 				if (this.get_desire() > COMPARISON_DESIRE) {
-					this.set_state(State.MATE);
-					this.set_danger_source(null);
+					this.change_to_mate();
 				}
 			}
 			break;
@@ -87,13 +85,10 @@ public class Sheep extends Animal {
 				this.search_dangerous_animal();
 				if (this.get_danger_source() == null) {
 					if (this.get_desire() < COMPARISON_DESIRE) {
-						this.set_state(State.NORMAL);
-						this.set_danger_source(null);
-						this.set_mate_target(null);
+						this.change_to_normal();
 					}
 					else {
-						this.set_state(State.MATE);
-						this.set_danger_source(null);
+						this.change_to_mate();
 					}
 				}
 			}
@@ -118,14 +113,11 @@ public class Sheep extends Animal {
 				this.search_dangerous_animal();
 
 			if (this.get_danger_source() != null) {
-				this.set_state(State.DANGER);
-				this.set_mate_target(null);
+				this.change_to_danger();
 			}
 			else {
 				if (this.get_desire() < COMPARISON_DESIRE) {
-					this.set_state(State.NORMAL);
-					this.set_danger_source(null);
-					this.set_mate_target(null);
+					this.change_to_normal();
 				}
 			}
 			break;
@@ -206,5 +198,27 @@ public class Sheep extends Animal {
 
 	public void set_danger_source(Animal _danger_source) {
 		this._danger_source = _danger_source;
+	}
+
+	@Override
+	protected void change_to_normal() {
+		// TODO Auto-generated method stub
+		this.set_state(State.NORMAL);
+		this.set_danger_source(null);
+		this.set_mate_target(null);
+	}
+	
+	@Override
+	protected void change_to_mate() {
+		// TODO Auto-generated method stub
+		this.set_state(State.MATE);
+		this.set_danger_source(null);
+	}
+	
+
+	public void change_to_danger() {
+		// TODO Auto-generated method stub
+		this.set_state(State.DANGER);
+		this.set_mate_target(null);
 	}
 }

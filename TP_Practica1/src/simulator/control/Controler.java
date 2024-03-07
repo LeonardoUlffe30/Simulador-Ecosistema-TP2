@@ -91,8 +91,8 @@ public class Controler {
 		
 		JSONObject final_state = this.get_sim().as_JSON();
 		JSONObject result = new JSONObject();
-		result.put("init_state", init_state);
-		result.put("final_state", final_state);
+		result.put("in", init_state);
+		result.put("out", final_state);
 		
 		PrintStream p = new PrintStream(out);
 		try {
