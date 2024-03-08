@@ -162,7 +162,6 @@ public class Sheep extends Animal {
 
 			if (!this.is_pregnant()) {
 				double x = Utils._rand.nextDouble(0, 1);
-				System.out.println(x);
 				if (x > PROBABILITY_BABY)
 					this.set_baby(new Sheep(this, this.get_mate_target()));
 			}
@@ -202,7 +201,6 @@ public class Sheep extends Animal {
 
 	@Override
 	protected void change_to_normal() {
-		// TODO Auto-generated method stub
 		this.set_state(State.NORMAL);
 		this.set_danger_source(null);
 		this.set_mate_target(null);
@@ -210,14 +208,12 @@ public class Sheep extends Animal {
 	
 	@Override
 	protected void change_to_mate() {
-		// TODO Auto-generated method stub
 		this.set_state(State.MATE);
 		this.set_danger_source(null);
 	}
 	
 
 	public void change_to_danger() {
-		// TODO Auto-generated method stub
 		this.set_state(State.DANGER);
 		this.set_mate_target(null);
 	}

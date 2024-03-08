@@ -60,7 +60,7 @@ public class Controler {
 			int amount = animal.getInt("amount");
 			JSONObject spec = animal.getJSONObject("spec");
 			for(int j = 0; j < amount; ++j) {
-				this.get_sim().add_animal(spec);
+				this.get_sim().add_animal(spec); 
 			}
 		}
 	}
@@ -100,7 +100,7 @@ public class Controler {
 		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}
-        p.println(); //result.toString para convertir el objeto en string
+        p.println();
         p.flush();
         
         if(sv)

@@ -163,10 +163,9 @@ public class Wolf extends Animal {
 		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {
 			this.set_desire(0.0);
 			this.get_mate_target().set_desire(0.0);
-//			
+
 			if (!this.is_pregnant()) {
 				double x = Utils._rand.nextDouble(0, 1);
-				System.out.println(x);
 				if (x > PROBABILITY_BABY)
 					this.set_baby(new Wolf(this, this.get_mate_target()));
 			}

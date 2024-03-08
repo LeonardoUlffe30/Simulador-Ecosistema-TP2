@@ -61,16 +61,13 @@ public class WolfBuilder extends Builder<Animal> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {		
-		JSONObject mateStrategyJSON = o.optJSONObject("mate_strategy");
-		if(mateStrategyJSON == null)
+		if(!o.has("mate_strategy"))
 			o.put("mate_strategy",  new JSONObject());
 		
-		JSONObject huntStrategyJSON = o.optJSONObject("hunt_strategy");
-		if(huntStrategyJSON == null)
+		if(!o.has("hunt_strategy"))
 			o.put("hunt_strategy",  new JSONObject());
 		
-		JSONArray posJSON = o.optJSONArray("pos");
-		if(posJSON == null)
+		if(!o.has("pos"))
 			o.put("pos", new JSONArray());
 	}
 }

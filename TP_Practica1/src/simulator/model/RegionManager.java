@@ -47,7 +47,6 @@ public class RegionManager implements AnimalMapView {
 		double x = a.get_position().getX();
 		double y = a.get_position().getY();
 
-		cont++;
 		int row_animal = (int) (y/this.get_region_height()); //fila
 		int col_animal = (int) (x/this.get_region_width()); //columna
 		
@@ -56,15 +55,8 @@ public class RegionManager implements AnimalMapView {
 			this.get_animal_region().put(a, this.get_regions()[row_animal][col_animal]);
 		}
 		catch (Exception e) {
-			System.out.println("Ancho mapa: " + this.get_width());
-			System.out.println("Alto mapa: " + this.get_height());
-			System.out.println("rows: " + this.get_rows());
-			System.out.println("cols: " + this.get_cols());
-			System.out.println("Ancho region: " + this.get_region_width());
-			System.out.println("Alto region: " + this.get_region_height());
-			System.out.println("pos x: " + x + " pos y: " + y);
 			throw new IllegalArgumentException("Error con el animal:  " +this._cols + " Rows: " + this._rows + " row animal: " + row_animal + " col: animal " + col_animal  + " x animal " + x + "      " + cont+ " " + e.getMessage());
-			}
+		}
 	}
 	
 	void unregister_animal(Animal a) {

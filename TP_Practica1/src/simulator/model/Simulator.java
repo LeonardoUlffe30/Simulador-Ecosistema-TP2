@@ -58,7 +58,6 @@ public class Simulator implements JSONable {
 	}
 	
 	public void advance(double dt) {
-		//Puede petar al recorrer la lista
 		this.dt += dt;
 		List<Animal> dead_animals = new ArrayList<Animal>();
 		for(Animal a : this.get_animals_in_list()) {
@@ -67,22 +66,12 @@ public class Simulator implements JSONable {
 				dead_animals.add(a);
 			}
 		}
+		
 		for(Animal a: dead_animals) {
 			this.get_animals_in_list().remove(a);
 		}
 		
-//		Iterator<Animal> it = this.get_animals_in_list().iterator();
-//		while (it.hasNext()) {
-//			Animal a = it.next();
-//			if (a.get_state() == State.DEAD) {
-//				_region_mngr.unregister_animal(a); //Eliminamos el animal del region manager
-//				it.remove(); //Lo eliminamos de la lista de animales
-//			}
-//		}
-		
-		int count = 0; //Para probar errores
 		for (Animal a : this.get_animals_in_list()) {
-			//System.out.println(++count); //Para probar errores
 			a.update(dt);
 			this.get_region_mngr().update_animal_region(a);
 		}
@@ -94,11 +83,9 @@ public class Simulator implements JSONable {
 				babies.add(a.deliver_baby());
 			}	
 		}
-		// Agregar los bebés a la lista original después de la iteración
+
 		for(Animal a : babies)
 			this.add_animal(a);
-		//este metodo de abajo no puede ser porque addAll no contiene init, en cambio add_animal sí
-		//this.get_animals_in_list().addAll(babies);	
 	}
 	
 	public JSONObject as_JSON() {

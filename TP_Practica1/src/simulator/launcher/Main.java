@@ -14,7 +14,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.json.JSONTokener;
 import java.util.List;
 import java.util.ArrayList;
@@ -50,13 +49,11 @@ public class Main {
 	}
 
 	// default values for some parameters
-	//
 	private final static Double _default_time = 10.0; // in seconds
 	private final static Double _default_dt = 0.03;
-	private final static String _default_output = "output.json";
+	private final static String _default_output = "myout.json";
 
 	// some attributes to stores values corresponding to command-line parameters
-	//
 	private static Double _time = null;
 	private static Double _dt = null;
 	private static String _in_file = null;
@@ -65,18 +62,16 @@ public class Main {
 	private static ExecMode _mode = ExecMode.BATCH;
 	
 	private static Factory<SelectionStrategy> selection_strategy_factory = null;
-	private static Factory<Animal> animal_factory = null; // Cambia esto por la fábrica de animales adecuada
+	private static Factory<Animal> animal_factory = null;
     private static Factory<Region> region_factory = null;
 	
 
 	private static void parse_args(String[] args) {
 
 		// define the valid command line options
-		//
 		Options cmdLineOptions = build_options();
 
 		// parse the command line as provided in args
-		//
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
@@ -89,7 +84,6 @@ public class Main {
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
-			//
 			String[] remaining = line.getArgs();
 			if (remaining.length > 0) {
 				String error = "Illegal arguments:";
@@ -182,7 +176,7 @@ public class Main {
 		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>(); 
 		selection_strategy_builders.add(new SelectFirstBuilder());
 		selection_strategy_builders.add(new SelectClosestBuilder());
-		//selection_strategy_builders.add(new SelectYoungestBuilder());
+		selection_strategy_builders.add(new SelectYoungestBuilder());
 		selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 		
 		//Inicializacion de factorias de animales
@@ -201,7 +195,6 @@ public class Main {
 	private static JSONObject load_JSON_file(InputStream in) {
 		return new JSONObject(new JSONTokener(in));
 	}
-
 
 	private static void start_batch_mode() throws Exception {
 //		(1) cargar el archivo de entrada en un JSONObject

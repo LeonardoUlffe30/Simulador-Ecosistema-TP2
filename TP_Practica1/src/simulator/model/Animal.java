@@ -1,9 +1,5 @@
 package simulator.model;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Predicate;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -111,7 +107,6 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 		if (change) {
 			this.set_position(new Vector2D(x, y));
-			//this.set_state(State.NORMAL); // Si se ha ajustado, se cambia de Estado a Normal
 			this.change_to_normal();
 		}
 	}
@@ -136,7 +131,6 @@ public abstract class Animal implements Entity, AnimalInfo {
 	
 	public void move_as_normal(double dt, double DISTANCE_COMPARISON_DEST, double MOVE_SECOND_FACTOR, double MOVE_THIRD_FACTOR, 
 			double REMOVE_ENERGY_FIRST_FACTOR, double ADD_DESIRE, double MIN_RANGE, double MAX_RANGE) {
-		System.out.println("position: " + this.get_position() + " destination: " + this.get_destination()); //Para probar errores
 		if (this.get_position().distanceTo(this.get_destination()) < DISTANCE_COMPARISON_DEST) {
 			this.set_destination(new Vector2D(Utils._rand.nextDouble(0 , this.get_region_mngr().get_width() - 1), 
 					Utils._rand.nextDouble(0, this.get_region_mngr().get_height() - 1)));
