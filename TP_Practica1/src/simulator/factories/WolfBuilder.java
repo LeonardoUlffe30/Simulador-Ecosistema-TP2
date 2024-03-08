@@ -21,8 +21,7 @@ public class WolfBuilder extends Builder<Animal> {
 	@Override
 	protected Wolf create_instance(JSONObject data) {
 		try {
-			if(data.length() == 0)
-				this.fill_in_data(data);
+			this.fill_in_data(data);
 			
 			SelectionStrategy _mate_strategy;
 			JSONObject mateStrategyJSON = data.optJSONObject("mate_strategy");
@@ -61,10 +60,17 @@ public class WolfBuilder extends Builder<Animal> {
 	}
 
 	@Override
-	protected void fill_in_data(JSONObject o) {
-		o.put("mate_strategy",  new JSONObject());
-		o.put("hunt_strategy",  new JSONObject());
-		JSONArray ja = new JSONArray();
-		o.put("pos", ja);
+	protected void fill_in_data(JSONObject o) {		
+		JSONObject mateStrategyJSON = o.optJSONObject("mate_strategy");
+		if(mateStrategyJSON == null)
+			o.put("mate_strategy",  new JSONObject());
+		
+		JSONObject huntStrategyJSON = o.optJSONObject("hunt_strategy");
+		if(huntStrategyJSON == null)
+			o.put("hunt_strategy",  new JSONObject());
+		
+		JSONArray posJSON = o.optJSONArray("pos");
+		if(posJSON == null)
+			o.put("pos", new JSONArray());
 	}
 }

@@ -21,8 +21,7 @@ public class SheepBuilder extends Builder<Animal> {
 	@Override
 	protected Sheep create_instance(JSONObject data) {
 		try {
-			if(data.length() == 0)
-				this.fill_in_data(data);
+			this.fill_in_data(data);
 			
 			SelectionStrategy _mate_strategy;
 			JSONObject mateStrategyJSON = data.optJSONObject("mate_strategy");
@@ -62,9 +61,16 @@ public class SheepBuilder extends Builder<Animal> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-		o.put("mate_strategy",  new JSONObject());
-		o.put("danger_strategy",  new JSONObject());
-		JSONArray ja = new JSONArray();
-		o.put("pos", ja);
+		JSONObject mateStrategyJSON = o.optJSONObject("mate_strategy");
+		if(mateStrategyJSON == null)
+			o.put("mate_strategy",  new JSONObject());
+		
+		JSONObject dangerStrategyJSON = o.optJSONObject("danger_strategy");
+		if(dangerStrategyJSON == null)
+			o.put("danger_strategy",  new JSONObject());
+		
+		JSONArray posJSON = o.optJSONArray("pos");
+		if(posJSON == null)
+			o.put("pos", new JSONArray());
 	}
 }
