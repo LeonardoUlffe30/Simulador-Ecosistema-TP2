@@ -19,8 +19,6 @@ public class RegionManager implements AnimalMapView {
 	private int _height_region;
 	private Region [][]_regions;
 	private int cont = 0;
-	//un mapa (_animal_region) de tipo Map<Animal, Region> que
-	//asigna a cada animal su región actual.
 	private Map<Animal,Region> _animal_region;
 	
 	public RegionManager(int cols, int rows, int width, int height) {
@@ -88,11 +86,8 @@ public class RegionManager implements AnimalMapView {
 		if(r != this.get_regions()[row_animal][col_animal]) { //si region actual es diferente a region correcta
 			r.remove_animal(a);
 			this.get_regions()[row_animal][col_animal].add_animal(a);
-			//this.get_regions()[this.get_width()/x][(this.get_height()/y)].remove_animal(a);
 			//actualizamos en _amimal_region la region que realmente debería pertenecer la clave a
 			this.get_animal_region().replace(a, this.get_regions()[row_animal][col_animal]);
-			//r = this.get_regions()[this.get_width()/x][(this.get_height()/y)]; 
-			//this.get_animal_region().replace(a, r);
 		}
 	}
 	
@@ -109,7 +104,7 @@ public class RegionManager implements AnimalMapView {
 		double recorridoCol = (posComienzoX + 2*e.get_sight_range()-1);
 		
 		//Obtengo la fila y columna inicial. Antes de obtener la fila y columna, verifico si las posiciones son menores que 0
-		int iniFila = (posComienzoY < 0.0)? 0: (int)posComienzoY/this.get_region_height(); //verifico si 
+		int iniFila = (posComienzoY < 0.0)? 0: (int)posComienzoY/this.get_region_height();
 		int iniCol = (posComienzoX < 0.0)? 0: (int)posComienzoX/this.get_region_width();
 		
 		//Obtengo la fila y columna final. Antes de obtener la fila y columna, verifico si las posiciones son mayores que que
@@ -127,55 +122,8 @@ public class RegionManager implements AnimalMapView {
 				}
 			}
 		}
-		
-		/*
-		//Obtengo posicion inicial con respecto a X,Y
-		int posComienzoX = (int)Math.abs(e.get_position().getX()-e.get_sight_range()); 
-		int posComienzoY = (int)Math.abs(e.get_position().getY()-e.get_sight_range());
-		
-		//A partir de la poho(X,Y), obtengo la posicion con respecto a la fila, columna
-		int iniCol = posComienzoX / this.get_region_width();
-		int iniFila = posComienzoY / this.get_region_height();
-		//Obtengo el recorrido (diametro = 2*sr) para saber hasta que columna y fila 
-		//como MAXIMO va a recorrer
-		int recorrido = 2*(int)e.get_sight_range();
-		
-		
-		int range = (int) e.get_sight_range();
-		int regionX_range = this.get_region_width()/range;
-		int regionY_range = this.get_region_height()/range;
-		
-		int auxX = iniCol-regionX_range;
-		int auxY = iniFila-regionY_range;
-		if (auxX < 0)auxX = 0;
-		if (auxY < 0)auxY = 0;
-		
-		//if (regionY_range <= 0)regionY_range = 1;
-		for (int i = auxX; i < regionX_range+iniCol && i < this.get_cols(); i++) {
-			for (int j = auxY; j < regionY_range+iniFila && i < this.get_rows(); j++) {
-				for(Animal a: this.get_regions()[i][j].getAnimals()) {
-					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
-							&& filter.test(a)) {
-						_animals_in_range.add(a);
-					}
-				}
-			}
-		}
-		*/
 		return _animals_in_range;
 	}
-	
-		
-		/*for(int i = iniCol; i < iniCol + recorrido;++i) {
-			for(int j = iniFila; j < iniFila + recorrido;++j) {
-				for(Animal a: this.get_regions()[i][j].getAnimals()) {
-					if(a.get_position().distanceTo(e.get_position()) <= e.get_sight_range()
-							&& filter.test(a)) {
-						_animals_in_range.add(a);
-					}
-				}
-			}
-		}*/
 	
 	@Override
 	public int get_cols() {
