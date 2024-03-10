@@ -44,10 +44,11 @@ public class Sheep extends Animal {
 			this.adjust();// Ajustar posicion en caso posicion este fuera del mapa
 			if (this.get_energy() == 0.0 || (this.get_age() > COMPARISON_AGE))
 				this.set_state(State.DEAD); // Comprobamos que no este muerto de nuevo
-			
+
 			if (this.get_state() != State.DEAD) {
 				this.set_energy(this.get_energy() + this.get_region_mngr().get_food(this, dt));
-				if (this.get_energy() > MAX_RANGE) this.set_energy(MAX_RANGE);
+				if (this.get_energy() > MAX_RANGE)
+					this.set_energy(MAX_RANGE);
 			}
 		}
 
@@ -86,27 +87,25 @@ public class Sheep extends Animal {
 				if (this.get_danger_source() == null) {
 					if (this.get_desire() < COMPARISON_DESIRE) {
 						this.change_to_normal();
-					}
-					else {
+					} else {
 						this.change_to_mate();
 					}
 				}
 			}
 			break;
 		case MATE:
-			//CASO 1 
+			// CASO 1
 			if (this.get_mate_target() != null && (this.get_mate_target().get_state() == State.DEAD || this
 					.get_position().distanceTo(this.get_mate_target().get_position()) > this.get_sight_range())) {
 				this.set_mate_target(null);
 			}
-			//CASO 2
+			// CASO 2
 			if (this.get_mate_target() == null) {
 				this.search_mate_animal();
 				if (this.get_mate_target() == null)
 					this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 							REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-			}
-			else {
+			} else {
 				this.chase_mate_target_create_baby(dt);
 			}
 			if (this.get_danger_source() == null)
@@ -114,8 +113,7 @@ public class Sheep extends Animal {
 
 			if (this.get_danger_source() != null) {
 				this.change_to_danger();
-			}
-			else {
+			} else {
 				if (this.get_desire() < COMPARISON_DESIRE) {
 					this.change_to_normal();
 				}
@@ -137,10 +135,12 @@ public class Sheep extends Animal {
 		this.set_age(this.get_age() + dt);
 		// Quitar 20.0*1.2*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 		this.set_energy(this.get_energy() - REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt);
-		if (this.get_energy() < MIN_RANGE) this.set_energy(MIN_RANGE);
+		if (this.get_energy() < MIN_RANGE)
+			this.set_energy(MIN_RANGE);
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
 		this.set_desire(this.get_desire() + ADD_DESIRE * dt);
-		if (this.get_desire() > MAX_RANGE) this.set_desire(MAX_RANGE);
+		if (this.get_desire() > MAX_RANGE)
+			this.set_desire(MAX_RANGE);
 	}
 
 	public void chase_mate_target_create_baby(double dt) {
@@ -150,11 +150,13 @@ public class Sheep extends Animal {
 		this.set_age(this.get_age() + dt);
 		// Quitar 20.0*1.2*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 		this.set_energy(this.get_energy() - REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt);
-		if (this.get_energy() < MIN_RANGE) this.set_energy(MIN_RANGE);
+		if (this.get_energy() < MIN_RANGE)
+			this.set_energy(MIN_RANGE);
 
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
 		this.set_desire(this.get_desire() + ADD_DESIRE * dt);
-		if (this.get_desire() > MAX_RANGE) this.set_desire(MAX_RANGE);
+		if (this.get_desire() > MAX_RANGE)
+			this.set_desire(MAX_RANGE);
 
 		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {
 			this.set_desire(0.0);
@@ -205,13 +207,12 @@ public class Sheep extends Animal {
 		this.set_danger_source(null);
 		this.set_mate_target(null);
 	}
-	
+
 	@Override
 	protected void change_to_mate() {
 		this.set_state(State.MATE);
 		this.set_danger_source(null);
 	}
-	
 
 	public void change_to_danger() {
 		this.set_state(State.DANGER);

@@ -67,8 +67,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 				.plus(Vector2D.get_random_vector(-1, 1).scale(MUTATION_POS * (Utils._rand.nextGaussian() + 1)));
 		this._sight_range = Utils.get_randomized_parameter((p1.get_sight_range() + p2.get_sight_range()) / 2,
 				MUTATION_SIGHT_RANGE);
-		this._speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed()) / 2,
-				MUTATION_SPEED);
+		this._speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed()) / 2, MUTATION_SPEED);
 	}
 
 	// El gestor de regiones(RegionManager) invocará a este método al añadir el
@@ -76,11 +75,13 @@ public abstract class Animal implements Entity, AnimalInfo {
 	public void init(AnimalMapView reg_mngr) {
 		this.set_region_mngr(reg_mngr);
 		if (this.get_position() == null) {
-			this.set_position(new Vector2D(Utils._rand.nextDouble(0 , this.get_region_mngr().get_width() - 1), Utils._rand.nextDouble(0, this.get_region_mngr().get_height() - 1)));
+			this.set_position(new Vector2D(Utils._rand.nextDouble(0, this.get_region_mngr().get_width() - 1),
+					Utils._rand.nextDouble(0, this.get_region_mngr().get_height() - 1)));
 		} else {
 			adjust();
 		}
-		this.set_destination(new Vector2D(Utils._rand.nextDouble(0 , this.get_region_mngr().get_width() - 1), Utils._rand.nextDouble(0, this.get_region_mngr().get_height() - 1)));
+		this.set_destination(new Vector2D(Utils._rand.nextDouble(0, this.get_region_mngr().get_width() - 1),
+				Utils._rand.nextDouble(0, this.get_region_mngr().get_height() - 1)));
 	}
 
 	public void adjust() {
@@ -110,8 +111,9 @@ public abstract class Animal implements Entity, AnimalInfo {
 			this.change_to_normal();
 		}
 	}
-	
+
 	protected abstract void change_to_normal();
+
 	protected abstract void change_to_mate();
 
 	protected void move(double speed) {
@@ -128,23 +130,26 @@ public abstract class Animal implements Entity, AnimalInfo {
 		animal_object.put("state", get_state());
 		return animal_object;
 	}
-	
-	public void move_as_normal(double dt, double DISTANCE_COMPARISON_DEST, double MOVE_SECOND_FACTOR, double MOVE_THIRD_FACTOR, 
-			double REMOVE_ENERGY_FIRST_FACTOR, double ADD_DESIRE, double MIN_RANGE, double MAX_RANGE) {
+
+	public void move_as_normal(double dt, double DISTANCE_COMPARISON_DEST, double MOVE_SECOND_FACTOR,
+			double MOVE_THIRD_FACTOR, double REMOVE_ENERGY_FIRST_FACTOR, double ADD_DESIRE, double MIN_RANGE,
+			double MAX_RANGE) {
 		if (this.get_position().distanceTo(this.get_destination()) < DISTANCE_COMPARISON_DEST) {
-			this.set_destination(new Vector2D(Utils._rand.nextDouble(0 , this.get_region_mngr().get_width() - 1), 
+			this.set_destination(new Vector2D(Utils._rand.nextDouble(0, this.get_region_mngr().get_width() - 1),
 					Utils._rand.nextDouble(0, this.get_region_mngr().get_height() - 1)));
 		}
 		this.move(this.get_speed() * dt * Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
 		this.set_age(this.get_age() + dt);
-		
+
 		// Quitar 20.0*dt a la energía (manteniéndola siempre entre 0.0 y 100.0).
 		this.set_energy(this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * dt));
-		if (this.get_energy() < MIN_RANGE) this.set_energy(MIN_RANGE);
-		
+		if (this.get_energy() < MIN_RANGE)
+			this.set_energy(MIN_RANGE);
+
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
 		this.set_desire(this.get_desire() + (ADD_DESIRE * dt));
-		if (this.get_desire() > MAX_RANGE) this.set_desire(MAX_RANGE);
+		if (this.get_desire() > MAX_RANGE)
+			this.set_desire(MAX_RANGE);
 	}
 
 	@Override
@@ -288,5 +293,5 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 		set_destination(new Vector2D(x, y));
 	}
-	
+
 }

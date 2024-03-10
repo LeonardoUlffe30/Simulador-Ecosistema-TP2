@@ -60,11 +60,10 @@ public class Main {
 	private static String _out_file = null;
 	private static boolean _sv = false;
 	private static ExecMode _mode = ExecMode.BATCH;
-	
+
 	private static Factory<SelectionStrategy> selection_strategy_factory = null;
 	private static Factory<Animal> animal_factory = null;
-    private static Factory<Region> region_factory = null;
-	
+	private static Factory<Region> region_factory = null;
 
 	private static void parse_args(String[] args) {
 
@@ -106,23 +105,28 @@ public class Main {
 		cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message.").build());
 
 		// input file
-		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Initial configuration file.").build());
+		cmdLineOptions
+				.addOption(Option.builder("i").longOpt("input").hasArg().desc("Initial configuration file.").build());
 
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
 				.desc("An real number representing the total simulation time in seconds. Default value: "
 						+ _default_time + ".")
 				.build());
-		
+
 		// dt
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
-                .desc("A double representing actual time, in seconds, per simulation step. Default value: " + _default_dt + ".").build());
-        
+				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
+						+ _default_dt + ".")
+				.build());
+
 		// output file
-		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
-        
+		cmdLineOptions.addOption(
+				Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
+
 		// simple viewer
-		cmdLineOptions.addOption(Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
+		cmdLineOptions.addOption(
+				Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
 
 		return cmdLineOptions;
 	}
@@ -151,7 +155,7 @@ public class Main {
 			throw new ParseException("Invalid value for time: " + t);
 		}
 	}
-	
+
 	private static void parse_dt_option(CommandLine line) throws ParseException {
 		String dt = line.getOptionValue("dt", _default_dt.toString());
 		try {
@@ -161,32 +165,33 @@ public class Main {
 			throw new ParseException("Invalid value for delta-time: " + dt);
 		}
 	}
-	
+
 	private static void parse_output_option(CommandLine line) {
 		_out_file = line.getOptionValue("o", _default_output);
 	}
-	
+
 	private static void parse_simple_viewer_option(CommandLine line) {
 		_sv = line.hasOption("sv");
 	}
-	
+
 	private static void init_factories() {
-		//Utilizar la clase BuilderBasedFactory para crear 3 factorías (para las estrategias, para los animales, y para las regiones).
-		//Inicializacion de factoria de estrategias
-		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>(); 
+		// Utilizar la clase BuilderBasedFactory para crear 3 factorías (para las
+		// estrategias, para los animales, y para las regiones).
+		// Inicializacion de factoria de estrategias
+		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>();
 		selection_strategy_builders.add(new SelectFirstBuilder());
 		selection_strategy_builders.add(new SelectClosestBuilder());
 		selection_strategy_builders.add(new SelectYoungestBuilder());
 		selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
-		
-		//Inicializacion de factorias de animales
-		List<Builder<Animal>> animal_builders = new ArrayList<>(); 
+
+		// Inicializacion de factorias de animales
+		List<Builder<Animal>> animal_builders = new ArrayList<>();
 		animal_builders.add(new SheepBuilder(selection_strategy_factory));
 		animal_builders.add(new WolfBuilder(selection_strategy_factory));
 		animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
-		
-		//Inicializacion de factorias de regiones
-		List<Builder<Region>> region_builders = new ArrayList<>(); 
+
+		// Inicializacion de factorias de regiones
+		List<Builder<Region>> region_builders = new ArrayList<>();
 		region_builders.add(new DynamicSupplyRegionBuilder());
 		region_builders.add(new DefaultRegionBuilder());
 		region_factory = new BuilderBasedFactory<Region>(region_builders);
@@ -201,29 +206,29 @@ public class Main {
 		InputStream is = new FileInputStream(new File(_in_file));
 		JSONObject inputJSON = load_JSON_file(is);
 		is.close();
-		
+
 //		(2) crear el archivo de salida
 		OutputStream os = new FileOutputStream(new File(_out_file));
-		
+
 //		(3) crear una instancia de Simulator pasando a su constructora la información que necesita
-	    int cols = inputJSON.getInt("cols");
-	    int rows = inputJSON.getInt("rows");
-	    int width = inputJSON.getInt("width");
-	    int height = inputJSON.getInt("height");
+		int cols = inputJSON.getInt("cols");
+		int rows = inputJSON.getInt("rows");
+		int width = inputJSON.getInt("width");
+		int height = inputJSON.getInt("height");
 		Simulator sim = new Simulator(cols, rows, width, height, animal_factory, region_factory);
-		
+
 //		(4) crear una instancia de Controller pasandole el simulador
 		Controler controler = new Controler(sim);
-		
+
 //		(5) llamar a load_data pasandole el JSONObject de la entrada
 		controler.load_data(inputJSON);
-		
+
 //		(6) llamar al método run con los parámetros correspondents
 		controler.run(_time, _dt, _sv, os);
-		
+
 //		(7) cerrar el archivo de salida
 		os.close();
-		
+
 	}
 
 	private static void start_GUI_mode() throws Exception {

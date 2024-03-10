@@ -21,7 +21,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 	public BuilderBasedFactory(List<Builder<T>> builders) {
 		this();
 // call add_builder(b) for each builder b in builder
-		for(Builder<T> b : builders) {
+		for (Builder<T> b : builders) {
 			this.add_builder(b);
 		}
 	}
@@ -45,7 +45,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 //
 // info.has("data") ? info.getJSONObject("data") : new getJSONObject()
 		Builder<T> builder = this.get_builders().get(info.getString("type"));
-		if(builder != null) {
+		if (builder != null) {
 			return builder.create_instance(info.has("data") ? info.getJSONObject("data") : new JSONObject());
 		} else {
 // If no builder is found or the result is null ...
