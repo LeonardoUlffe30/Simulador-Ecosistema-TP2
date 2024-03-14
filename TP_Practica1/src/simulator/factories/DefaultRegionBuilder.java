@@ -7,7 +7,7 @@ import simulator.model.Region;
 
 public class DefaultRegionBuilder extends Builder<Region> {
 	public DefaultRegionBuilder() {
-		super("default", "Constructor de objetos DefaultRegion");
+		super("default", "Infinite food supply");
 	}
 
 	@Override

@@ -115,4 +115,10 @@ public class Simulator implements JSONable {
 	public double getDt() {
 		return dt;
 	}
+	
+	public void reset(int cols, int rows, int width, int height) {
+		_animals_in_list.clear();
+		this._region_mngr = new RegionManager(cols, rows, width, height);
+		this.dt = 0.0;
+	}
 }

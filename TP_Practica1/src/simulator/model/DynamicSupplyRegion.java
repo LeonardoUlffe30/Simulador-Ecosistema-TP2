@@ -53,5 +53,10 @@ public class DynamicSupplyRegion extends Region {
 	public void set_growth_factor(double _growth_factor) {
 		this._growth_factor = _growth_factor;
 	}
+	
+	public String toString() {
+		return "Dynamic Region";
+		
+	}
 
 }

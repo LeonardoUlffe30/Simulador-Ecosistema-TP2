@@ -14,5 +14,10 @@ public class DefaultRegion extends Region {
 			return FOOD_FIRST_FACTOR * Math.exp(-Math.max(0, n - FOOD_SECOND_FACTOR) * FOOD_THIRD_FACTOR) * dt;
 		}
 	}
+	
+	public String toString() {
+		return "Default Region";
+		
+	}
 
 }

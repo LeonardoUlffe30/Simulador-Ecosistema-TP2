@@ -57,4 +57,10 @@ public class Region implements Entity, FoodSupplier, RegionInfo {
 
 	}
 
+	@Override
+	public List<AnimalInfo> getAnimalsInfo() {
+		//Collections.unmodifiableList(_animals);
+		return new ArrayList<>(animals_in_list); // se puede usar Collections.unmodifiableList(_animals);
+	}
+
 }

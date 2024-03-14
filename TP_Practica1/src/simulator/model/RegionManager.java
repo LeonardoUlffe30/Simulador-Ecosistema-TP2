@@ -216,4 +216,10 @@ public class RegionManager implements AnimalMapView {
 	public Map<Animal, Region> get_animal_region() {
 		return _animal_region;
 	}
+
+	@Override
+	public Iterator<RegionData> iterator() {
+		// TODO Auto-generated method stub
+		return iterator();
+	}
 }

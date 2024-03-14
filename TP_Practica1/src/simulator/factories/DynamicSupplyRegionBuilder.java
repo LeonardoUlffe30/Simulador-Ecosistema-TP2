@@ -7,7 +7,7 @@ import simulator.model.Region;
 
 public class DynamicSupplyRegionBuilder extends Builder<Region> {
 	public DynamicSupplyRegionBuilder() {
-		super("dynamic", "Constructor de objetos DynamicSupplyRegion");
+		super("dynamic", "Dynamic food supply");
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-		o.put("factor", new JSONObject());
-		o.put("food", new JSONObject());
+		o.put("factor", new JSONObject("food increase factor (optional, default 2.0)"));
+		o.put("food", new JSONObject("initial amount of food (optional, default 100.0)"));
 	}
 }
