@@ -19,7 +19,7 @@ public class DynamicSupplyRegion extends Region {
 	public void update(double dt) {
 		double x = Utils._rand.nextDouble(0, 1);
 		if (x <= 0.5)
-			this.set_food_quantity(this.get_food_quantity() + (dt * this.get_growth_factor()));
+			this._food_quantity += dt * this._growth_factor;
 	}
 
 	public double get_food(Animal a, double dt) {
@@ -31,28 +31,13 @@ public class DynamicSupplyRegion extends Region {
 				if (i.get_diet() == Diet.HERBIVORE)
 					++n;
 			}
-			double food = Math.min(this.get_food_quantity(),
+			double food = Math.min(this._food_quantity,
 					FOOD_FIRST_FACTOR * Math.exp(-Math.max(0, n - FOOD_SECOND_FACTOR) * FOOD_THIRD_FACTOR) * dt);
-			this.set_food_quantity(this.get_food_quantity() - food);
+			this._food_quantity -= food;
 			return food;
 		}
 	}
 
-	public double get_food_quantity() {
-		return _food_quantity;
-	}
-
-	public double get_growth_factor() {
-		return _growth_factor;
-	}
-
-	public void set_food_quantity(double _food_quantity) {
-		this._food_quantity = _food_quantity;
-	}
-
-	public void set_growth_factor(double _growth_factor) {
-		this._growth_factor = _growth_factor;
-	}
 	
 	public String toString() {
 		return "Dynamic Region";

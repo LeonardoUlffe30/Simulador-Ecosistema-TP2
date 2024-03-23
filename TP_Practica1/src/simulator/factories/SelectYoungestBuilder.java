@@ -12,12 +12,8 @@ public class SelectYoungestBuilder extends Builder<SelectionStrategy> {
 
 	@Override
 	protected SelectYoungest create_instance(JSONObject data) {
-		try {
 			return new SelectYoungest();
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Datos invalidos para la creacion del objeto SelectYoungest: " + e.getMessage());
-		}
+
 	}
 
 	@Override

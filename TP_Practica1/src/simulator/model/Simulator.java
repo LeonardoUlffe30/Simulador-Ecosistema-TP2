@@ -27,21 +27,21 @@ public class Simulator implements JSONable {
 	}
 
 	private void set_region(int row, int col, Region r) {
-		this.get_region_mngr().set_region(row, col, r);
+		this._region_mngr.set_region(row, col, r);
 	}
 
 	public void set_region(int row, int col, JSONObject r_json) {
-		Region R = this.get_regions_factory().create_instance(r_json);
+		Region R = this._regions_factory.create_instance(r_json);
 		this.set_region(row, col, R);
 	}
 
 	private void add_animal(Animal a) {
 		this.get_animals_in_list().add(a);
-		this.get_region_mngr().register_animal(a);
+		this._region_mngr.register_animal(a);
 	}
 
 	public void add_animal(JSONObject a_json) {
-		Animal A = this.get_animal_factory().create_instance(a_json);
+		Animal A = this._animal_factory.create_instance(a_json);
 		this.add_animal(A);
 	}
 
@@ -62,7 +62,7 @@ public class Simulator implements JSONable {
 		List<Animal> dead_animals = new ArrayList<Animal>();
 		for (Animal a : this.get_animals_in_list()) {
 			if (a.get_state() == State.DEAD) {
-				this.get_region_mngr().unregister_animal(a);
+				this._region_mngr.unregister_animal(a);
 				dead_animals.add(a);
 			}
 		}
@@ -73,9 +73,9 @@ public class Simulator implements JSONable {
 
 		for (Animal a : this.get_animals_in_list()) {
 			a.update(dt);
-			this.get_region_mngr().update_animal_region(a);
+			this._region_mngr.update_animal_region(a);
 		}
-		this.get_region_mngr().update_all_regions(dt);
+		this._region_mngr.update_all_regions(dt);
 
 		List<Animal> babies = new ArrayList<Animal>();
 		for (Animal a : this.get_animals_in_list()) {
@@ -91,31 +91,16 @@ public class Simulator implements JSONable {
 	public JSONObject as_JSON() {
 		JSONObject simulatorObject = new JSONObject();
 		simulatorObject.put("time", dt);
-		simulatorObject.put("state", this.get_region_mngr().as_JSON());
+		simulatorObject.put("state", this._region_mngr.as_JSON());
 		return simulatorObject;
 
 	}
 
-	public Factory<Animal> get_animal_factory() {
-		return _animal_factory;
-	}
-
-	public Factory<Region> get_regions_factory() {
-		return _regions_factory;
-	}
-
-	public RegionManager get_region_mngr() {
-		return _region_mngr;
-	}
-
+	
 	public List<Animal> get_animals_in_list() {
 		return this._animals_in_list;
 	}
 
-	public double getDt() {
-		return dt;
-	}
-	
 	public void reset(int cols, int rows, int width, int height) {
 		_animals_in_list.clear();
 		this._region_mngr = new RegionManager(cols, rows, width, height);

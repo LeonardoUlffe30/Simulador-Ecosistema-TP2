@@ -12,7 +12,6 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 
 	@Override
 	protected DynamicSupplyRegion create_instance(JSONObject data) {
-		try {
 			if (data.length() == 0)
 				this.fill_in_data(data);
 
@@ -27,15 +26,12 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 			else
 				food = 1000.0;
 			return new DynamicSupplyRegion(factor, food);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Datos invalidos para la creacion del objeto DynamicSupplyRegion: " + e.getMessage());
-		}
+
 	}
 
 	@Override
 	protected void fill_in_data(JSONObject o) {
-		o.put("factor", new JSONObject("food increase factor (optional, default 2.0)"));
-		o.put("food", new JSONObject("initial amount of food (optional, default 100.0)"));
+		o.put("factor", new JSONObject());
+		o.put("food", new JSONObject());
 	}
 }

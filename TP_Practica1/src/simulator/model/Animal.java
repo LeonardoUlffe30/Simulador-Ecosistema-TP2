@@ -13,20 +13,20 @@ public abstract class Animal implements Entity, AnimalInfo {
 	private final static double MUTATION_SIGHT_RANGE = 0.2;
 	private final static double MUTATION_SPEED = 0.2;
 
-	private String _genetic_code;
-	private Diet _diet;
-	private State _state;
-	private Vector2D _pos;
-	private Vector2D _dest;
-	private double _energy;
-	private double _speed;
-	private double _age;
-	private double _desire;
-	private double _sight_range;
-	private Animal _mate_target;
-	private Animal _baby;
-	private AnimalMapView _region_mngr;
-	private SelectionStrategy _mate_strategy;
+	protected String _genetic_code;
+	protected Diet _diet;
+	protected State _state;
+	protected Vector2D _pos;
+	protected Vector2D _dest;
+	protected double _energy;
+	protected double _speed;
+	protected double _age;
+	protected double _desire;
+	protected double _sight_range;
+	protected Animal _mate_target;
+	protected Animal _baby;
+	protected AnimalMapView _region_mngr;
+	protected SelectionStrategy _mate_strategy;
 
 	protected Animal(String genetic_code, Diet diet, double sight_range, double init_speed,
 			SelectionStrategy mate_strategy, Vector2D pos) {
@@ -147,8 +147,8 @@ public abstract class Animal implements Entity, AnimalInfo {
 			this.set_energy(MIN_RANGE);
 
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-		this.set_desire(this.get_desire() + (ADD_DESIRE * dt));
-		if (this.get_desire() > MAX_RANGE)
+		this.set_desire(this._desire + (ADD_DESIRE * dt));
+		if (this._desire > MAX_RANGE)
 			this.set_desire(MAX_RANGE);
 	}
 
@@ -205,89 +205,87 @@ public abstract class Animal implements Entity, AnimalInfo {
 		return _state;
 	}
 
-	public SelectionStrategy get_mate_strategy() {
+	protected SelectionStrategy get_mate_strategy() {
 		return _mate_strategy;
 	}
 
-	public AnimalMapView get_region_mngr() {
+	protected AnimalMapView get_region_mngr() {
 		return _region_mngr;
 	}
 
-	public double get_desire() {
-		return _desire;
-	}
+	
 
-	public Animal get_mate_target() {
+	protected Animal get_mate_target() {
 		return _mate_target;
 	}
 
-	public Animal get_baby() {
+	protected Animal get_baby() {
 		return _baby;
 	}
 
-	Animal deliver_baby() {
+	protected Animal deliver_baby() {
 		Animal aux_baby = this.get_baby();
 		this.set_baby(null);
 		return aux_baby;
 	}
 
-	public void set_diet(Diet _diet) {
+	protected void set_diet(Diet _diet) {
 		this._diet = _diet;
 	}
 
-	public void set_state(State _state) {
+	protected void set_state(State _state) {
 		this._state = _state;
 	}
 
-	public void set_position(Vector2D _pos) {
+	protected void set_position(Vector2D _pos) {
 		this._pos = _pos;
 	}
 
-	public void set_destination(Vector2D _dest) {
+	protected void set_destination(Vector2D _dest) {
 		this._dest = _dest;
 	}
 
-	public void set_desire(double _desire) {
+	protected void set_desire(double _desire) {
 		this._desire = _desire;
 	}
 
-	public void set_mate_target(Animal _mate_target) {
+	protected void set_mate_target(Animal _mate_target) {
 		this._mate_target = _mate_target;
 	}
 
-	public void set_baby(Animal _baby) {
+	protected void set_baby(Animal _baby) {
 		this._baby = _baby;
 	}
 
-	public void set_region_mngr(AnimalMapView _region_mngr) {
+	protected void set_region_mngr(AnimalMapView _region_mngr) {
 		this._region_mngr = _region_mngr;
 	}
 
-	public void set_mate_strategy(SelectionStrategy _mate_strategy) {
+	protected void set_mate_strategy(SelectionStrategy _mate_strategy) {
 		this._mate_strategy = _mate_strategy;
 	}
 
-	public void set_genetic_code(String _genetic_code) {
+	protected void set_genetic_code(String _genetic_code) {
 		this._genetic_code = _genetic_code;
 	}
 
-	public void set_energy(double _energy) {
+	protected void set_energy(double _energy) {
 		this._energy = _energy;
 	}
 
-	public void set_speed(double _speed) {
+	protected void set_speed(double _speed) {
 		this._speed = _speed;
 	}
 
-	public void set_age(double _age) {
+	protected void set_age(double _age) {
 		this._age = _age;
 	}
 
-	public void set_sight_range(double _sight_range) {
+	protected void set_sight_range(double _sight_range) {
 		this._sight_range = _sight_range;
 	}
 
-	public void random_dest() {
+	protected void random_dest() {
 		double x = Utils._rand.nextDouble(800);
 		double y = Utils._rand.nextDouble(600);
 

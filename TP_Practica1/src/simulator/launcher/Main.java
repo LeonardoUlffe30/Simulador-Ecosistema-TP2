@@ -166,7 +166,7 @@ public class Main {
 		}
 	}
 
-	private static void parse_output_option(CommandLine line) {
+	private static void parse_output_option(CommandLine line) throws ParseException{
 		_out_file = line.getOptionValue("o", _default_output);
 	}
 

@@ -68,7 +68,7 @@ public class Controler {
 
 //	Método para ejecutar el simulador por un tiempo determinado y escribir los estados inicial 
 //	y final en un OutputStream
-	public void run(double t, double dt, boolean sv, OutputStream out) {
+	public void run(double t, double dt, boolean sv, OutputStream out) throws JSONException, IOException {
 		SimpleObjectViewer view = null;
 		if (sv) {
 			MapInfo m = this.get_sim().get_map_info();
@@ -96,11 +96,8 @@ public class Controler {
 		result.put("out", final_state);
 
 		PrintStream p = new PrintStream(out);
-		try {
+		
 			p.write(result.toString(2).getBytes());
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
 		p.println();
 		p.flush();
 

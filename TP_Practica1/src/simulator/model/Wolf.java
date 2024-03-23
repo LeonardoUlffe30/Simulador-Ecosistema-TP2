@@ -37,7 +37,7 @@ public class Wolf extends Animal {
 
 	protected Wolf(Wolf p1, Animal p2) {
 		super(p1, p2);
-		this._hunting_strategy = p1.get_hunting_strategy();
+		this._hunting_strategy = p1._hunting_strategy;
 		this._hunt_target = null;
 	}
 
@@ -66,19 +66,19 @@ public class Wolf extends Animal {
 			if (this.get_energy() < COMPARISON_ENERGY) {
 				this.change_to_hunger();
 			} else {
-				if (this.get_desire() > COMPARISON_DESIRE) {
+				if (this._desire > COMPARISON_DESIRE) {
 					this.change_to_mate();
 				}
 			}
 			break;
 		case HUNGER:
-			if (this.get_hunt_target() == null || (this.get_hunt_target() != null
-					&& (this.get_hunt_target().get_state() == State.DEAD || this.get_position()
-							.distanceTo(this.get_hunt_target().get_position()) > this.get_sight_range()))) {
+			if (this._hunt_target == null || (this._hunt_target != null)
+					&& (this._hunt_target._state == State.DEAD || this.get_position()
+							.distanceTo(this._hunt_target._pos) > this.get_sight_range())) {
 				this.search_hunt_target();
 			}
 
-			if (this.get_hunt_target() == null)
+			if (this._hunt_target == null)
 				this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
 						REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
 			else {
@@ -86,7 +86,7 @@ public class Wolf extends Animal {
 			}
 
 			if (this.get_energy() > COMPARISON_ENERGY) {
-				if (this.get_desire() < COMPARISON_DESIRE) {
+				if (this._desire < COMPARISON_DESIRE) {
 					this.change_to_normal();
 				} else {
 					this.change_to_mate();
@@ -111,7 +111,7 @@ public class Wolf extends Animal {
 			if (this.get_energy() < COMPARISON_ENERGY) {
 				this.change_to_hunger();
 			} else {
-				if (this.get_desire() < COMPARISON_DESIRE) {
+				if (this._desire < COMPARISON_DESIRE) {
 					this.change_to_normal();
 				}
 			}
@@ -125,7 +125,7 @@ public class Wolf extends Animal {
 	}
 
 	public void move_to_hunt(double dt) {
-		this.set_destination(this.get_hunt_target().get_position());
+		this.set_destination(this._hunt_target.get_position());
 		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt
 				* Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
 		this.set_age(this.get_age() + dt);
@@ -134,13 +134,13 @@ public class Wolf extends Animal {
 		if (this.get_energy() < MIN_RANGE)
 			this.set_energy(MIN_RANGE);
 
-		this.set_desire(this.get_desire() + (ADD_DESIRE * dt));
-		if (this.get_desire() > MAX_RANGE)
-			this.set_desire(MAX_RANGE);
+		this._desire = this._desire + (ADD_DESIRE * dt);
+		if (this._desire > MAX_RANGE)
+			this._desire = MAX_RANGE;
 
-		if (this.get_position().distanceTo(this.get_hunt_target().get_position()) < DISTANCE_COMPARISON_HUNT) {
-			this.get_hunt_target().set_state(State.DEAD);
-			this.set_hunt_target(null);
+		if (this.get_position().distanceTo(this._hunt_target._pos) < DISTANCE_COMPARISON_HUNT) {
+			this._hunt_target._state = State.DEAD;
+			this._hunt_target = null;
 
 			this.set_energy(this.get_energy() + ADD_ENERGY);
 			if (this.get_energy() > MAX_RANGE)
@@ -158,13 +158,13 @@ public class Wolf extends Animal {
 		if (this.get_energy() < MIN_RANGE)
 			this.set_energy(MIN_RANGE);
 
-		this.set_desire(this.get_desire() + (ADD_DESIRE * dt));
-		if (this.get_desire() > MAX_RANGE)
-			this.set_desire(MAX_RANGE);
+		this._desire = this._desire + (ADD_DESIRE * dt);
+		if (this._desire > MAX_RANGE)
+			this._desire = MAX_RANGE;
 
 		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {
-			this.set_desire(0.0);
-			this.get_mate_target().set_desire(0.0);
+			this._desire = 0.0;
+			this.get_mate_target()._desire = 0.0;
 
 			if (!this.is_pregnant()) {
 				double x = Utils._rand.nextDouble(0, 1);
@@ -190,31 +190,18 @@ public class Wolf extends Animal {
 	public void search_hunt_target() {
 		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
 				(Animal a) -> a.get_diet() == Diet.HERBIVORE);
-		SelectionStrategy aux = this.get_hunting_strategy();
-		this.set_hunt_target(aux.select(this, animals_filtered));
+		SelectionStrategy aux = this._hunting_strategy;
+		this._hunt_target = aux.select(this, animals_filtered);
 	}
 
-	public Animal get_hunt_target() {
-		return _hunt_target;
-	}
 
-	public SelectionStrategy get_hunting_strategy() {
-		return _hunting_strategy;
-	}
 
-	public void set_hunt_target(Animal _hunt_target) {
-		this._hunt_target = _hunt_target;
-	}
-
-	public void set_hunting_strategy(SelectionStrategy _hunting_strategy) {
-		this._hunting_strategy = _hunting_strategy;
-	}
 
 	@Override
 	protected void change_to_normal() {
 		// TODO Auto-generated method stub
 		this.set_state(State.NORMAL);
-		this.set_hunt_target(null);
+		this._hunt_target = null;
 		this.set_mate_target(null);
 	}
 
@@ -222,7 +209,7 @@ public class Wolf extends Animal {
 	protected void change_to_mate() {
 		// TODO Auto-generated method stub
 		this.set_state(State.MATE);
-		this.set_hunt_target(null);
+		this._hunt_target = null;
 	}
 
 	public void change_to_hunger() {

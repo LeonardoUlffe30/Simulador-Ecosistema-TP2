@@ -12,12 +12,7 @@ public class SelectFirstBuilder extends Builder<SelectionStrategy> {
 
 	@Override
 	protected SelectFirst create_instance(JSONObject data) {
-		try {
 			return new SelectFirst();
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Datos invalidos para la creacion del objeto SelectFirst: " + e.getMessage());
-		}
 	}
 
 	@Override

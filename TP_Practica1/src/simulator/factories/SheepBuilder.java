@@ -20,7 +20,7 @@ public class SheepBuilder extends Builder<Animal> {
 
 	@Override
 	protected Sheep create_instance(JSONObject data) {
-		try {
+
 			this.fill_in_data(data);
 
 			SelectionStrategy _mate_strategy;
@@ -54,9 +54,6 @@ public class SheepBuilder extends Builder<Animal> {
 			}
 
 			return new Sheep(_mate_strategy, _danger_strategy, _pos);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Datos invalidos para la creacion del objeto Sheep: " + e.getMessage());
-		}
 	}
 
 	@Override

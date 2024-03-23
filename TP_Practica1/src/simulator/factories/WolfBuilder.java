@@ -20,7 +20,6 @@ public class WolfBuilder extends Builder<Animal> {
 
 	@Override
 	protected Wolf create_instance(JSONObject data) {
-		try {
 			this.fill_in_data(data);
 
 			SelectionStrategy _mate_strategy;
@@ -54,9 +53,6 @@ public class WolfBuilder extends Builder<Animal> {
 			}
 
 			return new Wolf(_mate_strategy, _hunt_strategy, _pos);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Datos invalidos para la creacion del objeto Wolf: " + e.getMessage());
-		}
 	}
 
 	@Override

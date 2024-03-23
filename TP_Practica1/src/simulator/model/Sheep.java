@@ -66,7 +66,7 @@ public class Sheep extends Animal {
 			if (this.get_danger_source() != null) {
 				this.change_to_danger();
 			} else {
-				if (this.get_desire() > COMPARISON_DESIRE) {
+				if (this._desire > COMPARISON_DESIRE) {
 					this.change_to_mate();
 				}
 			}
@@ -85,7 +85,7 @@ public class Sheep extends Animal {
 					.distanceTo(this.get_danger_source().get_position()) > this.get_sight_range()) {
 				this.search_dangerous_animal();
 				if (this.get_danger_source() == null) {
-					if (this.get_desire() < COMPARISON_DESIRE) {
+					if (this._desire < COMPARISON_DESIRE) {
 						this.change_to_normal();
 					} else {
 						this.change_to_mate();
@@ -114,7 +114,7 @@ public class Sheep extends Animal {
 			if (this.get_danger_source() != null) {
 				this.change_to_danger();
 			} else {
-				if (this.get_desire() < COMPARISON_DESIRE) {
+				if (this._desire < COMPARISON_DESIRE) {
 					this.change_to_normal();
 				}
 			}
@@ -138,8 +138,8 @@ public class Sheep extends Animal {
 		if (this.get_energy() < MIN_RANGE)
 			this.set_energy(MIN_RANGE);
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-		this.set_desire(this.get_desire() + ADD_DESIRE * dt);
-		if (this.get_desire() > MAX_RANGE)
+		this.set_desire(this._desire + ADD_DESIRE * dt);
+		if (this._desire > MAX_RANGE)
 			this.set_desire(MAX_RANGE);
 	}
 
@@ -154,8 +154,8 @@ public class Sheep extends Animal {
 			this.set_energy(MIN_RANGE);
 
 		// Añadir 40.0*dt al deseo (manteniéndolo siempre entre 0.0 y 100.0).
-		this.set_desire(this.get_desire() + ADD_DESIRE * dt);
-		if (this.get_desire() > MAX_RANGE)
+		this.set_desire(this._desire + ADD_DESIRE * dt);
+		if (this._desire > MAX_RANGE)
 			this.set_desire(MAX_RANGE);
 
 		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {

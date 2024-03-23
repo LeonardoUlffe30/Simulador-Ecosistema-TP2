@@ -12,12 +12,8 @@ public class SelectClosestBuilder extends Builder<SelectionStrategy> {
 
 	@Override
 	protected SelectClosest create_instance(JSONObject data) {
-		try {
 			return new SelectClosest();
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Datos invalidos para la creacion del objeto SelectClosest: " + e.getMessage());
-		}
+
 	}
 
 	@Override
