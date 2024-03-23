@@ -28,9 +28,9 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 
 	public void add_builder(Builder<T> b) {
 // add an entry “b.getTag() |−> b” to _builders.
-		this.get_builders().put(b.getTag(), b);
+		this._builders.put(b.getTag(), b);
 // add b.get_info() to _buildersInfo
-		this.get_builders_info().add(b.get_info());
+		this._builders_info.add(b.get_info());
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 // because ‘data’ is optional:
 //
 // info.has("data") ? info.getJSONObject("data") : new getJSONObject()
-		Builder<T> builder = this.get_builders().get(info.getString("type"));
+		Builder<T> builder = this._builders.get(info.getString("type"));
 		if (builder != null) {
 			return builder.create_instance(info.has("data") ? info.getJSONObject("data") : new JSONObject());
 		} else {
@@ -56,13 +56,5 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 	@Override
 	public List<JSONObject> get_info() {
 		return Collections.unmodifiableList(_builders_info);
-	}
-
-	public Map<String, Builder<T>> get_builders() {
-		return _builders;
-	}
-
-	public List<JSONObject> get_builders_info() {
-		return _builders_info;
 	}
 }

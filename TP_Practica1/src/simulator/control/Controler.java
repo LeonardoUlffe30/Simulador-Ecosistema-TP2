@@ -46,7 +46,7 @@ public class Controler {
 //				cf≤C≤ct (es decir usando un bucle anidado para modificar varias regiones).
 				for (int r = row.getInt(0); r <= row.getInt(1); ++r) {
 					for (int c = col.getInt(0); c <= col.getInt(1); ++c) {
-						this.get_sim().set_region(r, c, spec);
+						this._sim.set_region(r, c, spec);
 					}
 				}
 			}
@@ -61,7 +61,7 @@ public class Controler {
 			int amount = animal.getInt("amount");
 			JSONObject spec = animal.getJSONObject("spec");
 			for (int j = 0; j < amount; ++j) {
-				this.get_sim().add_animal(spec);
+				this._sim.add_animal(spec);
 			}
 		}
 	}
@@ -71,9 +71,9 @@ public class Controler {
 	public void run(double t, double dt, boolean sv, OutputStream out) throws JSONException, IOException {
 		SimpleObjectViewer view = null;
 		if (sv) {
-			MapInfo m = this.get_sim().get_map_info();
+			MapInfo m = this._sim.get_map_info();
 			view = new SimpleObjectViewer("[ECOSYSTEM]", m.get_width(), m.get_height(), m.get_cols(), m.get_rows());
-			view.update(to_animals_info(this.get_sim().get_animals()), this.get_sim().get_time(), dt);
+			view.update(to_animals_info(this._sim.get_animals()), this._sim.get_time(), dt);
 		}
 //		Además, tiene que escribir en out una estructura JSON de la siguiente forma:
 //		{
@@ -82,15 +82,15 @@ public class Controler {
 //		}
 //		Donde init_state es el resultado que devuelve _sim.as_JSON() antes de entrar en el bucle, y
 //		final_state es el resultado que devuelve _sim.as_JSON() al salir del bucle.
-		JSONObject init_state = this.get_sim().as_JSON();
+		JSONObject init_state = this._sim.as_JSON();
 
-		while (this.get_sim().get_time() <= t) {
-			this.get_sim().advance(dt);
+		while (this._sim.get_time() <= t) {
+			this._sim.advance(dt);
 			if (sv)
-				view.update(to_animals_info(this.get_sim().get_animals()), this.get_sim().get_time(), dt);
+				view.update(to_animals_info(this._sim.get_animals()), this._sim.get_time(), dt);
 		}
 
-		JSONObject final_state = this.get_sim().as_JSON();
+		JSONObject final_state = this._sim.as_JSON();
 		JSONObject result = new JSONObject();
 		result.put("in", init_state);
 		result.put("out", final_state);
@@ -111,9 +111,5 @@ public class Controler {
 			ol.add(new ObjInfo(a.get_genetic_code(), (int) a.get_position().getX(), (int) a.get_position().getY(),
 					(int) Math.round(a.get_age()) + 2));
 		return ol;
-	}
-
-	public Simulator get_sim() {
-		return _sim;
 	}
 }

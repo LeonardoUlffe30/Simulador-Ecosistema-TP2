@@ -43,178 +43,154 @@ public class Wolf extends Animal {
 
 	@Override
 	public void update(double dt) {
-		if (this.get_state() != State.DEAD) {
+		if (this._state != State.DEAD) {
 			this.update_state(dt);
 			this.adjust();
-			if (this.get_energy() == 0.0 || this.get_age() > COMPARISON_AGE)
-				this.set_state(State.DEAD);
+			if (this._energy == 0.0 || this._age > COMPARISON_AGE)
+				this._state = State.DEAD;
 
-			if (this.get_state() != State.DEAD) {
-				this.set_energy(this.get_energy() + this.get_region_mngr().get_food(this, dt));
-				if (this.get_energy() > MAX_RANGE)
-					this.set_energy(MAX_RANGE);
+			if (this._state != State.DEAD) {
+				this._energy += this._region_mngr.get_food(this, dt);
+				if (this._energy > MAX_RANGE) this._energy = MAX_RANGE;
 			}
 		}
 	}
 
 	private void update_state(double dt) {
-		switch (this.get_state()) {
+		switch (this._state) {
 		case NORMAL:
-			this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
-					REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-
-			if (this.get_energy() < COMPARISON_ENERGY) {
-				this.change_to_hunger();
-			} else {
-				if (this._desire > COMPARISON_DESIRE) {
-					this.change_to_mate();
-				}
-			}
+			this.case_normal(dt);
 			break;
 		case HUNGER:
-			if (this._hunt_target == null || (this._hunt_target != null)
-					&& (this._hunt_target._state == State.DEAD || this.get_position()
-							.distanceTo(this._hunt_target._pos) > this.get_sight_range())) {
-				this.search_hunt_target();
-			}
-
-			if (this._hunt_target == null)
-				this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
-						REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-			else {
-				this.move_to_hunt(dt);
-			}
-
-			if (this.get_energy() > COMPARISON_ENERGY) {
-				if (this._desire < COMPARISON_DESIRE) {
-					this.change_to_normal();
-				} else {
-					this.change_to_mate();
-				}
-			}
+			this.case_hunger(dt);
 			break;
 		case MATE:
-			if (this.get_mate_target() != null && (this.get_mate_target().get_state() == State.DEAD || this
-					.get_position().distanceTo(this.get_mate_target().get_position()) > this.get_sight_range())) {
-				this.set_mate_target(null);
-			}
-
-			if (this.get_mate_target() == null) {
-				this.search_mate_target();
-				if (this.get_mate_target() == null)
-					this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
-							REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
-			} else {
-				this.chase_mate_target_create_baby(dt);
-			}
-
-			if (this.get_energy() < COMPARISON_ENERGY) {
-				this.change_to_hunger();
-			} else {
-				if (this._desire < COMPARISON_DESIRE) {
-					this.change_to_normal();
-				}
-			}
-			break;
-		case DANGER:
-//			Un objeto de tipo Wolf nunca puede estar en estado DANGER.
+			this.case_mate(dt);
 			break;
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + this.get_state());
+			throw new IllegalArgumentException("Unexpected value: " + this._state);
 		}
 	}
+	
+	private void case_mate(double dt) {
+		if (this._mate_target != null && (this._mate_target._state == State.DEAD || this
+				._pos.distanceTo(this._mate_target._pos) > this._sight_range)) {
+			this._mate_target = null;
+		}
 
-	public void move_to_hunt(double dt) {
-		this.set_destination(this._hunt_target.get_position());
-		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt
-				* Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
-		this.set_age(this.get_age() + dt);
+		if (this._mate_target == null) {
+			this.search_mate_target();
+			if (this._mate_target == null)
+				this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
+						REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
+		} else this.chase_mate_target_create_baby(dt);
 
-		this.set_energy(this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt));
-		if (this.get_energy() < MIN_RANGE)
-			this.set_energy(MIN_RANGE);
+		if (this._energy < COMPARISON_ENERGY) this.change_to_hunger();
+		else { if (this._desire < COMPARISON_DESIRE) this.change_to_normal(); }
+	}
+	
+	private void case_hunger(double dt) {
+		if (this._hunt_target == null || (this._hunt_target != null)
+				&& (this._hunt_target._state == State.DEAD || this._pos
+						.distanceTo(this._hunt_target._pos) > this._sight_range)) {
+			this.search_hunt_target();
+		}
 
-		this._desire = this._desire + (ADD_DESIRE * dt);
-		if (this._desire > MAX_RANGE)
-			this._desire = MAX_RANGE;
+		if (this._hunt_target == null)
+			this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
+					REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
+		else this.move_to_hunt(dt);
 
-		if (this.get_position().distanceTo(this._hunt_target._pos) < DISTANCE_COMPARISON_HUNT) {
+		if (this._energy > COMPARISON_ENERGY) {
+			if (this._desire < COMPARISON_DESIRE) this.change_to_normal();
+			else this.change_to_mate();
+		}
+	}
+	
+	private void case_normal(double dt) {
+		this.move_as_normal(dt, DISTANCE_COMPARISON_DEST, MOVE_SECOND_FACTOR, MOVE_THIRD_FACTOR,
+				REMOVE_ENERGY_FIRST_FACTOR, ADD_DESIRE, MIN_RANGE, MAX_RANGE);
+
+		if (this._energy < COMPARISON_ENERGY) this.change_to_hunger();
+		else { if (this._desire > COMPARISON_DESIRE) this.change_to_mate(); }
+	}
+
+	private void move_to_hunt(double dt) {
+		this._dest = this._hunt_target._pos;
+		this.move(MOVE_FIRST_FACTOR * this._speed * dt
+				* Math.exp((this._energy - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
+		this._age += dt;
+
+		this._energy -= REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt;
+		if (this._energy < MIN_RANGE) this._energy = MIN_RANGE;
+
+		this._desire += (ADD_DESIRE * dt);
+		if (this._desire > MAX_RANGE) this._desire = MAX_RANGE;
+
+		if (this._pos.distanceTo(this._hunt_target._pos) < DISTANCE_COMPARISON_HUNT) {
 			this._hunt_target._state = State.DEAD;
 			this._hunt_target = null;
 
-			this.set_energy(this.get_energy() + ADD_ENERGY);
-			if (this.get_energy() > MAX_RANGE)
-				this.set_energy(MAX_RANGE);
+			this._energy += ADD_ENERGY;
+			if (this._energy > MAX_RANGE) this._energy = MAX_RANGE;
 		}
 	}
 
-	public void chase_mate_target_create_baby(double dt) {
-		this.set_destination(this.get_mate_target().get_position());
-		this.move(MOVE_FIRST_FACTOR * this.get_speed() * dt
-				* Math.exp((this.get_energy() - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
-		this.set_age(this.get_age() + dt);
+	private void chase_mate_target_create_baby(double dt) {
+		this._dest = this._mate_target._pos;
+		this.move(MOVE_FIRST_FACTOR * this._speed * dt
+				* Math.exp((this._energy - MOVE_SECOND_FACTOR) * MOVE_THIRD_FACTOR));
+		this._age += dt;
 
-		this.set_energy(this.get_energy() - (REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt));
-		if (this.get_energy() < MIN_RANGE)
-			this.set_energy(MIN_RANGE);
+		this._energy -= REMOVE_ENERGY_FIRST_FACTOR * REMOVE_ENERGY_SECOND_FACTOR * dt;
+		if (this._energy < MIN_RANGE) this._energy = MIN_RANGE;
 
-		this._desire = this._desire + (ADD_DESIRE * dt);
-		if (this._desire > MAX_RANGE)
-			this._desire = MAX_RANGE;
+		this._desire += ADD_DESIRE * dt;
+		if (this._desire > MAX_RANGE) this._desire = MAX_RANGE;
 
-		if (this.get_position().distanceTo(this.get_mate_target().get_position()) < DISTANCE_COMPARISON_MATE) {
+		if (this._pos.distanceTo(this._mate_target._pos) < DISTANCE_COMPARISON_MATE) {
 			this._desire = 0.0;
-			this.get_mate_target()._desire = 0.0;
+			this._mate_target._desire = 0.0;
 
 			if (!this.is_pregnant()) {
-				double x = Utils._rand.nextDouble(0, 1);
-				if (x > PROBABILITY_BABY)
-					this.set_baby(new Wolf(this, this.get_mate_target()));
+				if (Utils._rand.nextDouble(0, 1) > PROBABILITY_BABY)
+					this._baby = new Wolf(this, this._mate_target);
 			}
 
-			this.set_energy(this.get_energy() - (REMOVE_ENERGY));
-			if (this.get_energy() < MIN_RANGE)
-				this.set_energy(MIN_RANGE);
+			this._energy -= REMOVE_ENERGY;
+			if (this._energy < MIN_RANGE) this._energy = MIN_RANGE;
 
-			this.set_mate_target(null);
+			this._mate_target = null;
 		}
 	}
 
-	public void search_mate_target() {
-		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
-				(Animal a) -> a.get_genetic_code().equalsIgnoreCase("wolf"));
-		SelectionStrategy aux = this.get_mate_strategy();
-		this.set_mate_target(aux.select(this, animals_filtered));
+	private void search_mate_target() {
+		List<Animal> animals_filtered = this._region_mngr.get_animals_in_range(this,
+				(Animal a) -> a._genetic_code.equalsIgnoreCase("wolf"));
+		this._mate_target = this._mate_strategy.select(this, animals_filtered);
 	}
 
-	public void search_hunt_target() {
-		List<Animal> animals_filtered = this.get_region_mngr().get_animals_in_range(this,
-				(Animal a) -> a.get_diet() == Diet.HERBIVORE);
-		SelectionStrategy aux = this._hunting_strategy;
-		this._hunt_target = aux.select(this, animals_filtered);
+	private void search_hunt_target() {
+		List<Animal> animals_filtered = this._region_mngr.get_animals_in_range(this,
+				(Animal a) -> a._diet == Diet.HERBIVORE);
+		this._hunt_target = this._hunting_strategy.select(this, animals_filtered);
 	}
-
-
-
 
 	@Override
 	protected void change_to_normal() {
-		// TODO Auto-generated method stub
-		this.set_state(State.NORMAL);
+		this._state = State.NORMAL;
 		this._hunt_target = null;
-		this.set_mate_target(null);
+		this._mate_target = null;
 	}
 
 	@Override
 	protected void change_to_mate() {
-		// TODO Auto-generated method stub
-		this.set_state(State.MATE);
+		this._state = State.MATE;
 		this._hunt_target = null;
 	}
 
 	public void change_to_hunger() {
-		this.set_state(State.HUNGER);
-		this.set_mate_target(null);
+		this._state = State.HUNGER;
+		this._mate_target = null;
 	}
-
 }

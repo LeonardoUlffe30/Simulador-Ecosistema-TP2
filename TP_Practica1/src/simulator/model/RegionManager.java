@@ -55,18 +55,12 @@ public class RegionManager implements AnimalMapView {
 		this._animal_region.remove(a).remove_animal(a);
 	}
 
-	/*
-	 * void update_animal_region(Animal a): encuentra la región a la que tiene que
-	 * pertenecer el animal (a partir de su posición actual), y si es distinta de su
-	 * región actual lo añade a la nueva región, lo quita de la anterior, y
-	 * actualiza _animal_region.
-	 */
 	void update_animal_region(Animal a) {
 		double x = a.get_position().getX();
 		double y = a.get_position().getY();
 
-		int row_animal = (int) y / this.get_region_height(); // fila
-		int col_animal = (int) x / this.get_region_width(); // columna
+		int row_animal = (int) (y / this._height_region); // fila
+		int col_animal = (int) (x / this._width_region); // columna
 
 		Region r = this._animal_region.get(a); // region actual del animal
 
@@ -86,7 +80,7 @@ public class RegionManager implements AnimalMapView {
 
 		// Obtengo posicion en la esquina superior izquierda con respecto a X,Y
 		double posComienzoX = e.get_position().getX() - e.get_sight_range();
-		double posComienzoY = e.get_position().getY() - e.get_sight_range();
+		double posComienzoY = e.get_position().getY() - e.get_sight_range(); 
 
 		// Obtengo la maxima posicion de X,Y
 		double recorridoFila = (posComienzoY + 2 * e.get_sight_range() - 1);
@@ -94,16 +88,16 @@ public class RegionManager implements AnimalMapView {
 
 		// Obtengo la fila y columna inicial. Antes de obtener la fila y columna,
 		// verifico si las posiciones son menores que 0
-		int iniFila = (posComienzoY < 0.0) ? 0 : (int) posComienzoY / this.get_region_height();
-		int iniCol = (posComienzoX < 0.0) ? 0 : (int) posComienzoX / this.get_region_width();
+		int iniFila = (posComienzoY < 0.0) ? 0 : (int) (posComienzoY / this._height_region);
+		int iniCol = (posComienzoX < 0.0) ? 0 : (int) (posComienzoX / this._width_region);
 
 		// Obtengo la fila y columna final. Antes de obtener la fila y columna, verifico
 		// si las posiciones son mayores que que
 		// el numero de filas total y columnas total
-		int finFila = (recorridoFila > this.get_height()) ? this.get_rows() - 1
-				: (int) recorridoFila / this.get_region_height();
-		int finCol = (recorridoCol > this.get_width()) ? this.get_cols() - 1
-				: (int) recorridoCol / this.get_region_width();
+		int finFila = (recorridoFila > this._height) ? this._rows - 1
+				: (int) (recorridoFila / this._height_region);
+		int finCol = (recorridoCol > this._width) ? this._cols - 1
+				: (int) (recorridoCol / this._width_region);
 
 		for (int i = iniFila; i <= finFila; i++) {
 			for (int j = iniCol; j <= finCol; j++) {
@@ -163,8 +157,8 @@ public class RegionManager implements AnimalMapView {
 	}
 
 	protected void update_all_regions(double dt) {
-		for (int i = 0; i < this.get_rows(); i++) {
-			for (int j = 0; j < this.get_cols(); j++) {
+		for (int i = 0; i < this._rows; i++) {
+			for (int j = 0; j < this._cols; j++) {
 				this._regions[i][j].update(dt);
 			}
 		}
@@ -173,8 +167,8 @@ public class RegionManager implements AnimalMapView {
 	public JSONObject as_JSON() {
 		JSONArray regionesArray = new JSONArray(); // Creamos el arreglo para las regiones
 
-		for (int i = 0; i < this.get_rows(); ++i) {
-			for (int j = 0; j < this.get_cols(); ++j) {
+		for (int i = 0; i < this._rows; ++i) {
+			for (int j = 0; j < this._cols; ++j) {
 				Region r = this._regions[i][j];
 				JSONObject regionJSON = new JSONObject(); // Creamos un objeto JSON para la región
 				regionJSON.put("row", i); // Agregamos la fila
@@ -194,9 +188,9 @@ public class RegionManager implements AnimalMapView {
 	protected void set_regions(Region[][] _regions) {
 		this._regions = _regions;
 	}
+	
 	@Override
 	public Iterator<RegionData> iterator() {
-		// TODO Auto-generated method stub
 		return iterator();
 	}
 }

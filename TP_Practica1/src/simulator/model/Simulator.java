@@ -36,7 +36,7 @@ public class Simulator implements JSONable {
 	}
 
 	private void add_animal(Animal a) {
-		this.get_animals_in_list().add(a);
+		this._animals_in_list.add(a);
 		this._region_mngr.register_animal(a);
 	}
 
@@ -60,28 +60,26 @@ public class Simulator implements JSONable {
 	public void advance(double dt) {
 		this.dt += dt;
 		List<Animal> dead_animals = new ArrayList<Animal>();
-		for (Animal a : this.get_animals_in_list()) {
+		for (Animal a : this._animals_in_list) {
 			if (a.get_state() == State.DEAD) {
 				this._region_mngr.unregister_animal(a);
 				dead_animals.add(a);
 			}
 		}
 
-		for (Animal a : dead_animals) {
-			this.get_animals_in_list().remove(a);
-		}
+		for (Animal a : dead_animals)
+			this._animals_in_list.remove(a);
 
-		for (Animal a : this.get_animals_in_list()) {
+		for (Animal a : this._animals_in_list) {
 			a.update(dt);
 			this._region_mngr.update_animal_region(a);
 		}
 		this._region_mngr.update_all_regions(dt);
 
 		List<Animal> babies = new ArrayList<Animal>();
-		for (Animal a : this.get_animals_in_list()) {
-			if (a.is_pregnant()) {
+		for (Animal a : this._animals_in_list) {
+			if (a.is_pregnant())
 				babies.add(a.deliver_baby());
-			}
 		}
 
 		for (Animal a : babies)
@@ -96,7 +94,6 @@ public class Simulator implements JSONable {
 
 	}
 
-	
 	public List<Animal> get_animals_in_list() {
 		return this._animals_in_list;
 	}
