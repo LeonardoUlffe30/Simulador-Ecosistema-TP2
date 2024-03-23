@@ -12,10 +12,10 @@ public class Region implements Entity, FoodSupplier, RegionInfo {
 	protected final static double FOOD_SECOND_FACTOR = 5.0;
 	protected final static double FOOD_THIRD_FACTOR = 2.0;
 
-	protected List<Animal> animals_in_list;
+	protected List<Animal> _animals;
 
 	protected Region() {
-		this.animals_in_list = new ArrayList<Animal>();
+		this._animals = new ArrayList<Animal>();
 	}
 
 	@Override
@@ -29,16 +29,16 @@ public class Region implements Entity, FoodSupplier, RegionInfo {
 	}
 
 	final void add_animal(Animal a) {
-		this.animals_in_list.add(a);
+		this._animals.add(a);
 	}
 
 	final void remove_animal(Animal a) {
-		this.animals_in_list.remove(a);
+		this._animals.remove(a);
 	}
 
 //	devuelve una versión inmodificable de la lista de animales.
 	final List<Animal> getAnimals() {
-		return Collections.unmodifiableList(this.animals_in_list);
+		return Collections.unmodifiableList(this._animals);
 	}
 
 //	devuelve una estructura JSON como la siguiente donde "Ai" es lo que
@@ -60,7 +60,7 @@ public class Region implements Entity, FoodSupplier, RegionInfo {
 	@Override
 	public List<AnimalInfo> getAnimalsInfo() {
 		//Collections.unmodifiableList(_animals);
-		return new ArrayList<>(animals_in_list); // se puede usar Collections.unmodifiableList(_animals);
+		return new ArrayList<>(_animals); // se puede usar Collections.unmodifiableList(_animals);
 	}
 
 }

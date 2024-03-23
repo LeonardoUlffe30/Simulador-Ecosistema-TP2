@@ -13,6 +13,9 @@ public interface MapInfo extends JSONable,  Iterable<MapInfo.RegionData>{
 
 	public int get_region_height();
 	
+//	Caracteristicas de la clase Record
+//		Es inmutable
+//		Genera los métodos equals(), toString() y hashCode()
 	public record RegionData(int row, int col, RegionInfo r) {
 	}
 }

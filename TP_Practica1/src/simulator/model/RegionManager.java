@@ -188,9 +188,33 @@ public class RegionManager implements AnimalMapView {
 	protected void set_regions(Region[][] _regions) {
 		this._regions = _regions;
 	}
-	
+
 	@Override
 	public Iterator<RegionData> iterator() {
-		return iterator();
+		
+		return new Iterator<RegionData>() {
+			private int currentRow = 0;
+			private int currentCol = 0;
+
+			@Override
+			public boolean hasNext() {
+				return currentRow < _rows;
+			}
+
+			@Override
+			public RegionData next() {
+				//La instancia de un Record se crea de una forma muy sencilla, 
+				//indicando cada componente (atributo de clase) en la declaración
+				RegionData regionData = new RegionData(currentRow, currentCol, _regions[currentRow][currentCol]);
+				
+				currentCol++;
+                if (currentCol >= _cols) {
+                    currentCol = 0;
+                    currentRow++;
+                }
+				return regionData;
+			}
+			
+		};
 	}
 }
