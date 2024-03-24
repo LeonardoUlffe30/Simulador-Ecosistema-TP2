@@ -4,6 +4,9 @@ import simulator.control.*;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.BoxLayout;
@@ -20,23 +23,37 @@ public class MainWindow extends JFrame {
 private void initGUI() {
 	JPanel mainPanel = new JPanel(new BorderLayout());
 	setContentPane(mainPanel);
-	// TODO crear ControlPanel y añadirlo en PAGE_START de mainPanel
-	ControlPanel controlPanel = new ControlPanel(this._ctrl);
+	 
+	ControlPanel controlPanel = new ControlPanel(this._ctrl); // crear ControlPanel y
+	mainPanel.add(controlPanel, BorderLayout.PAGE_START); // añadir en PAGE_START de mainPanel
 	
-	// TODO crear StatusBar y añadirlo en PAGE_END de mainPanel
-	StatusBar statusBar = new StatusBar();
-	mainPanel.add(statusBar, BorderLayout.PAGE_END);
+	StatusBar statusBar = new StatusBar(this._ctrl); // crear StatusBar y
+	mainPanel.add(statusBar, BorderLayout.PAGE_END); // añadir en PAGE_END de mainPanel
 	
 	// Definición del panel de tablas (usa un BoxLayout vertical)
 	JPanel contentPanel = new JPanel();
 	contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 	mainPanel.add(contentPanel, BorderLayout.CENTER);
+	 
 	// TODO crear la tabla de especies y añadirla a contentPanel.
 	// Usa setPreferredSize(new Dimension(500, 250)) para fijar su tamaño
+	InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(this._ctrl));
+	speciesTable.setPreferredSize(new Dimension(500,250));
+	contentPanel.add(speciesTable);
+	
 	// TODO crear la tabla de regiones.
 	// Usa setPreferredSize(new Dimension(500, 250)) para fijar su tamaño
+	InfoTable regionsTable = new InfoTable("Regions", new RegionsTableModel(this._ctrl));
+	regionsTable.setPreferredSize(new Dimension(500,250));
+	contentPanel.add(regionsTable);
+	
 	// TODO llama a ViewUtils.quit(MainWindow.this) en el método windowClosing
-	//addWindowListener( … );
+	addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+            ViewUtils.quit(MainWindow.this);
+        }
+    });
+	
 	setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	pack();
 	setVisible(true);

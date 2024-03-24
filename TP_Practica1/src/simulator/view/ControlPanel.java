@@ -6,11 +6,12 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import simulator.control.*;
 
-public class ControlPanel {
+class ControlPanel extends JPanel {
 	private Controller _ctrl;
 	private ChangeRegionsDialog _changeRegionsDialog;
 	private JToolBar _toolaBar;
