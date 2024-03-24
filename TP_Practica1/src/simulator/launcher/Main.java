@@ -22,7 +22,7 @@ import simulator.model.Animal;
 import simulator.model.Region;
 import simulator.model.SelectionStrategy;
 import simulator.model.Simulator;
-import simulator.control.Controler;
+import simulator.control.Controller;
 
 import simulator.misc.Utils;
 
@@ -55,15 +55,15 @@ public class Main {
 
 	// some attributes to stores values corresponding to command-line parameters
 	private static Double _time = null;
-	private static Double _dt = null;
+	public static Double _dt = null;
 	private static String _in_file = null;
 	private static String _out_file = null;
 	private static boolean _sv = false;
 	private static ExecMode _mode = ExecMode.BATCH;
 
-	private static Factory<SelectionStrategy> selection_strategy_factory = null;
-	private static Factory<Animal> animal_factory = null;
-	private static Factory<Region> region_factory = null;
+	public static Factory<SelectionStrategy> selection_strategy_factory = null;
+	public static Factory<Animal> animal_factory = null;
+	public static Factory<Region> region_factory = null;
 
 	private static void parse_args(String[] args) {
 
@@ -218,7 +218,7 @@ public class Main {
 		Simulator sim = new Simulator(cols, rows, width, height, animal_factory, region_factory);
 
 //		(4) crear una instancia de Controller pasandole el simulador
-		Controler controler = new Controler(sim);
+		Controller controler = new Controller(sim);
 
 //		(5) llamar a load_data pasandole el JSONObject de la entrada
 		controler.load_data(inputJSON);

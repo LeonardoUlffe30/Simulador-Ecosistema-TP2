@@ -34,7 +34,7 @@ public class MapViewer extends AbstractMapViewer {
 
 	// Mostramos sólo animales con este estado. Los posibles valores de _currState
 	// son null, y los valores deAnimal.State.values(). Si es null mostramos todo.
-	Animal.State _currState;
+	//Animal.State _currState;
 
 	// En estos atributos guardamos la lista de animales y el tiempo que hemos
 	// recibido la última vez para dibujarlos.
@@ -95,7 +95,7 @@ public class MapViewer extends AbstractMapViewer {
 		});
 
 		// Por defecto mostramos todos los animales
-		_currState = null;
+		//_currState = null;
 
 		// Por defecto mostramos el texto de ayuda
 		_showHelp = true;

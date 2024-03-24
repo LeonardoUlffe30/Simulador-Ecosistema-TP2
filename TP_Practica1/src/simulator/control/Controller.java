@@ -11,18 +11,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import simulator.model.AnimalInfo;
+import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.Simulator;
 import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 
-public class Controler {
+public class Controller {
 //	Tiene que tener un atributo (_sim) para la instancia de Simulator.
 	Simulator _sim;
 
 //	La única constructora recibe como parámetro un objeto del tipo Simulator y lo almacena en el atributo
 //	correspondiente.
-	public Controler(Simulator sim) {
+	public Controller(Simulator sim) {
 		this._sim = sim;
 	}
 
@@ -32,25 +33,10 @@ public class Controler {
 //	de animales o regiones. Para cada elemento hay que hacer lo siguiente (es muy importante añadir las
 //	regiones antes de añadir los animales):
 	public void load_data(JSONObject data) {
-
-		if (data.has("regiones")) { // si tiene la clave regiones porque puede ser opcional
-			JSONArray regions = data.getJSONArray("regiones");
-//			Iterar sobre cada especificación de la region
-			for (int i = 0; i < regions.length(); ++i) {
-//				{“row”: [rf,rt], “col”: [cf,ct], “spec”: O}				
-				JSONObject region = regions.getJSONObject(i);
-				JSONArray row = region.getJSONArray("row");
-				JSONArray col = region.getJSONArray("col");
-				JSONObject spec = region.getJSONObject("spec");
-//				Hay que llamar a _sim.set_region(R,C,O) para cada rf≤R≤rt y
-//				cf≤C≤ct (es decir usando un bucle anidado para modificar varias regiones).
-				for (int r = row.getInt(0); r <= row.getInt(1); ++r) {
-					for (int c = col.getInt(0); c <= col.getInt(1); ++c) {
-						this._sim.set_region(r, c, spec);
-					}
-				}
-			}
+		if(data.has("regions")) { // si tiene la clave regiones porque puede ser opcional
+			this.set_regions(data);
 		}
+		
 		// Ya no verificamos si tiene la clave animals puesto que siempre va a existir
 		// segun el enunciado
 		JSONArray animals = data.getJSONArray("animals");
@@ -111,5 +97,48 @@ public class Controler {
 			ol.add(new ObjInfo(a.get_genetic_code(), (int) a.get_position().getX(), (int) a.get_position().getY(),
 					(int) Math.round(a.get_age()) + 2));
 		return ol;
+	}
+	
+//	llama a reset del simulador.
+	public void reset(int cols, int rows, int width, int height) {
+		this._sim.reset(cols, rows, width, height);
+	}
+	
+//	suponiendo que rs es una estructura JSON que incluye
+//	la clave “regions” (como en la primera práctica), modifica las regiones correspondientes usando
+//	set_regions del simulador. Hay que hacer refactorización del código del load_data para que no haya
+//	duplicación de código (porque load_data ya hacía algo parecido).
+	public void set_regions(JSONObject rs) {
+		JSONArray regions = rs.getJSONArray("regions");
+		// Iterar sobre cada especificación de la region
+		for (int i = 0; i < regions.length(); ++i) {
+			// {“row”: [rf,rt], “col”: [cf,ct], “spec”: O}				
+			JSONObject region = regions.getJSONObject(i);
+			JSONArray row = region.getJSONArray("row");
+			JSONArray col = region.getJSONArray("col");
+			JSONObject spec = region.getJSONObject("spec");
+			// Hay que llamar a _sim.set_region(R,C,O) para cada rf≤R≤rt y
+			// cf≤C≤ct (es decir usando un bucle anidado para modificar varias regiones).
+			for (int r = row.getInt(0); r <= row.getInt(1); ++r) {
+				for (int c = col.getInt(0); c <= col.getInt(1); ++c) {
+					this._sim.set_region(r, c, spec);
+				}
+			}
+		}
+	}
+	
+//	llama a advance del simulador.
+	public void advance(double dt) {
+		this._sim.advance(dt);
+	}
+	
+//	llama a addObserver del simulador
+	public void addObserver(EcoSysObserver o) {
+		this._sim.addObserver(o);
+	}
+	
+//	llama a removeObserver del simulador.
+	public void removeObserver(EcoSysObserver o) {
+		this._sim.removeObserver(o);
 	}
 }
