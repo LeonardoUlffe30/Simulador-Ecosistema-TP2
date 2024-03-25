@@ -1,6 +1,8 @@
 package simulator.view;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -9,60 +11,77 @@ import simulator.model.AnimalInfo;
 import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
+import simulator.model.State;
 
 class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	// TODO definir atributos necesarios
+	private Controller _ctrl;
+	private Map<String, Map<State, Integer>> speciesData;
+	
 	SpeciesTableModel(Controller ctrl) {
-	// TODO inicializar estructuras de datos correspondientes
-	// TODO registrar this como observador
+		this._ctrl = ctrl;
+		// inicializar estructuras de datos correspondientes
+		speciesData = new HashMap<>();
+		
+		// registrar this como observador
+		this._ctrl.addObserver(this);
 	}
-	// TODO el resto de métodos van aquí …
+	// el resto de métodos van aquí …
 
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
-		// TODO Auto-generated method stub
-		
+		this.updateData(animals);
 	}
 
 	@Override
 	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
-		// TODO Auto-generated method stub
-		
+		this.updateData(animals);
 	}
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		// TODO Auto-generated method stub
-		
+		this.updateData(animals);
 	}
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		// TODO Auto-generated method stub
-		
+		// No es necesario actualizar SpeciesTable cuando se establece una región
 	}
 
 	@Override
 	public void onAdvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
-		// TODO Auto-generated method stub
-		
+		this.updateData(animals);
 	}
 
 	@Override
 	public int getRowCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return speciesData.size(); // oveja, lobo
 	}
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return State.values().length + 1; // +1 para la columna con el nombre de la especie
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		if(columnIndex == 0) {
+			return speciesData.keySet().toArray()[rowIndex];
+		} else {
+			String species = (String) speciesData.keySet().toArray()[rowIndex];
+			State state = State.values()[columnIndex - 1];
+			return speciesData.get(species).getOrDefault(state, 0);
+		}
+	}
+	
+	private void updateData(List<AnimalInfo> animals) {
+		speciesData.clear();
+		for(AnimalInfo animal : animals) {
+			String species = animal.get_genetic_code();
+			speciesData.putIfAbsent(species, new HashMap<>());
+			State state = animal.get_state();
+			speciesData.get(species).put(state, speciesData.get(species).getOrDefault(state, 0)+1);
+		}
+		this.fireTableDataChanged();
 	}
 }
