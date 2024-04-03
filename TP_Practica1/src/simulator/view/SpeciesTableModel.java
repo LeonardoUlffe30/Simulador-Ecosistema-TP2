@@ -16,7 +16,7 @@ import simulator.model.State;
 class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	// TODO definir atributos necesarios
 	private Controller _ctrl;
-	private Map<String, Map<State, Integer>> speciesData;
+	private Map<String, Map<State, Integer>> speciesData; //<oveja/wolf, <normal/mate/hunger/dead/danger, value>
 	
 	SpeciesTableModel(Controller ctrl) {
 		this._ctrl = ctrl;
