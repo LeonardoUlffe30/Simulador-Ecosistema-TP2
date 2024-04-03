@@ -18,11 +18,11 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 	private List<EcoSysObserver> _observers;
 	private double _dt;
 
-	public Simulator(int cols, int rows, int wi_dth, int height, Factory<Animal> animals_factory,
+	public Simulator(int cols, int rows, int width, int height, Factory<Animal> animals_factory,
 			Factory<Region> regions_factory) {
 		this._animal_factory = animals_factory;
 		this._regions_factory = regions_factory;
-		this._region_mngr = new RegionManager(cols, rows, wi_dth, height);
+		this._region_mngr = new RegionManager(cols, rows, width, height);
 		this._animals = new ArrayList<Animal>();
 		this._dt = 0.0;
 		this._observers = new ArrayList<EcoSysObserver>();

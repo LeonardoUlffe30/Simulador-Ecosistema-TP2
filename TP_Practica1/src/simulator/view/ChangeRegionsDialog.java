@@ -141,7 +141,10 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			}
 		});
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(null);
+		cancelButton.addActionListener(e -> {
+			this._status = 0;
+			setVisible(false);
+		});
 		mainPanel.add(okButton);
 		mainPanel.add(cancelButton);
 		
