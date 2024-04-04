@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import org.json.JSONObject;
 
 import simulator.control.Controller;
+import simulator.launcher.Main;
 import simulator.model.AnimalInfo;
 import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;

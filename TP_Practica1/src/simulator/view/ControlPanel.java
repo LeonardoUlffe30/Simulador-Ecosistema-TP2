@@ -21,13 +21,13 @@ class ControlPanel extends JPanel {
 	private JToolBar _toolBar;
 	private JFileChooser _fc;
 	private boolean _stopped = true; // utilizado en los botones de run/stop
-	private JButton _quitButton;
-	// TODO añade más atributos aquí …
-	private JButton _mapButton;
-	private JButton _regionsButton;
-	private JButton _runButton;
-	private JButton _stopButton;
-	private JSpinner _pasosSpinner;
+	private JButton _quitButton; //stop.png
+	private JButton _mapButton; //viewer.png
+	private JButton _regionsButton; //regions.png
+	private JButton _runButton; //run.png
+	private JButton _stopButton; //exit.png
+	private JButton _openButton; //open.png
+	private JSpinner _stepsSpinner;
 	private JTextField _dtTextField;
 	
 	ControlPanel(Controller ctrl) {
@@ -40,30 +40,36 @@ class ControlPanel extends JPanel {
 		this._toolBar = new JToolBar();
 		add(_toolBar, BorderLayout.PAGE_START);
 		
-		// TODO crear los diferentes botones/atributos y añadirlos a _toolBar.
+		// Crear los diferentes botones/atributos y añadirlos a _toolBar.
 		// Todos ellos han de tener su correspondiente tooltip. Puedes utilizar
 		// _toolBar.addSeparator() para añadir la línea de separación vertical
 		// entre las componentes que lo necesiten.
 		this._mapButton = new JButton();
+		this._openButton = new JButton();
 		this._regionsButton = new JButton();
 		this._runButton = new JButton();
 		this._stopButton = new JButton();
+		this._stepsSpinner = new JSpinner();
+		this._dtTextField = new JTextField();
+		this._quitButton = new JButton();
+		this._toolBar.add(this._openButton);
 		this._toolBar.add(this._mapButton);
 		this._toolBar.add(this._regionsButton);
 		this._toolBar.add(this._runButton);
 		this._toolBar.add(this._stopButton);
+		this._toolBar.add(this._stepsSpinner);
+		this._toolBar.add(this._dtTextField);
+		this._toolBar.add(this._quitButton);
 		
 		// Boton para crear MapWindow
 		this._mapButton.setToolTipText("Map Window");
 		this._mapButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
 		this._mapButton.addActionListener((e) -> new MapViewer());
-		this._toolBar.add(this._mapButton);
 		
 		// Boton para abrir el ChangeRegionsDialog
 		this._regionsButton.setToolTipText("Change regions");
 		this._regionsButton.setIcon(new ImageIcon("resources/icons/regions.png"));
 		this._regionsButton.addActionListener((e) -> this._changeRegionsDialog.open(ViewUtils.getWindow(this)));
-		this._toolBar.add(this._regionsButton);
 		
 		// Boton para iniciar simulacion
 		this._runButton.setToolTipText("Run simulation");
@@ -75,13 +81,11 @@ class ControlPanel extends JPanel {
 			this._runButton.setEnabled(false);
 			//this.run_sim(UNDEFINED_CONDITION, WIDTH);
 		});
-		this._toolBar.add(this._runButton);
 		
 		// Boton para detener simulacion
 		this._stopButton.setToolTipText("Stop");
 		this._stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
 		this._stopButton.addActionListener((e) -> this._stopped = true);
-		this._toolBar.add(this._stopButton);
 		
 		// Quit Button
 		this._toolBar.add(Box.createGlue()); // this aligns the button to the right
@@ -90,11 +94,12 @@ class ControlPanel extends JPanel {
 		this._quitButton.setToolTipText("Quit");
 		this._quitButton.setIcon(new ImageIcon("resources/icons/exit.png"));
 		this._quitButton.addActionListener((e) -> ViewUtils.quit(this));
-		this._toolBar.add(this._quitButton);
 		
 		// TODO Inicializar _fc con una instancia de JFileChooser. Para que siempre
 		// abre en la carpeta de ejemplos puedes usar:
+		this._openButton.setIcon(new ImageIcon("resources/icons/open.png"));
 		this._fc = new JFileChooser();
+		
 		this._fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
 		
 		// TODO Inicializar _changeRegionsDialog con instancias del diálogo de cambio de regiones

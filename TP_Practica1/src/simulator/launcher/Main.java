@@ -65,9 +65,9 @@ public class Main {
 	private static boolean _sv = false;
 	private static ExecMode _mode = ExecMode.GUI;
 
-	public static Factory<SelectionStrategy> selection_strategy_factory = null;
-	public static Factory<Animal> animal_factory = null;
-	public static Factory<Region> region_factory = null;
+	public static Factory<SelectionStrategy> ___selection_strategy_factory = null;
+	public static Factory<Animal> _animals_factory = null;
+	public static Factory<Region> _regions_factory = null;
 
 	private static void parse_args(String[] args) {
 
@@ -205,19 +205,19 @@ public class Main {
 		selection_strategy_builders.add(new SelectFirstBuilder());
 		selection_strategy_builders.add(new SelectClosestBuilder());
 		selection_strategy_builders.add(new SelectYoungestBuilder());
-		selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+		___selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 
 		// Inicializacion de factorias de animales
 		List<Builder<Animal>> animal_builders = new ArrayList<>();
-		animal_builders.add(new SheepBuilder(selection_strategy_factory));
-		animal_builders.add(new WolfBuilder(selection_strategy_factory));
-		animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
+		animal_builders.add(new SheepBuilder(___selection_strategy_factory));
+		animal_builders.add(new WolfBuilder(___selection_strategy_factory));
+		_animals_factory = new BuilderBasedFactory<Animal>(animal_builders);
 
 		// Inicializacion de factorias de regiones
 		List<Builder<Region>> region_builders = new ArrayList<>();
 		region_builders.add(new DynamicSupplyRegionBuilder());
 		region_builders.add(new DefaultRegionBuilder());
-		region_factory = new BuilderBasedFactory<Region>(region_builders);
+		_regions_factory = new BuilderBasedFactory<Region>(region_builders);
 	}
 
 	private static JSONObject load_JSON_file(InputStream in) {
@@ -238,7 +238,7 @@ public class Main {
 		int rows = inputJSON.getInt("rows");
 		int width = inputJSON.getInt("width");
 		int height = inputJSON.getInt("height");
-		Simulator sim = new Simulator(cols, rows, width, height, animal_factory, region_factory);
+		Simulator sim = new Simulator(cols, rows, width, height, _animals_factory, _regions_factory);
 
 //		(4) crear una instancia de Controller pasandole el simulador
 		Controller controler = new Controller(sim);
@@ -267,11 +267,11 @@ public class Main {
 				int rows = inputJSON.getInt("rows");
 				int width = inputJSON.getInt("width");
 				int height = inputJSON.getInt("height");
-				sim = new Simulator(cols, rows, width, height, animal_factory, region_factory);
+				sim = new Simulator(cols, rows, width, height, _animals_factory, _regions_factory);
 				ctrl = new Controller(sim);
 				ctrl.load_data(inputJSON);
 			} else {
-				sim = new Simulator(15, 20, 800, 600, animal_factory, region_factory);
+				sim = new Simulator(15, 20, 800, 600, _animals_factory, _regions_factory);
 				ctrl = new Controller(sim);
 			}
 			new MainWindow(ctrl);
@@ -292,7 +292,7 @@ public class Main {
 		int rows = inputJSON.getInt("rows");
 		int width = inputJSON.getInt("width");
 		int height = inputJSON.getInt("height");
-		Simulator sim = new Simulator(cols, rows, width, height, animal_factory, region_factory);
+		Simulator sim = new Simulator(cols, rows, width, height, _animals_factory, _regions_factory);
 
 //		(4) crear una instancia de Controller pasandole el simulador
 		Controller controler = new Controller(sim);
