@@ -1,12 +1,14 @@
 package simulator.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -27,7 +29,9 @@ class ControlPanel extends JPanel {
 	private JButton _runButton; //run.png
 	private JButton _stopButton; //exit.png
 	private JButton _openButton; //open.png
+	private JLabel _stepsLabel;
 	private JSpinner _stepsSpinner;
+	private JLabel _dtLabel;
 	private JTextField _dtTextField;
 	
 	ControlPanel(Controller ctrl) {
@@ -44,25 +48,35 @@ class ControlPanel extends JPanel {
 		// Todos ellos han de tener su correspondiente tooltip. Puedes utilizar
 		// _toolBar.addSeparator() para añadir la línea de separación vertical
 		// entre las componentes que lo necesiten.
-		this._mapButton = new JButton();
 		this._openButton = new JButton();
+		this._toolBar.add(this._openButton);
+		
+		this._mapButton = new JButton();
+		this._toolBar.addSeparator();
+		this._toolBar.add(this._mapButton);
+		
 		this._regionsButton = new JButton();
 		this._runButton = new JButton();
 		this._stopButton = new JButton();
+		this._stepsLabel = new JLabel("Steps:");
 		this._stepsSpinner = new JSpinner();
+		this._dtLabel = new JLabel("Delta-Time:");
 		this._dtTextField = new JTextField();
 		this._quitButton = new JButton();
-		this._toolBar.add(this._openButton);
-		this._toolBar.add(this._mapButton);
+		
 		this._toolBar.add(this._regionsButton);
+		this._toolBar.addSeparator();		
 		this._toolBar.add(this._runButton);
 		this._toolBar.add(this._stopButton);
+		this._toolBar.add(this._stepsLabel);
 		this._toolBar.add(this._stepsSpinner);
+		this._toolBar.add(this._dtLabel);
 		this._toolBar.add(this._dtTextField);
 		this._toolBar.add(this._quitButton);
 		
 		// Boton para crear MapWindow
 		this._mapButton.setToolTipText("Map Window");
+		this._toolBar.addSeparator();
 		this._mapButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
 		this._mapButton.addActionListener((e) -> new MapViewer());
 		
@@ -90,7 +104,6 @@ class ControlPanel extends JPanel {
 		// Quit Button
 		this._toolBar.add(Box.createGlue()); // this aligns the button to the right
 		this._toolBar.addSeparator();
-		this._quitButton = new JButton();
 		this._quitButton.setToolTipText("Quit");
 		this._quitButton.setIcon(new ImageIcon("resources/icons/exit.png"));
 		this._quitButton.addActionListener((e) -> ViewUtils.quit(this));
@@ -104,6 +117,8 @@ class ControlPanel extends JPanel {
 		
 		// TODO Inicializar _changeRegionsDialog con instancias del diálogo de cambio de regiones
 		this._changeRegionsDialog = new ChangeRegionsDialog(this._ctrl);
+		
+
 	}
 	// TODO el resto de métodos van aquí…
 	private void run_sim(int n, double dt) {
@@ -129,5 +144,5 @@ class ControlPanel extends JPanel {
 			this._regionsButton.setEnabled(true);
 			this._runButton.setEnabled(true);
 		}
-	}
+	}	
 }
