@@ -42,33 +42,8 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 		
 		// TODO en el método windowClosing, eliminar ‘MapWindow.this’ de los
 		// observadores
-		this.addWindowListener(new WindowListener() {
-
-			@Override
-			public void windowOpened(WindowEvent e) {}
-
-			@Override
-			public void windowClosing(WindowEvent e) {	
-				_ctrl.removeObserver(MapWindow.this);
-				dispose();
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e) {}
-
-			@Override
-			public void windowIconified(WindowEvent e) {}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {}
-
-			@Override
-			public void windowActivated(WindowEvent e) {}
-
-			@Override
-			public void windowDeactivated(WindowEvent e) {}
-			
-		});
+//		this.addWindowListener(
+//		});
 		
 		this.pack();
 		if (_parent != null)

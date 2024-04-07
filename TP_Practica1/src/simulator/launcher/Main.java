@@ -279,32 +279,6 @@ public class Main {
 				e.printStackTrace();
 			}
 		});
-//		(1) cargar el archivo de entrada en un JSONObject
-		InputStream is = new FileInputStream(new File(_in_file));
-		JSONObject inputJSON = load_JSON_file(is);
-		is.close();
-
-//		(2) crear el archivo de salida
-		OutputStream os = new FileOutputStream(new File(_out_file));
-
-//		(3) crear una instancia de Simulator pasando a su constructora la información que necesita
-		int cols = inputJSON.getInt("cols");
-		int rows = inputJSON.getInt("rows");
-		int width = inputJSON.getInt("width");
-		int height = inputJSON.getInt("height");
-		Simulator sim = new Simulator(cols, rows, width, height, _animals_factory, _regions_factory);
-
-//		(4) crear una instancia de Controller pasandole el simulador
-		Controller controler = new Controller(sim);
-
-//		(5) llamar a load_data pasandole el JSONObject de la entrada
-		controler.load_data(inputJSON);
-
-//		(6) llamar al método run con los parámetros correspondents
-		controler.run(_time, _dt, _sv, os);
-
-//		(7) cerrar el archivo de salida
-		os.close();
 	}
 
 	private static void start(String[] args) throws Exception {
