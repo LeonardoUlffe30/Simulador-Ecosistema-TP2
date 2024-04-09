@@ -10,6 +10,7 @@ import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.Diet;
 import simulator.model.RegionInfo;
+import simulator.model.State;
 
 class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	// TODO definir atributos necesarios
@@ -27,7 +28,20 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	}
 	
 	// el resto de métodos van aquí…
-
+	
+	@Override
+	public String getColumnName(int columnIndex) {
+		if(columnIndex == 0)
+			return "Row";
+		if(columnIndex == 1)
+			return "Col";
+		if(columnIndex == 2)
+			return "Desc.";
+		else {
+			return Diet.values()[columnIndex-3].name();
+		}
+    }
+	
 	@Override
 	public int getRowCount() {
 		return this._regions.size();

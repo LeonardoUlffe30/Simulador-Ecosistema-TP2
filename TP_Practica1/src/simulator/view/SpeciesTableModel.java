@@ -8,6 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import simulator.control.Controller;
 import simulator.model.AnimalInfo;
+import simulator.model.Diet;
 import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
@@ -24,9 +25,17 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 		speciesData = new HashMap<>();
 		
 		// registrar this como observador
-		this._ctrl.addObserver(this);		
+		this._ctrl.addObserver(this);
 	}
 	// el resto de métodos van aquí …
+	@Override
+	public String getColumnName(int columnIndex) {
+		if(columnIndex == 0)
+			return "Species";
+		else {
+			return State.values()[columnIndex-1].name();
+		}
+    }
 
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {

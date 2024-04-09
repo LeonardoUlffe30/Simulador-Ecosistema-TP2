@@ -2,6 +2,7 @@ package simulator.view;
 
 import simulator.control.*;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -9,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.BoxLayout;
 
 public class MainWindow extends JFrame {
@@ -38,7 +40,6 @@ private void initGUI() {
 	// TODO crear la tabla de especies y añadirla a contentPanel.
 	// Usa setPreferredSize(new Dimension(500, 250)) para fijar su tamaño
 	InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(this._ctrl));
-	
 	speciesTable.setPreferredSize(new Dimension(500,250));
 	contentPanel.add(speciesTable);
 	
