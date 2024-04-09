@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.html.HTMLEditorKit.Parser;
 
 import simulator.control.*;
+import simulator.launcher.Main;
 
 class ControlPanel extends JPanel {
 	private Controller _ctrl;
@@ -84,7 +85,7 @@ class ControlPanel extends JPanel {
 		// Boton para crear MapWindow
 		this._mapButton.setToolTipText("Map Window");
 		this._mapButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
-		this._mapButton.addActionListener((e) -> new MapWindow(null, _ctrl));
+		this._mapButton.addActionListener((e) -> new MapWindow(ViewUtils.getWindow(this), _ctrl));
 		
 		// Boton para abrir el ChangeRegionsDialog
 		this._regionsButton.setToolTipText("Change regions");
@@ -113,6 +114,7 @@ class ControlPanel extends JPanel {
 		this._stepsSpinner.setMinimumSize(new Dimension(70, 40));
 		
 		// JTextFied dt
+		this._dtTextField.setText(Main._dt.toString());
 		this._dtTextField.setPreferredSize(new Dimension(70,40));
 		this._dtTextField.setMaximumSize(new Dimension(70,40));
 		this._dtTextField.setMinimumSize(new Dimension(70,40));
@@ -129,6 +131,7 @@ class ControlPanel extends JPanel {
 		// TODO Inicializar _fc con una instancia de JFileChooser. Para que siempre
 		// abre en la carpeta de ejemplos puedes usar:
 		this._openButton.setIcon(new ImageIcon("resources/icons/open.png"));
+		this._openButton.setToolTipText("Open");
 		this._openButton.addActionListener((e)-> {
 			int returnVal = _fc.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -137,10 +140,11 @@ class ControlPanel extends JPanel {
 				JSONObject obj = null;
 				try {
 					obj = this.readJSONObjectFromFile(file);
+					System.out.println(obj);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				this._ctrl.reset(0,0,0,0);
+				this._ctrl.reset(obj.getInt("cols"), obj.getInt("rows"), obj.getInt("width"), obj.getInt("height"));
 				this._ctrl.load_data(obj);
 			} else {
 				System.out.println("load cancelled by user.");

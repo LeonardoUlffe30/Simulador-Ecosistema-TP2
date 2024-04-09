@@ -38,6 +38,7 @@ private void initGUI() {
 	// TODO crear la tabla de especies y añadirla a contentPanel.
 	// Usa setPreferredSize(new Dimension(500, 250)) para fijar su tamaño
 	InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(this._ctrl));
+	
 	speciesTable.setPreferredSize(new Dimension(500,250));
 	contentPanel.add(speciesTable);
 	
