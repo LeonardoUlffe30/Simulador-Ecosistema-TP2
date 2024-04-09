@@ -3,6 +3,7 @@ package simulator.view;
 import simulator.model.Animal;
 import simulator.model.AnimalInfo;
 import simulator.model.MapInfo;
+import simulator.model.State;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -35,6 +36,9 @@ public class MapViewer extends AbstractMapViewer {
 	// Mostramos sólo animales con este estado. Los posibles valores de _currState
 	// son null, y los valores deAnimal.State.values(). Si es null mostramos todo.
 	//Animal.State _currState;
+	
+	//TODO Comprobar si es lo que piden
+	State _currState;
 
 	// En estos atributos guardamos la lista de animales y el tiempo que hemos
 	// recibido la última vez para dibujarlos.
@@ -95,7 +99,8 @@ public class MapViewer extends AbstractMapViewer {
 		});
 
 		// Por defecto mostramos todos los animales
-		//_currState = null;
+		//TODO A ver si funciona
+		_currState = null;
 
 		// Por defecto mostramos el texto de ayuda
 		_showHelp = true;
@@ -131,12 +136,13 @@ public class MapViewer extends AbstractMapViewer {
 	private boolean visible(AnimalInfo a) {
 		// TODO Devolver true si el animal es visible, es decir si _currState es null o
 		// su estado es igual a _currState.
-		return true;
+		return ((a.get_state() == this._currState) || (this._currState == null));
 	}
 
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
 
 		// TODO Dibujar el grid de regiones
+		
 
 		// Dibujar los animales
 		for (AnimalInfo a : animals) {
@@ -150,14 +156,26 @@ public class MapViewer extends AbstractMapViewer {
 
 			// TODO Si esp_info es null, añade una entrada correspondiente al mapa. Para el
 			// color usa ViewUtils.get_color(a.get_genetic_code())
+			//Map<String, SpeciesInfo> _kindsInfo = new HashMap<>();
+			/*
+			 *  SpeciesInfo(Color color) {
+				_count = 0;
+				_color = color;
+		}
+			 */
+			if (esp_info == null) {
+				esp_info = new SpeciesInfo(ViewUtils.get_color(a));
+				_kindsInfo.put(a.get_genetic_code(), esp_info);
+			}
 
 			// TODO Incrementar el contador de la especie (es decir el contador dentro de
 			// tag_info)
+			esp_info._count++;
 
 			// TODO Dibijar el animal en la posicion correspondiente, usando el color
 			// tag_info._color. Su tamaño tiene que ser relativo a su edad, por ejemplo
 			// edad/2+2. Se puede dibujar usando fillRoundRect, fillRect o fillOval.
-
+			
 		}
 
 		// TODO Dibujar la etiqueta del estado visible, sin no es null.
