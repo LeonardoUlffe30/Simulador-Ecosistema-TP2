@@ -1,6 +1,9 @@
 package simulator.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -58,8 +62,9 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		// dialogo, y añadelos al mainpanel. P.ej., uno para el texto de ayuda,
 		// uno para la tabla, uno para los combobox, y uno para los botones.
 		JPanel helpPanel = new JPanel();
+		helpPanel.setBackground(Color.red);
 		JPanel tablePanel = new JPanel();
-		JPanel comboBoxPanel = new JPanel(new GridLayout(4,2));
+		JPanel comboBoxPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,5));
 		JPanel buttonPanel = new JPanel();
 		mainPanel.add(helpPanel);
 		mainPanel.add(tablePanel);
@@ -68,14 +73,19 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		
 		// TODO crear el texto de ayuda que aparece en la parte superior del diálogo y
 		// añadirlo al panel correspondiente diálogo (Ver el apartado Figuras)
-		JLabel helpText = new JLabel("Select a region type, the rows/cols interval, and"
-				+ "provide values for the parametes in the Value column (default values are "
-				+ "usted for parametes with no value).");
+		JLabel helpText = new JLabel("Select a region type, the rows/cols interval, and provide values for the parametes in the Value column (default values are usted for parametes with no value).");
+		helpText.setFont(new Font("Arial", Font.PLAIN, 12));
+		helpText.setPreferredSize(new Dimension(600, 50));
+		helpText.setMaximumSize(new Dimension(700,80));
+		helpText.setMinimumSize(new Dimension(200,80));
+		helpText.setBackground(Color.blue);
+		helpText.setHorizontalAlignment(SwingConstants.CENTER);
+		helpText.setVerticalAlignment(SwingConstants.TOP);
 		helpPanel.add(helpText);
 		
 		// _regionsInfo se usará para establecer la información en la tabla
 		_regionsInfo = Main._regions_factory.get_info();
-		
+	
 		// _dataTableModel es un modelo de tabla que incluye todos los parámetros de
 		// la region
 		_dataTableModel = new DefaultTableModel() {
@@ -99,7 +109,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		// usa la clave “desc” o “type” de los JSONObject en _regionsInfo,
 		// ya que estos nos dan información sobre lo que puede crear la factoría.
 		for(JSONObject regionInfo : this._regionsInfo) {
-			String description = regionInfo.optString("desc", regionInfo.optString("type", "Unknown"));
+			String description = regionInfo.getString("type");
 			this._regionsModel.addElement(description);
 		}
 		
@@ -109,7 +119,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			int selectedIndex = regionsComboBox.getSelectedIndex();
 			this.updateDataTableModel(selectedIndex);
 		});
-		mainPanel.add(regionsComboBox);
+		comboBoxPanel.add(new JLabel("Region"));
+		comboBoxPanel.add(regionsComboBox);
 		
 		// TODO crear 4 modelos de combobox para _fromRowModel, _toRowModel,
 		// _fromColModel y _toColModel.
@@ -125,7 +136,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		comboBoxPanel.add(new JLabel("Colum from/to:"));
 		comboBoxPanel.add(new JComboBox<>(this._fromColModel));
 		comboBoxPanel.add(new JComboBox<>(this._toColModel));
-		mainPanel.add(comboBoxPanel);
 		
 		// TODO crear los botones OK y Cancel y añadirlos al diálogo.
 		JButton okButton = new JButton("OK");
@@ -146,8 +156,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			this._status = 0;
 			setVisible(false);
 		});
-		mainPanel.add(okButton);
-		mainPanel.add(cancelButton);
+		buttonPanel.add(cancelButton);
+		buttonPanel.add(okButton);
 		
 		setPreferredSize(new Dimension(700, 400)); // puedes usar otro tamaño
 		pack();
@@ -166,6 +176,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 	// TODO el resto de métodos van aquí…
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
+		System.out.println("Rows: " + map.get_rows() + "Cols: " + map.get_cols());
 		this.updateComboBoxModels(map.get_rows(), map.get_cols());
 	}
 
@@ -249,7 +260,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			this._toRowModel.addElement(String.valueOf(i));
 		}
 		
-		for(int j = 0; j < rows; j++) {
+		for(int j = 0; j < cols; j++) {
 			this._fromColModel.addElement(String.valueOf(j));
 			this._toColModel.addElement(String.valueOf(j));
 		}

@@ -8,7 +8,6 @@ import javax.swing.table.AbstractTableModel;
 
 import simulator.control.Controller;
 import simulator.model.AnimalInfo;
-import simulator.model.Diet;
 import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
