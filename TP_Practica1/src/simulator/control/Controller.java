@@ -83,7 +83,7 @@ public class Controller {
 
 		PrintStream p = new PrintStream(out);
 		
-			p.write(result.toString(2).getBytes());
+		p.write(result.toString(2).getBytes());
 		p.println();
 		p.flush();
 
