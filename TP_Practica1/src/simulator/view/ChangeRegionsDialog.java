@@ -1,17 +1,14 @@
 package simulator.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -19,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import org.json.JSONObject;
 
@@ -62,7 +60,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		// dialogo, y añadelos al mainpanel. P.ej., uno para el texto de ayuda,
 		// uno para la tabla, uno para los combobox, y uno para los botones.
 		JPanel helpPanel = new JPanel();
-		helpPanel.setBackground(Color.red);
 		JPanel tablePanel = new JPanel();
 		JPanel comboBoxPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,5));
 		JPanel buttonPanel = new JPanel();
@@ -73,14 +70,9 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		
 		// TODO crear el texto de ayuda que aparece en la parte superior del diálogo y
 		// añadirlo al panel correspondiente diálogo (Ver el apartado Figuras)
-		JLabel helpText = new JLabel("Select a region type, the rows/cols interval, and provide values for the parametes in the Value column (default values are usted for parametes with no value).");
+		JLabel helpText = new JLabel("<html><p>Select a region type, the rows/cols interval, and provide values for the parametes in the <b>Value column</b> (default values are usted for parametes with no value).</p></html>");
 		helpText.setFont(new Font("Arial", Font.PLAIN, 12));
-		helpText.setPreferredSize(new Dimension(600, 50));
-		helpText.setMaximumSize(new Dimension(700,80));
-		helpText.setMinimumSize(new Dimension(200,80));
-		helpText.setBackground(Color.blue);
-		helpText.setHorizontalAlignment(SwingConstants.CENTER);
-		helpText.setVerticalAlignment(SwingConstants.TOP);
+		helpText.setPreferredSize(new Dimension(650, 30));
 		helpPanel.add(helpText);
 		
 		// _regionsInfo se usará para establecer la información en la tabla
@@ -99,7 +91,15 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		
 		// TODO crear un JTable que use _dataTableModel, y añadirlo al diálogo
 		JTable dataTable = new JTable(this._dataTableModel);
+		// Obtener la columna de descripción
+		TableColumn descriptionColumn = dataTable.getColumnModel().getColumn(2);
+
+		// Establecer el ancho preferido basado en el contenido
+		descriptionColumn.setPreferredWidth(300); // Puedes ajustar este valor según tus necesidades
+
+		
 		JScrollPane tableScrollPane = new JScrollPane(dataTable);
+		tableScrollPane.setPreferredSize(new Dimension(550,200));
 		tablePanel.add(tableScrollPane);
 		
 		// _regionsModel es un modelo de combobox que incluye los tipos de regiones
@@ -139,8 +139,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		
 		// TODO crear los botones OK y Cancel y añadirlos al diálogo.
 		JButton okButton = new JButton("OK");
+		JSONObject regionsJSON = this.getJSON();
 		okButton.addActionListener(e-> {
-			JSONObject regionsJSON = this.createRegionsJSON();
 			if(regionsJSON != null) {
 				try {
 					this._ctrl.set_regions(regionsJSON);
@@ -212,31 +212,58 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 				}
 			}
 		}
+		this._dataTableModel.fireTableDataChanged();
 	}
 	
-	private JSONObject createRegionsJSON() {
-		int selectedIndex = this._regionsModel.getIndexOf(this._regionsModel.getSelectedItem());
-		if(selectedIndex != -1) {
-			JSONObject regionInfo = this._regionsInfo.get(selectedIndex);
-			JSONObject regionData = new JSONObject();
-			for(int i = 0; i < this._dataTableModel.getRowCount(); i++) {
-				String key = (String) this._dataTableModel.getValueAt(i, 0);
-				String value = (String) this._dataTableModel.getValueAt(i, 1);
-				if(!value.isEmpty()) {
-					regionData.put(key, value);
-				}
-			}
-			String regionType = regionInfo.optString("type", "Unknown");
-			String[] rowBounds = getSelectedRowBounds();
-			String[] colBounds = getSelectedColBounds();
-			JSONObject region = new JSONObject();
-			region.put("row",  new int[] {Integer.parseInt(rowBounds[0]), Integer.parseInt(rowBounds[1])});
-			region.put("col",  new int[] {Integer.parseInt(colBounds[0]), Integer.parseInt(colBounds[1])});
-			region.put("spec", new JSONObject().put("type", regionType).put("data", regionData));
-			return new JSONObject().put("regions", new JSONObject[] {region});
+	public JSONObject getJSON() {
+		StringBuilder s = new StringBuilder();
+		s.append('{');
+		JSONObject k = new JSONObject();
+		for (int i = 0; i < _dataTableModel.getRowCount(); i++) {
+			
+			k.put(_dataTableModel.getValueAt(i, 0).toString(), _dataTableModel.getValueAt(i, 1));
+			
+			/*if (!v.isEmpty()) {
+				s.append('"');
+				s.append(k);
+				s.append('"');
+				s.append(':');
+				s.append(v);
+				s.append(',');
+			}*/
+			
 		}
-		return null;
+
+		if (s.length() > 1)
+			s.deleteCharAt(s.length() - 1);
+		s.append('}');
+		System.out.println("holaaaa"+k.toString());
+		return k;
 	}
+	
+//	private JSONObject createRegionsJSON() {
+//		int selectedIndex = this._regionsModel.getIndexOf(this._regionsModel.getSelectedItem());
+//		if(selectedIndex != -1) {
+//			JSONObject regionInfo = this._regionsInfo.get(selectedIndex);
+//			JSONObject regionData = new JSONObject();
+//			for(int i = 0; i < this._dataTableModel.getRowCount(); i++) {
+//				String key = (String) this._dataTableModel.getValueAt(i, 0);
+//				String value = (String) this._dataTableModel.getValueAt(i, 1);
+//				if(!value.isEmpty()) {
+//					regionData.put(key, value);
+//				}
+//			}
+//			String regionType = regionInfo.optString("type", "Unknown");
+//			String[] rowBounds = getSelectedRowBounds();
+//			String[] colBounds = getSelectedColBounds();
+//			JSONObject region = new JSONObject();
+//			region.put("row",  new int[] {Integer.parseInt(rowBounds[0]), Integer.parseInt(rowBounds[1])});
+//			region.put("col",  new int[] {Integer.parseInt(colBounds[0]), Integer.parseInt(colBounds[1])});
+//			region.put("spec", new JSONObject().put("type", regionType).put("data", regionData));
+//			return new JSONObject().put("regions", new JSONObject[] {region});
+//		}
+//		return null;
+//	}
 	
 	private String[] getSelectedRowBounds() {
         String fromRow = (String) _fromRowModel.getSelectedItem();

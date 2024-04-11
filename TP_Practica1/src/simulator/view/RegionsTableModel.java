@@ -20,8 +20,8 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	// TODO definir atributos necesarios
 	private Controller _ctrl;
 	//private List<Map<String, Integer>> a; //row, col, desc, NORMAL, HUNGER, MATE, DANGER
-	//private Map<RegionData[][], Map<Diet, Integer>> animals_region;
-	RegionData[][] aux;
+	private Map<RegionData, Map<Diet, Integer>> animals_region;
+	
 	private List<RegionData> _regions;
 	
 	RegionsTableModel(Controller ctrl) {
@@ -111,7 +111,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	
 	private void updateTabla(MapInfo map) {
 		this._regions.clear();
-		aux = new RegionData[map.get_rows()][map.get_cols()];
+//		aux = new RegionData[map.get_rows()][map.get_cols()];
 		Iterator<RegionData> aux = map.iterator();
 		while(aux.hasNext()) {
 			RegionData region = aux.next();
