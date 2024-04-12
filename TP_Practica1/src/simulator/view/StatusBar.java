@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 import simulator.control.Controller;
 import simulator.model.AnimalInfo;
@@ -55,7 +56,7 @@ class StatusBar extends JPanel implements EcoSysObserver {
 
 	private void addSeparator() {
 		JSeparator s = new JSeparator(JSeparator.VERTICAL);
-		s.setPreferredSize(new Dimension(10, 20));
+		s.setPreferredSize(new Dimension(15, 20));
 		this.add(s);
 	}
 	

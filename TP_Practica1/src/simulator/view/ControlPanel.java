@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,6 +22,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.text.html.HTMLEditorKit.Parser;
 
@@ -52,7 +54,6 @@ class ControlPanel extends JPanel {
 	private void initGUI() {
 		this.setLayout(new BorderLayout()); //PAGE START, PAGE END, LINE START y LINE END
 		this._toolBar = new JToolBar();
-		this._toolBar.setBackground(Color.red);
 		this.add(this._toolBar, BorderLayout.PAGE_START); 		 
 		
 		// Crear los diferentes botones/atributos y añadirlos a _toolBar.
@@ -70,16 +71,17 @@ class ControlPanel extends JPanel {
 		this._dtLabel = new JLabel("  Delta-Time:  ");
 		
 		this._toolBar.add(this._openButton);
-		this.createLineSeparator(_toolBar);
+		this._toolBar.addSeparator();			
 		this._toolBar.add(this._mapButton);
 		this._toolBar.add(this._regionsButton);
-		this.createLineSeparator(_toolBar);
+		this._toolBar.addSeparator();
 		this._toolBar.add(this._runButton);
 		this._toolBar.add(this._stopButton);
 		this._toolBar.add(this._stepsLabel);
 		this._toolBar.add(this._stepsSpinner);
 		this._toolBar.add(this._dtLabel);
 		this._toolBar.add(this._dtTextField);
+		this._toolBar.add(Box.createGlue());
 		this._toolBar.addSeparator();
 		
 		// Boton para crear MapWindow
@@ -163,6 +165,7 @@ class ControlPanel extends JPanel {
 	private void createLineSeparator(JToolBar toolbar) {
 		toolbar.addSeparator(new Dimension(5,5));
 		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+		sep.setSize(null);
 		sep.setBackground(Color.LIGHT_GRAY);
 		toolbar.add(sep);
 		toolbar.addSeparator(new Dimension(5,5));

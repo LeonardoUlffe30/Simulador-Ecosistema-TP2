@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.HashMap;
 
 import javax.swing.table.AbstractTableModel;
 
 import simulator.control.Controller;
 import simulator.model.AnimalInfo;
-import simulator.model.EcoSysObserver;
+import simulator.model. EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.MapInfo.RegionData;
 import simulator.model.Diet;
@@ -19,9 +20,8 @@ import simulator.model.State;
 class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	// TODO definir atributos necesarios
 	private Controller _ctrl;
-	//private List<Map<String, Integer>> a; //row, col, desc, NORMAL, HUNGER, MATE, DANGER
-	private Map<RegionData, Map<Diet, Integer>> animals_region;
-	
+	//private List<Map<String, Integer>> a;
+	private Map<RegionData, Map<Diet, Integer>> animals_region;  //row, col, desc, NORMAL, HUNGER, MATE, DANGER
 	private List<RegionData> _regions;
 	
 	RegionsTableModel(Controller ctrl) {
@@ -29,6 +29,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 		
 		// inicializar estructuras de datos correspondientes
 		this._regions = new ArrayList<>();
+		this.animals_region = new HashMap<>();
 		
 		// registrar this como observador
 		this._ctrl.addObserver(this);
@@ -56,7 +57,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public int getColumnCount() {
-		return Diet.values().length + 3; //// 3 columnas extras para row, column, y desc.
+		return Diet.values().length + 3; // 3 columnas extras para row, column, y desc.
 	}
 
 	@Override
@@ -90,7 +91,6 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
-		// TODO Auto-generated method stub
 		
 	}
 
