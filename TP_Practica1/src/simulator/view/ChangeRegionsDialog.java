@@ -210,6 +210,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			JSONArray regionesArray = new JSONArray();
 			JSONObject regionInfo = this._regionsInfo.get(selectedIndex);
 			JSONObject regionData = new JSONObject();
+			
+			
 			for(int i = 0; i < this._dataTableModel.getRowCount(); i++) {
 				String key = (String) this._dataTableModel.getValueAt(i, 0);
 				String value = (String) this._dataTableModel.getValueAt(i, 1);

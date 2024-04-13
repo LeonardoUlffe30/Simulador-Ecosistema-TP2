@@ -104,7 +104,6 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 		simulatorObject.put("time", _dt);
 		simulatorObject.put("state", this._region_mngr.as_JSON());
 		return simulatorObject;
-
 	}
 
 	public void reset(int cols, int rows, int width, int height) {

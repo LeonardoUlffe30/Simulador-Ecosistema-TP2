@@ -14,19 +14,15 @@ import simulator.model.RegionInfo;
 import simulator.model.State;
 
 class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
-	// TODO definir atributos necesarios
 	private Controller _ctrl;
 	private Map<String, Map<State, Integer>> speciesData; //<oveja/wolf, <normal/mate/hunger/dead/danger, value>
 	
 	SpeciesTableModel(Controller ctrl) {
 		this._ctrl = ctrl;
-		// inicializar estructuras de datos correspondientes
 		speciesData = new HashMap<>();
-		
-		// registrar this como observador
 		this._ctrl.addObserver(this);
 	}
-	// el resto de métodos van aquí …
+
 	@Override
 	public String getColumnName(int columnIndex) {
 		if(columnIndex == 0)
@@ -38,6 +34,7 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
+		System.out.println(animals.size());
 		this.updateData(animals);
 	}
 

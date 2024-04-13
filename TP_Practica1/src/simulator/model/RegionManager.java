@@ -200,7 +200,7 @@ public class RegionManager implements AnimalMapView {
 			public boolean hasNext() {
 				return currentRow < _rows;
 			}
-
+			
 			@Override
 			public RegionData next() {
 				//La instancia de un Record se crea de una forma muy sencilla, 

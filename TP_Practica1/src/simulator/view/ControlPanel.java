@@ -142,7 +142,7 @@ class ControlPanel extends JPanel {
 				JSONObject obj = null;
 				try {
 					obj = this.readJSONObjectFromFile(file);
-					System.out.println(obj);
+//					System.out.println(obj);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

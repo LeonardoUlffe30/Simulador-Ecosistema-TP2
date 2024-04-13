@@ -1,5 +1,7 @@
 package simulator.launcher;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,7 +67,7 @@ public class Main {
 	private static boolean _sv = false;
 	private static ExecMode _mode = ExecMode.GUI;
 
-	public static Factory<SelectionStrategy> ___selection_strategy_factory = null;
+	public static Factory<SelectionStrategy> _selection_strategy_factory = null;
 	public static Factory<Animal> _animals_factory = null;
 	public static Factory<Region> _regions_factory = null;
 
@@ -205,12 +207,12 @@ public class Main {
 		selection_strategy_builders.add(new SelectFirstBuilder());
 		selection_strategy_builders.add(new SelectClosestBuilder());
 		selection_strategy_builders.add(new SelectYoungestBuilder());
-		___selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+		_selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
 
 		// Inicializacion de factorias de animales
 		List<Builder<Animal>> animal_builders = new ArrayList<>();
-		animal_builders.add(new SheepBuilder(___selection_strategy_factory));
-		animal_builders.add(new WolfBuilder(___selection_strategy_factory));
+		animal_builders.add(new SheepBuilder(_selection_strategy_factory));
+		animal_builders.add(new WolfBuilder(_selection_strategy_factory));
 		_animals_factory = new BuilderBasedFactory<Animal>(animal_builders);
 
 		// Inicializacion de factorias de regiones
@@ -271,7 +273,7 @@ public class Main {
 				ctrl = new Controller(sim);
 				ctrl.load_data(inputJSON);
 			} else {
-				sim = new Simulator(15, 20, 800, 600, _animals_factory, _regions_factory);
+				sim = new Simulator(20, 15, 800, 600, _animals_factory, _regions_factory);
 				ctrl = new Controller(sim);
 			}
 			new MainWindow(ctrl);
