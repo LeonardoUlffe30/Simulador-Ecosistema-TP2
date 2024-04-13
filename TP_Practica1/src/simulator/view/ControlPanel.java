@@ -142,7 +142,6 @@ class ControlPanel extends JPanel {
 				JSONObject obj = null;
 				try {
 					obj = this.readJSONObjectFromFile(file);
-//					System.out.println(obj);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -161,17 +160,7 @@ class ControlPanel extends JPanel {
 		
 	
 	}
-	
-	private void createLineSeparator(JToolBar toolbar) {
-		toolbar.addSeparator(new Dimension(5,5));
-		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
-		sep.setSize(null);
-		sep.setBackground(Color.LIGHT_GRAY);
-		toolbar.add(sep);
-		toolbar.addSeparator(new Dimension(5,5));
-	}
 
-	// TODO el resto de métodos van aquí…
 	private void run_sim(int n, double dt) {
 		if (n > 0 && !this._stopped) {
 			try {

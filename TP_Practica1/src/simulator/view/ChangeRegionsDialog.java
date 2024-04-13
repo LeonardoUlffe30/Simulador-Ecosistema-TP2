@@ -133,9 +133,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		okButton.addActionListener(e-> {
 			JSONObject regionsJSON = this.createRegionsJSON();
 			if(regionsJSON != null) {
-				try {
-										
-					//System.out.println(regionsJSON.toString(2));
+				try {				
+					System.out.println(regionsJSON.toString(2));
 					this._ctrl.set_regions(regionsJSON);
 					this._status = 1;
 					setVisible(false);
@@ -168,7 +167,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
-		System.out.println("Rows: " + map.get_rows() + "Cols: " + map.get_cols());
 		this.updateComboBoxModels(map.get_rows(), map.get_cols());
 	}
 
@@ -207,42 +205,39 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 	private JSONObject createRegionsJSON() {
 		int selectedIndex = this._regionsModel.getIndexOf(this._regionsModel.getSelectedItem());
 		if(selectedIndex != -1) {
-			JSONArray regionesArray = new JSONArray();
+			JSONArray regionsArray = new JSONArray();
 			JSONObject regionInfo = this._regionsInfo.get(selectedIndex);
 			JSONObject regionData = new JSONObject();
 			
+			JSONArray row = new JSONArray();
+			int fromRow = Integer.parseInt(_fromRowModel.getSelectedItem().toString());
+	        int toRow = Integer.parseInt(_toRowModel.getSelectedItem().toString());
+	        row.put(fromRow);
+	        row.put(toRow);
 			
+	        JSONArray col = new JSONArray();
+	        int fromCol = Integer.parseInt(_fromColModel.getSelectedItem().toString());
+	        int toCol = Integer.parseInt(_toColModel.getSelectedItem().toString());
+	        col.put(fromCol);
+	        col.put(toCol);
+	        
 			for(int i = 0; i < this._dataTableModel.getRowCount(); i++) {
-				String key = (String) this._dataTableModel.getValueAt(i, 0);
-				String value = (String) this._dataTableModel.getValueAt(i, 1);
+				String key = this._dataTableModel.getValueAt(i, 0).toString();
+				String value = this._dataTableModel.getValueAt(i, 1).toString();
 				if(!value.isEmpty()) {
-					regionData.put(key, value);
+					regionData.put(key, Double.parseDouble(value));
 				}
 			}
 			String regionType = regionInfo.getString("type");
-			String[] rowBounds = getSelectedRowBounds();
-			String[] colBounds = getSelectedColBounds();
 			JSONObject region = new JSONObject();
-			region.put("row",  new int[] {Integer.parseInt(rowBounds[0]), Integer.parseInt(rowBounds[1])});
-			region.put("col",  new int[] {Integer.parseInt(colBounds[0]), Integer.parseInt(colBounds[1])});
+			region.put("row", row);
+			region.put("col", col);
 			region.put("spec", new JSONObject().put("type", regionType).put("data", regionData));
-			regionesArray.put(region);
-			return new JSONObject().put("regions", regionesArray);
+			regionsArray.put(region);
+			return new JSONObject().put("regions", regionsArray);
 		}
 		return null;
 	}
-	
-	private String[] getSelectedRowBounds() {
-        String fromRow = (String) _fromRowModel.getSelectedItem();
-        String toRow = (String) _toRowModel.getSelectedItem();
-        return new String[]{fromRow, toRow};
-    }
-
-    private String[] getSelectedColBounds() {
-        String fromCol = (String) _fromColModel.getSelectedItem();
-        String toCol = (String) _toColModel.getSelectedItem();
-        return new String[]{fromCol, toCol};
-    }
 	
 	private void updateComboBoxModels(int rows, int cols) {
 		this._fromRowModel.removeAllElements();

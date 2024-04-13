@@ -34,7 +34,6 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
-		System.out.println(animals.size());
 		this.updateData(animals);
 	}
 
@@ -50,7 +49,6 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		// No es necesario actualizar SpeciesTable cuando se establece una región
 	}
 
 	@Override
@@ -81,6 +79,7 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	
 	private void updateData(List<AnimalInfo> animals) {
 		speciesData.clear();
+		
 		for(AnimalInfo animal : animals) {
 			String species = animal.get_genetic_code();
 			speciesData.putIfAbsent(species, new HashMap<>());
