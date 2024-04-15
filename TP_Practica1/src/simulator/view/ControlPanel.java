@@ -99,7 +99,7 @@ class ControlPanel extends JPanel {
 		this._runButton.setIcon(new ImageIcon("resources/icons/run.png"));
 		this._runButton.addActionListener((e) -> {
 			this._stopped = false;
-			this._mapButton.setEnabled(false);
+			//this._mapButton.setEnabled(false);
 			this._regionsButton.setEnabled(false);
 			this._runButton.setEnabled(false);
 			this.run_sim((int) this._stepsSpinner.getValue(), Double.parseDouble(this._dtTextField.getText()));

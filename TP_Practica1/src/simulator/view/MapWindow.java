@@ -130,7 +130,7 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 	public void onAdvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
 		SwingUtilities.invokeLater(() -> {
 			this._viewer.update(animals, time);
-			this.pack();
+			//this.pack();
 		});
 	}
 }
