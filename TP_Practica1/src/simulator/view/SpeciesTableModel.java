@@ -44,7 +44,7 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		this.updateData(animals);
+		this.updateData(a);
 	}
 
 	@Override
@@ -86,6 +86,14 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 			State state = animal.get_state();
 			speciesData.get(species).put(state, speciesData.get(species).getOrDefault(state, 0)+1);
 		}
+		this.fireTableDataChanged();
+	}
+	private void updateData(AnimalInfo animal) {
+		
+			String species = animal.get_genetic_code();
+			speciesData.putIfAbsent(species, new HashMap<>());
+			State state = animal.get_state();
+			speciesData.get(species).put(state, speciesData.get(species).getOrDefault(state, 0)+1);
 		this.fireTableDataChanged();
 	}
 }
