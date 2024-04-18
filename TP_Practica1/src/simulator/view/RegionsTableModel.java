@@ -19,7 +19,7 @@ import simulator.model.RegionInfo;
 class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	private Controller _ctrl;
 	private Map<RegionData, Map<Diet, Integer>> animals_region;  //<{row, col, RegionInfo}, <{HERBIVORE, CARNIVORE},0}>
-	RegionData[][] matrizRegionData; //Para modificar una region
+	//RegionData[][] matrizRegionData; //Para modificar una region
 	private List<RegionData> _regions; //Para la tabla
 	
 	RegionsTableModel(Controller ctrl) {
@@ -68,6 +68,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
         } else {
         	Diet diet = Diet.values()[columnIndex-3];
         	RegionData regionData = this._regions.get(rowIndex);
+        	
         	return this.animals_region.get(regionData).getOrDefault(diet,0);
         }
 	}
@@ -89,18 +90,20 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		RegionData currentRegionData = matrizRegionData[row][col]; // Obtiene actual regionData
-		RegionData newRegionData = new RegionData(row, col, r); // Crea nuevo regionData
-		int indexToChange = (row * map.get_cols()) + col; // Calcula indice para cambiar en lista de regionData
-		Map<Diet, Integer> valueCurrentRegionData = this.animals_region.get(currentRegionData); //Obtiene valor <Diet, Integer> asociado a actual regionData
+		//RegionData currentRegionData = matrizRegionData[row][col]; // Obtiene actual regionData
+		//RegionData newRegionData = new RegionData(row, col, r); // Crea nuevo regionData
 		
+		int indexToChange = (row * map.get_cols()) + col; // Calcula indice para cambiar en lista de regionData
+		RegionData oldRegionData = _regions.get(indexToChange);
+		Map<Diet, Integer> valueCurrentRegionData = this.animals_region.get(oldRegionData); //Obtiene valor <Diet, Integer> asociado a actual regionData
+		
+		RegionData newRegionData = (new RegionData(row, col, r));
 		this._regions.set(indexToChange, newRegionData); //Actualiza lista de regionData
-		this.animals_region.remove(currentRegionData); // Elimina clave (actual regionData) del mapa
+		this.animals_region.remove(oldRegionData); // Elimina clave (actual regionData) del mapa
 		this.animals_region.put(newRegionData, valueCurrentRegionData); // Inserta nueva clave  
 		
 		this.fireTableDataChanged();
-	}
-	
+	} 
 	@Override
 	public void onAdvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
 		this.updateTabla(map);
@@ -109,14 +112,14 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	private void updateTabla(MapInfo map) {
         this.animals_region.clear(); // Elimina todas las claves del mapa
         this._regions.clear(); //Elimina todos los elementos de la lista
-		this.matrizRegionData = new RegionData[map.get_rows()][map.get_cols()]; //Inicializa la matriz
+		//this.matrizRegionData = new RegionData[map.get_rows()][map.get_cols()]; //Inicializa la matriz
 		Iterator<RegionData> aux = map.iterator();
 		
 		while(aux.hasNext()) {
 			RegionData region = aux.next();
 			List<AnimalInfo> animals = region.r().getAnimalsInfo();
 			
-			this.matrizRegionData[region.row()][region.col()] = region; //Agrego a la matriz de regiones
+			//this.matrizRegionData[region.row()][region.col()] = region; //Agrego a la matriz de regiones
 			this._regions.add(region); //Agrego a la lista de regiones
 			this.animals_region.putIfAbsent(region, new HashMap<>()); //Inicializa el mapa interno (valor) de la clave region
 			
