@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 
 public class InfoTable extends JPanel {
+	private static final long serialVersionUID = 1L;
 	String _title;
 	TableModel _tableModel;
 
@@ -20,12 +21,13 @@ public class InfoTable extends JPanel {
 	}
 
 	private void initGUI() {
-		// cambiar el layout del panel a BorderLayout()
+		// Cambiar el layout del panel a BorderLayout()
 		this.setLayout(new BorderLayout());
 		
-		// añadir un borde con título al JPanel, con el texto _title
+		// Añadir un borde con título al JPanel, con el texto _title
 		this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black,2), this._title));
-		// añadir un JTable (con barra de desplazamiento vertical) que use
+		
+		// Añadir un JTable (con barra de desplazamiento vertical) que use
 		// _tableModel
 		JTable table = new JTable(this._tableModel);
 		JScrollPane scrollPanel = new JScrollPane(table);

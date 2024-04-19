@@ -29,6 +29,7 @@ import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
 
 public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
+	private static final long serialVersionUID = 1L;
 	private DefaultComboBoxModel<String> _regionsModel;
 	private DefaultComboBoxModel<String> _fromRowModel;
 	private DefaultComboBoxModel<String> _toRowModel;
@@ -42,12 +43,10 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 	private String[] _headers = { "Key", "Value", "Description" };
 	private int _status = 0; //0: cancel, 1:ok
 
-	// TODO en caso de ser necesario, añadir los atributos aquí…
 	ChangeRegionsDialog(Controller ctrl) {
 		super((Frame) null, true);
 		this._ctrl = ctrl;
 		initGUI();
-		// TODO registrar this como observer;
 		this._ctrl.addObserver(this);
 	}
 
@@ -79,6 +78,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		// _dataTableModel es un modelo de tabla que incluye todos los parámetros de
 		// la region
 		_dataTableModel = new DefaultTableModel() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return column == 1;
@@ -143,6 +144,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 				}
 			}
 		});
+		
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(e -> {
 			this._status = 0;

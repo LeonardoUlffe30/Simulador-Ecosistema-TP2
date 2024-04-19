@@ -17,7 +17,7 @@ import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
 
 class StatusBar extends JPanel implements EcoSysObserver {
-	// Añadir los atributos necesarios.
+	private static final long serialVersionUID = 1L;
 	private JLabel _timeLabel;
 	private JLabel _totalAnimalsLabel;
 	private JLabel _dimensionLabel;
@@ -26,7 +26,6 @@ class StatusBar extends JPanel implements EcoSysObserver {
 	StatusBar(Controller ctrl) {
 		initGUI();
 		this._ctrl = ctrl;
-		// registrar this como observador
 		this._ctrl.addObserver(this);
 	}
 
@@ -34,13 +33,9 @@ class StatusBar extends JPanel implements EcoSysObserver {
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setBorder(BorderFactory.createBevelBorder(1));
 		
-		// TODO Crear varios JLabel para el tiempo, el número de animales, y la
+		// Crear varios JLabel para el tiempo, el número de animales, y la
 		// dimensión y añadirlos al panel. Puedes utilizar el siguiente código
 		// para añadir un separador vertical:
-		//
-		// JSeparator s = new JSeparator(JSeparator.VERTICAL);
-		// s.setPreferredSize(new Dimension(10, 20));
-		// this.add(s);
 		this._timeLabel = new JLabel("Time: ");
 		this._totalAnimalsLabel = new JLabel("Total Animals: ");
 		this._dimensionLabel = new JLabel("Dimension: ");
@@ -52,7 +47,6 @@ class StatusBar extends JPanel implements EcoSysObserver {
 		this.add(this._dimensionLabel);
 		this.addSeparator();
 	}
-	// TODO el resto de métodos van aquí…
 
 	private void addSeparator() {
 		JSeparator s = new JSeparator(JSeparator.VERTICAL);
@@ -77,7 +71,6 @@ class StatusBar extends JPanel implements EcoSysObserver {
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		// No es necesario actualizar la StatusBar cuando se establece una región
 	}
 
 	@Override

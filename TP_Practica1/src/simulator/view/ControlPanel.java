@@ -30,6 +30,7 @@ import simulator.control.*;
 import simulator.launcher.Main;
 
 class ControlPanel extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private Controller _ctrl;
 	private ChangeRegionsDialog _changeRegionsDialog;
 	private JToolBar _toolBar;
@@ -85,37 +86,39 @@ class ControlPanel extends JPanel {
 		this._toolBar.addSeparator();
 		
 		// Boton para crear MapWindow
-		this._mapButton.setToolTipText("Map Window");
+		this._mapButton.setToolTipText("Map Viewer");
 		this._mapButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
 		this._mapButton.addActionListener((e) -> new MapWindow(ViewUtils.getWindow(this), _ctrl));
 		
 		// Boton para abrir el ChangeRegionsDialog
-		this._regionsButton.setToolTipText("Change regions");
+		this._regionsButton.setToolTipText("Change Regions");
 		this._regionsButton.setIcon(new ImageIcon("resources/icons/regions.png"));
 		this._regionsButton.addActionListener((e) -> this._changeRegionsDialog.open(ViewUtils.getWindow(this)));
 		
 		// Boton para iniciar simulacion
-		this._runButton.setToolTipText("Run simulation");
+		this._runButton.setToolTipText("Run the simulator");
 		this._runButton.setIcon(new ImageIcon("resources/icons/run.png"));
 		this._runButton.addActionListener((e) -> {
 			this._stopped = false;
-			//this._mapButton.setEnabled(false);
+			this._mapButton.setEnabled(false);
 			this._regionsButton.setEnabled(false);
 			this._runButton.setEnabled(false);
 			this.run_sim((int) this._stepsSpinner.getValue(), Double.parseDouble(this._dtTextField.getText()));
 		});
 		
 		// Boton para detener simulacion
-		this._stopButton.setToolTipText("Stop");
+		this._stopButton.setToolTipText("Stop the simulator");
 		this._stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
 		this._stopButton.addActionListener((e) -> this._stopped = true);
 				
 		// JSpinner Steps
+		this._stepsSpinner.setToolTipText("Simulation steps to run: 1 - 10000");
 		this._stepsSpinner.setPreferredSize(new Dimension(80, 40));
 		this._stepsSpinner.setMaximumSize(new Dimension(70, 40));
 		this._stepsSpinner.setMinimumSize(new Dimension(70, 40));
 		
 		// JTextFied dt
+		this._dtTextField.setToolTipText("Real time (seconds) corresponding to a step");
 		this._dtTextField.setText(Main._dt.toString());
 		this._dtTextField.setPreferredSize(new Dimension(70,40));
 		this._dtTextField.setMaximumSize(new Dimension(70,40));
@@ -130,10 +133,10 @@ class ControlPanel extends JPanel {
 		this._quitButton.addActionListener((e) -> ViewUtils.quit(this));
 		this._toolBar.add(this._quitButton);
 		
-		// TODO Inicializar _fc con una instancia de JFileChooser. Para que siempre
+		// Inicializar _fc con una instancia de JFileChooser. Para que siempre
 		// abre en la carpeta de ejemplos puedes usar:
 		this._openButton.setIcon(new ImageIcon("resources/icons/open.png"));
-		this._openButton.setToolTipText("Open");
+		this._openButton.setToolTipText("Load an input file into the simulator");
 		this._openButton.addActionListener((e)-> {
 			int returnVal = _fc.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -151,14 +154,12 @@ class ControlPanel extends JPanel {
 				System.out.println("load cancelled by user.");
 			}
 		});
-		this._fc = new JFileChooser();
 		
+		this._fc = new JFileChooser();
 		this._fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
 		
-		// TODO Inicializar _changeRegionsDialog con instancias del diálogo de cambio de regiones
+		// Inicializar _changeRegionsDialog con instancias del diálogo de cambio de regiones
 		this._changeRegionsDialog = new ChangeRegionsDialog(this._ctrl);
-		
-	
 	}
 
 	private void run_sim(int n, double dt) {
@@ -167,18 +168,18 @@ class ControlPanel extends JPanel {
 				this._ctrl.advance(dt);
 				SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 			} catch (Exception e) {
-				// TODO llamar a ViewUtils.showErrorMsg con el mensaje de error
+				// Llamar a ViewUtils.showErrorMsg con el mensaje de error
 				// que corresponda
 				ViewUtils.showErrorMsg(e.getMessage());
 				
-				// TODO activar todos los botones
+				// Activar todos los botones
 				this._stopped = true;
 				this._mapButton.setEnabled(true);
 				this._regionsButton.setEnabled(true);
 				this._runButton.setEnabled(true);
 			}
 		} else {
-			// TODO activar todos los botones
+			// Activar todos los botones
 			this._stopped = true;
 			this._mapButton.setEnabled(true);
 			this._regionsButton.setEnabled(true);

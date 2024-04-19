@@ -17,6 +17,7 @@ import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
 
 public class MapWindow extends JFrame implements EcoSysObserver {
+	private static final long serialVersionUID = 1L;
 	private Controller _ctrl;
 	private AbstractMapViewer _viewer;
 	private Frame _parent;
@@ -26,66 +27,50 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 		this._ctrl = ctrl;
 		this._parent = parent;
 		intiGUI();
-		// TODO registrar this como observador
 		this._ctrl.addObserver(this);
-		
 	}
 
 	private void intiGUI() {
 		JPanel mainPanel = new JPanel(new BorderLayout());
-		// TODO poner contentPane como mainPanel
+		
+		// Poner contentPane como mainPanel
 		this.setContentPane(mainPanel);
 		
-		// TODO crear el viewer y añadirlo a mainPanel (en el centro)
+		// Crear el viewer y añadirlo a mainPanel (en el centro)
 		this._viewer = new MapViewer();
 		mainPanel.add(this._viewer, BorderLayout.CENTER);
 		
-		// TODO en el método windowClosing, eliminar ‘MapWindow.this’ de los
+		// En el método windowClosing, eliminar ‘MapWindow.this’ de los
 		// observadores
 		addWindowListener(new WindowListener() {
 
 			@Override
 			public void windowOpened(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// // TODO en el método windowClosing, eliminar ‘MapWindow.this’ de los
-				// observadores
-
 				_ctrl.removeObserver(MapWindow.this);
 			}
 
 			@Override
 			public void windowClosed(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void windowIconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void windowDeiconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void windowActivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void windowDeactivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		
 		});
@@ -98,8 +83,6 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 		this.setResizable(false);
 		this.setVisible(true);
 	}
-
-	// TODO otros métodos van aquí….
 	
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
@@ -130,7 +113,6 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 	public void onAdvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
 		SwingUtilities.invokeLater(() -> {
 			this._viewer.update(animals, time);
-			//this.pack();
 		});
 	}
 }

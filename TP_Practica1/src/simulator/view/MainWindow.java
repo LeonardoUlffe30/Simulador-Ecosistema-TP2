@@ -37,19 +37,19 @@ private void initGUI() {
 	contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 	mainPanel.add(contentPanel, BorderLayout.CENTER);
 	 
-	// TODO crear la tabla de especies y añadirla a contentPanel.
+	// Crear la tabla de especies y añadirla a contentPanel.
 	// Usa setPreferredSize(new Dimension(500, 250)) para fijar su tamaño
 	InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(this._ctrl));
 	speciesTable.setPreferredSize(new Dimension(500,250));
 	contentPanel.add(speciesTable);
 	
-	// TODO crear la tabla de regiones.
+	// Crear la tabla de regiones.
 	// Usa setPreferredSize(new Dimension(500, 250)) para fijar su tamaño
 	InfoTable regionsTable = new InfoTable("Regions", new RegionsTableModel(this._ctrl));
 	regionsTable.setPreferredSize(new Dimension(500,250));
 	contentPanel.add(regionsTable);
 	
-	// TODO llama a ViewUtils.quit(MainWindow.this) en el método windowClosing
+	// Llama a ViewUtils.quit(MainWindow.this) en el método windowClosing
 	addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
             ViewUtils.quit(MainWindow.this);
