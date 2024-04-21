@@ -155,6 +155,7 @@ public class MapViewer extends AbstractMapViewer {
                 g.drawRect(x, y, _rwidth, _rheight);
             }
         }
+        String s = "";
 
         // Dibujar los animales
         for (AnimalInfo a : animals) {
@@ -198,25 +199,31 @@ public class MapViewer extends AbstractMapViewer {
         // Dibujar la etiqueta del estado visible, sin no es null.
         if (_currState != null) {
             g.setColor(Color.BLUE);
-            g.drawString("Current State: " + _currState.toString(), 10, _height - 20);
+            s = "State: " + _currState.toString();
+            drawStringWithRect(g, 10, _height - 25, s);
+            //g.drawString("State: " + _currState.toString(), 10, _height - 20);
         }
 
         // Dibujar la etiqueta del tiempo. Para escribir solo 3 decimales puede
         // usar String.format("%.3f", time)
         if (_time != null) {
             g.setColor(Color.MAGENTA);
-            g.drawString("Time: " + String.format("%.3f", _time), 10, _height - 5);
+            s = "Time: " + String.format("%.3f", _time);
+            drawStringWithRect(g, 10, _height - 5, s);
+            //g.drawString("Time: " + String.format("%.3f", _time), 10, _height - 5);
         }
 
         // Dibujar la información de todas la especies. Al final de cada iteración
         // poner el contador de la especie correspondiente a 0 (para resetear el cuento)
-        int yOffset = 50; // Ajusta este valor según la posición que desees para la información de las especies
+        int yOffset = 45; // Ajusta este valor según la posición que desees para la información de las especies
         for (Entry<String, SpeciesInfo> e : _kindsInfo.entrySet()) {
             String species = e.getKey();
             SpeciesInfo info = e.getValue();
             g.setColor(info._color);
-            g.drawString(species + ": " + info._count, _width - 100, yOffset);
-            yOffset += 15; // Incrementa el desplazamiento vertical para la siguiente especie
+            s = species + ": " + info._count;
+            g.drawString(s, 10, _height - yOffset);
+            drawStringWithRect(g, 10, _height - yOffset, s);
+            yOffset += 20; // Incrementa el desplazamiento vertical para la siguiente especie
             // Resetea el contador
             info._count = 0;
         }

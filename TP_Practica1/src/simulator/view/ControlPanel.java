@@ -57,15 +57,12 @@ class ControlPanel extends JPanel {
 		this._toolBar = new JToolBar();
 		this.add(this._toolBar, BorderLayout.PAGE_START); 		 
 		
-		// Crear los diferentes botones/atributos y añadirlos a _toolBar.
-		// Todos ellos han de tener su correspondiente tooltip. Puedes utilizar
-		// _toolBar.addSeparator() para añadir la línea de separación vertical
-		// entre las componentes que lo necesiten.
 		this._openButton = new JButton();
 		this._mapButton = new JButton();
 		this._regionsButton = new JButton();
 		this._runButton = new JButton();
 		this._stopButton = new JButton();
+		
 		this._stepsLabel = new JLabel("  Steps:  ");
 		this._stepsSpinner = new JSpinner();
 		this._dtTextField = new JTextField();

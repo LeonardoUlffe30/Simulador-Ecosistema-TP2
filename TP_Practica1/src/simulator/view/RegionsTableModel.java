@@ -110,12 +110,11 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	private void updateTabla(MapInfo map) {
         this.animals_region.clear(); // Elimina todas las claves del mapa
         this._regions.clear(); //Elimina todos los elementos de la lista
+        
 		Iterator<RegionData> aux = map.iterator();
-		
 		while(aux.hasNext()) {
-			RegionData region = aux.next();
-			List<AnimalInfo> animals = region.r().getAnimalsInfo();
 			
+			RegionData region = aux.next();
 			this._regions.add(region); //Agrego a la lista de regiones
 			this.animals_region.putIfAbsent(region, new HashMap<>()); //Inicializa el mapa interno (valor) de la clave region
 			
@@ -125,7 +124,8 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 				}
 			}
 			
-			for(AnimalInfo a : animals) {
+			//List<AnimalInfo> animals = region.r().getAnimalsInfo();
+			for(AnimalInfo a : region.r().getAnimalsInfo()) {
 				Diet aDiet = a.get_diet();
 				this.animals_region.get(region).put(aDiet, this.animals_region.get(region).getOrDefault(aDiet, 0)+1);
 			}
