@@ -17,6 +17,14 @@ import simulator.model.Diet;
 import simulator.model.RegionInfo;
 
 class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
+	
+	static class Info {
+		int row;
+		int col;
+		String desc;
+		int diet[];		
+	}
+	
 	private Controller _ctrl;
 	private Map<RegionData, Map<Diet, Integer>> animals_region;  //<{row, col, RegionInfo}, <{HERBIVORE, CARNIVORE},0}>
 	private List<RegionData> _regions;
@@ -85,8 +93,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
 		this.updateTabla(map);
-		animals.indexOf(a);
-		
+	
 	}
 
 	@Override

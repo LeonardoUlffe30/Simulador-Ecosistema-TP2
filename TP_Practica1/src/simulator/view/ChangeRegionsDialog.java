@@ -1,5 +1,6 @@
 package simulator.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -58,7 +59,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		
 		// Crea paneles para organizar los componentes en el dialogo, y añadir al mainpanel.
 		JPanel helpPanel = new JPanel();
-		JPanel tablePanel = new JPanel();
+		JPanel tablePanel = new JPanel( new BorderLayout());
 		JPanel comboBoxPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,5));
 		JPanel buttonPanel = new JPanel();
 		mainPanel.add(helpPanel);
@@ -116,6 +117,10 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		comboBoxPanel.add(new JLabel("Region"));
 		comboBoxPanel.add(regionsComboBox);
 		
+		
+		this.updateDataTableModel(regionsComboBox.getSelectedIndex());
+
+		
 		// Combobox para _fromRowModel, _toRowModel, _fromColModel y _toColModel.
 		this._fromRowModel = new DefaultComboBoxModel<>();
 		this._toRowModel = new DefaultComboBoxModel<>();
@@ -135,7 +140,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			JSONObject regionsJSON = this.createRegionsJSON();
 			if(regionsJSON != null) {
 				try {				
-					System.out.println(regionsJSON.toString(2));
 					this._ctrl.set_regions(regionsJSON);
 					this._status = 1;
 					setVisible(false);
@@ -206,39 +210,52 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 	
 	private JSONObject createRegionsJSON() {
 		int selectedIndex = this._regionsModel.getIndexOf(this._regionsModel.getSelectedItem());
-		if(selectedIndex != -1) {
-			JSONArray regionsArray = new JSONArray();
-			JSONObject regionInfo = this._regionsInfo.get(selectedIndex);
-			JSONObject regionData = new JSONObject();
-			
-			JSONArray row = new JSONArray();
-			int fromRow = Integer.parseInt(_fromRowModel.getSelectedItem().toString());
-	        int toRow = Integer.parseInt(_toRowModel.getSelectedItem().toString());
-	        row.put(fromRow);
-	        row.put(toRow);
-			
-	        JSONArray col = new JSONArray();
-	        int fromCol = Integer.parseInt(_fromColModel.getSelectedItem().toString());
-	        int toCol = Integer.parseInt(_toColModel.getSelectedItem().toString());
-	        col.put(fromCol);
-	        col.put(toCol);
-	        
-			for(int i = 0; i < this._dataTableModel.getRowCount(); i++) {
-				String key = this._dataTableModel.getValueAt(i, 0).toString();
-				String value = this._dataTableModel.getValueAt(i, 1).toString();
-				if(!value.isEmpty()) {
-					regionData.put(key, Double.parseDouble(value));
-				}
+		JSONArray regionsArray = new JSONArray();
+		JSONObject regionInfo = this._regionsInfo.get(selectedIndex);
+
+		JSONArray row = new JSONArray();
+		int fromRow = Integer.parseInt(_fromRowModel.getSelectedItem().toString());
+		int toRow = Integer.parseInt(_toRowModel.getSelectedItem().toString());
+		row.put(fromRow);
+		row.put(toRow);
+
+		JSONArray col = new JSONArray();
+		int fromCol = Integer.parseInt(_fromColModel.getSelectedItem().toString());
+		int toCol = Integer.parseInt(_toColModel.getSelectedItem().toString());
+		col.put(fromCol);
+		col.put(toCol);
+		
+		String regionType = regionInfo.getString("type");
+		JSONObject region = new JSONObject();
+		region.put("row", row);
+		region.put("col", col);
+		region.put("spec", new JSONObject().put("type", regionType).put("data",new JSONObject(getJSON().toString())));
+		regionsArray.put(region);
+		
+		return new JSONObject().put("regions", regionsArray);
+	}
+	
+	public String getJSON() {
+		StringBuilder s = new StringBuilder();
+		s.append('{');
+		for (int i = 0; i < _dataTableModel.getRowCount(); i++) {
+			String k = _dataTableModel.getValueAt(i, 0).toString();
+			String v = _dataTableModel.getValueAt(i, 1).toString();
+			if (!v.isEmpty()) {
+				s.append('"');
+				s.append(k);
+				s.append('"');
+				s.append(':');
+				s.append(v);
+				s.append(',');
 			}
-			String regionType = regionInfo.getString("type");
-			JSONObject region = new JSONObject();
-			region.put("row", row);
-			region.put("col", col);
-			region.put("spec", new JSONObject().put("type", regionType).put("data", regionData));
-			regionsArray.put(region);
-			return new JSONObject().put("regions", regionsArray);
 		}
-		return null;
+
+		if (s.length() > 1)
+			s.deleteCharAt(s.length() - 1);
+		s.append('}');
+
+		return s.toString();
 	}
 	
 	private void updateComboBoxModels(int rows, int cols) {

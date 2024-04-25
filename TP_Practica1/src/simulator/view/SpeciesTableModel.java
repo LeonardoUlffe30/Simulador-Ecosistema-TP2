@@ -2,6 +2,7 @@ package simulator.view;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.table.AbstractTableModel;
@@ -16,11 +17,13 @@ import simulator.model.State;
 class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	private Controller _ctrl;
 	private Map<String, Map<State, Integer>> speciesData; //<oveja/wolf, <normal/mate/hunger/dead/danger, value>
+	private List<String> _species; 
 	
 	SpeciesTableModel(Controller ctrl) {
 		this._ctrl = ctrl;
 		speciesData = new HashMap<>();
 		this._ctrl.addObserver(this);
+		_species = new ArrayList<>();
 	}
 
 	@Override
@@ -54,6 +57,7 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	@Override
 	public void onAdvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
 		this.updateData(animals);
+		_species.toString();
 	}
 
 	@Override
@@ -71,7 +75,8 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 		if(columnIndex == 0) {
 			return speciesData.keySet().toArray()[rowIndex];
 		} else {
-			String species = (String) speciesData.keySet().toArray()[rowIndex];
+			//String species = (String) speciesData.keySet().toArray()[rowIndex]; // species.get(rowIndex)
+			String species = _species.get(rowIndex);
 			State state = State.values()[columnIndex - 1];
 			return speciesData.get(species).getOrDefault(state, 0);
 		}
@@ -82,6 +87,9 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 		
 		for(AnimalInfo animal : animals) {
 			String species = animal.get_genetic_code();
+			if (!_species.contains(species)){
+				_species.add(species);
+			}
 			speciesData.putIfAbsent(species, new HashMap<>());
 			State state = animal.get_state();
 			speciesData.get(species).put(state, speciesData.get(species).getOrDefault(state, 0)+1);
@@ -92,6 +100,9 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 		
 			String species = animal.get_genetic_code();
 			speciesData.putIfAbsent(species, new HashMap<>());
+			if (!_species.contains(species)){
+				_species.add(species);
+			}
 			State state = animal.get_state();
 			speciesData.get(species).put(state, speciesData.get(species).getOrDefault(state, 0)+1);
 		this.fireTableDataChanged();

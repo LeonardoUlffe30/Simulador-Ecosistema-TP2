@@ -22,6 +22,8 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.text.html.HTMLEditorKit.Parser;
@@ -64,7 +66,7 @@ class ControlPanel extends JPanel {
 		this._stopButton = new JButton();
 		
 		this._stepsLabel = new JLabel("  Steps:  ");
-		this._stepsSpinner = new JSpinner();
+		this._stepsSpinner = new JSpinner(new SpinnerNumberModel(100, 0, 9999999, 1));
 		this._dtTextField = new JTextField();
 		this._dtLabel = new JLabel("  Delta-Time:  ");
 		

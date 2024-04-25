@@ -82,8 +82,8 @@ public class Main {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parse_dt_option(line);
 			parse_help_option(line, cmdLineOptions);
-			parse_in_file_option(line);
 			parse_mode_option(line);
+			parse_in_file_option(line);
 			parse_output_option(line);
 			parse_simple_viewer_option(line);
 			parse_time_option(line);
@@ -113,36 +113,36 @@ public class Main {
 				.desc("A real number representing actual time, in seconds, per simulation step. Default value: "
 						+ _default_dt + ".")
 				.build());
-		
+
 		// help
 		cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message.").build());
 
 		// input file
-		cmdLineOptions
-				.addOption(Option.builder("i").longOpt("input").hasArg().desc("A configuration file (optional in GUI mode).").build());
+		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg()
+				.desc("A configuration file (optional in GUI mode).").build());
 
 		// mode
 		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc(
 				"Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'gui'.")
 				.build());
-		
+
 		// output file
-		cmdLineOptions.addOption(
-				Option.builder("o").longOpt("output").hasArg().desc("A file where output is written (only for BATCH mode).").build());
-		
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
+				.desc("A file where output is written (only for BATCH mode).").build());
+
 		// simple viewer
 		cmdLineOptions.addOption(
 				Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in BATCH mode.").build());
-		
+
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
-				.desc("A real number representing the total simulation time in seconds. Default value: "
-						+ _default_time + ". (only for BATCH mode).")
+				.desc("A real number representing the total simulation time in seconds. Default value: " + _default_time
+						+ ". (only for BATCH mode).")
 				.build());
 
 		return cmdLineOptions;
 	}
-	
+
 	private static void parse_dt_option(CommandLine line) throws ParseException {
 		String dt = line.getOptionValue("dt", _default_dt.toString());
 		try {
@@ -167,28 +167,28 @@ public class Main {
 			throw new ParseException("In batch mode an input configuration file is required");
 		}
 	}
-	
+
 	private static void parse_mode_option(CommandLine line) throws ParseException {
 		String mode = line.getOptionValue("m");
-		for(ExecMode m : ExecMode.values()) {
-			if(m.get_tag().equalsIgnoreCase(mode)) {
-				_mode = m;
-				return;
+		if (mode != null) {
+			for (ExecMode m : ExecMode.values()) {
+				if (m.get_tag().equalsIgnoreCase(mode)) {
+					_mode = m;
+					return;
+				}
 			}
-		}
-		if (_mode == ExecMode.BATCH && _in_file == null) {
-			throw new ParseException("In batch mode an input configuration file is required");
+			throw new ParseException("Modo no válido");
 		}
 	}
 
-	private static void parse_output_option(CommandLine line) throws ParseException{
+	private static void parse_output_option(CommandLine line) throws ParseException {
 		_out_file = line.getOptionValue("o", _default_output);
 	}
 
 	private static void parse_simple_viewer_option(CommandLine line) {
 		_sv = line.hasOption("sv");
 	}
-	
+
 	private static void parse_time_option(CommandLine line) throws ParseException {
 		String t = line.getOptionValue("t", _default_time.toString());
 		try {
@@ -257,29 +257,26 @@ public class Main {
 	}
 
 	private static void start_GUI_mode() throws Exception {
+		Simulator sim;
+		Controller ctrl;
+		if (_in_file != null) {
+			InputStream is = new FileInputStream(new File(_in_file));
+			JSONObject inputJSON = load_JSON_file(is);
+			is.close();
+			int cols = inputJSON.getInt("cols");
+			int rows = inputJSON.getInt("rows");
+			int width = inputJSON.getInt("width");
+			int height = inputJSON.getInt("height");
+			sim = new Simulator(cols, rows, width, height, _animals_factory, _regions_factory);
+			ctrl = new Controller(sim);
+			ctrl.load_data(inputJSON);
+		} else {
+			sim = new Simulator(20, 15, 800, 600, _animals_factory, _regions_factory);
+			ctrl = new Controller(sim);
+		}
+
 		SwingUtilities.invokeAndWait(() -> {
-			Simulator sim;
-			Controller ctrl;
-			try {
-			if(_in_file != null) {
-				InputStream is = new FileInputStream(new File(_in_file));
-				JSONObject inputJSON = load_JSON_file(is);
-				is.close();
-				int cols = inputJSON.getInt("cols");
-				int rows = inputJSON.getInt("rows");
-				int width = inputJSON.getInt("width");
-				int height = inputJSON.getInt("height");
-				sim = new Simulator(cols, rows, width, height, _animals_factory, _regions_factory);
-				ctrl = new Controller(sim);
-				ctrl.load_data(inputJSON);
-			} else {
-				sim = new Simulator(20, 15, 800, 600, _animals_factory, _regions_factory);
-				ctrl = new Controller(sim);
-			}
 			new MainWindow(ctrl);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
 		});
 	}
 
