@@ -22,8 +22,9 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	SpeciesTableModel(Controller ctrl) {
 		this._ctrl = ctrl;
 		speciesData = new HashMap<>();
-		this._ctrl.addObserver(this);
 		_species = new ArrayList<>();
+		this._ctrl.addObserver(this);
+
 	}
 
 	@Override
