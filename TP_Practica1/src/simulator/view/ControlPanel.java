@@ -35,6 +35,7 @@ class ControlPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Controller _ctrl;
 	private ChangeRegionsDialog _changeRegionsDialog;
+	private StatsDialog _statsDialog;
 	private JToolBar _toolBar;
 	private JFileChooser _fc;
 	private boolean _stopped = true; // utilizado en los botones de run/stop
@@ -44,6 +45,7 @@ class ControlPanel extends JPanel {
 	private JButton _runButton; //run.png
 	private JButton _stopButton; //exit.png
 	private JButton _openButton; //open.png
+	private JButton _statsButton;
 	private JLabel _stepsLabel;
 	private JSpinner _stepsSpinner;
 	private JLabel _dtLabel;
@@ -64,6 +66,7 @@ class ControlPanel extends JPanel {
 		this._regionsButton = new JButton();
 		this._runButton = new JButton();
 		this._stopButton = new JButton();
+		this._statsButton = new JButton();
 		
 		this._stepsLabel = new JLabel("  Steps:  ");
 		this._stepsSpinner = new JSpinner(new SpinnerNumberModel(100, 0, 9999999, 1));
@@ -74,6 +77,7 @@ class ControlPanel extends JPanel {
 		this._toolBar.addSeparator();			
 		this._toolBar.add(this._mapButton);
 		this._toolBar.add(this._regionsButton);
+		this._toolBar.add(this._statsButton);
 		this._toolBar.addSeparator();
 		this._toolBar.add(this._runButton);
 		this._toolBar.add(this._stopButton);
@@ -94,6 +98,13 @@ class ControlPanel extends JPanel {
 		this._regionsButton.setIcon(new ImageIcon("resources/icons/regions.png"));
 		this._regionsButton.addActionListener((e) -> this._changeRegionsDialog.open(ViewUtils.getWindow(this)));
 		
+		// Boton para abrir el StatsDialog
+		this._statsButton.setToolTipText("Simulator Stats");
+		this._statsButton.setIcon(new ImageIcon("resources/icons/stats.png"));
+		this._statsButton.addActionListener((e)-> {
+			this._statsDialog.open(ViewUtils.getWindow(this));
+		});
+	
 		// Boton para iniciar simulacion
 		this._runButton.setToolTipText("Run the simulator");
 		this._runButton.setIcon(new ImageIcon("resources/icons/run.png"));
@@ -159,6 +170,7 @@ class ControlPanel extends JPanel {
 		
 		// Inicializar _changeRegionsDialog con instancias del diálogo de cambio de regiones
 		this._changeRegionsDialog = new ChangeRegionsDialog(this._ctrl);
+		this._statsDialog = new StatsDialog(this._ctrl, (int) this._stepsSpinner.getValue());
 	}
 
 	private void run_sim(int n, double dt) {

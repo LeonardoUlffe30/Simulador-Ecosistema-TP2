@@ -226,6 +226,7 @@ public class Main {
 		return new JSONObject(new JSONTokener(in));
 	}
 
+	// -i resources/examples/ex1.json -o resources/tmp/myout.json -t 60.0 -dt 0.03 -sv
 	private static void start_batch_mode() throws Exception {
 //		(1) cargar el archivo de entrada en un JSONObject
 		InputStream is = new FileInputStream(new File(_in_file));
